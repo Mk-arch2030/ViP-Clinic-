@@ -1,0 +1,84 @@
+# CPN GENERATION IMPLEMENTATION DEFINITION CLOSURE PROOF V1
+
+STATUS = CLOSED + PROVEN
+
+PRODUCT = Dr.Roby Clinic
+CAPABILITY = GENERATE CLINIC PATIENT NUMBER
+
+## 1. AUTHORIZATION
+
+CPN_GENERATION_IMPLEMENTATION_AUTHORIZED = YES
+BUILD_READINESS = PASS
+
+## 2. APPROVED FORMAT
+
+CPN_FORMAT = PREFIX + SEQUENTIAL NUMBER
+PREFIX = CPN-
+
+## 3. APPROVED GENERATION DIRECTION
+
+CPN_GENERATION_DIRECTION = PERSISTENCE-AUTHORITATIVE
+
+## 4. DEFINITION PROOF
+
+AUTHORIZATION_ALIGNMENT = PASS
+FORMAT_ALIGNMENT = PASS
+MECHANISM_ALIGNMENT = PASS
+PRODUCT_BEHAVIOR = PASS
+IDENTITY_ALIGNMENT = PASS
+CONCURRENCY = PASS
+SCOPE_CONTROL = PASS
+DEFERRED_DECISIONS = PASS
+GOVERNANCE = PASS
+
+## 5. IMPLEMENTATION BOUNDARY
+
+The implementation is limited to the minimum technical capability
+required to provide authoritative sequential CPN allocation.
+
+The following remain outside this definition:
+- unrelated persistence;
+- unrelated repositories;
+- API;
+- UI;
+- authentication;
+- authorization;
+- workflow changes;
+- Case implementation;
+- Visit implementation;
+- Clinic Day implementation;
+- deployment.
+
+## 6. TECHNICAL DETAILS STILL OPEN
+
+The following require bounded technical design:
+- persistence object type;
+- exact SQL;
+- exact schema location;
+- sequence/counter representation;
+- numeric datatype;
+- starting value;
+- transaction interaction;
+- migration details.
+
+## 7. GOVERNANCE
+
+CONTRACT_MUTATION = NO
+NEW_PRODUCT_CAPABILITY = NO
+NEW_ACTOR = NO
+AUTHORITY_TRANSFER = NO
+UNAUTHORIZED_SCOPE_EXPANSION = NO
+
+## 8. EXECUTION STATE
+
+IMPLEMENTATION_EXECUTED = NO
+IMPLEMENTATION_PROVEN = NO
+
+## 9. CLOSURE RESULT
+
+DEFINITION_REVIEW = PASS
+FAIL = 0
+
+CPN_GENERATION_IMPLEMENTATION_DEFINITION = CLOSED + PROVEN
+
+NEXT GATE = CPN GENERATION TECHNICAL DESIGN

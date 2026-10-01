@@ -1,0 +1,127 @@
+# Dr.Roby Clinic — Application Capability Implementation Coverage Matrix
+# 4.2 CPN Reconciliation Review V1
+
+STATUS = RECONCILIATION REVIEW
+CAPABILITY = 4.2 GENERATE CLINIC PATIENT NUMBER
+
+## 1. RECONCILIATION SCOPE
+
+This review covers only the controlled reconciliation of Application
+Capability 4.2 — GENERATE CLINIC PATIENT NUMBER.
+
+No other Application Capability is changed by this reconciliation.
+
+## 2. BEFORE STATE
+
+4.2_IMPLEMENTATION_UNIT = NOT YET ESTABLISHED
+4.2_CURRENT_STATE = NOT YET IMPLEMENTED
+4.2_PROOF = No independent implementation proof identified
+
+BEFORE_MATRIX_SHA256 =
+`9d0cb0dfbfbf6ee6c7333966113b331c2d83cd5ec802160c0a2e1cacdc327f68`
+
+## 3. CURRENT EVIDENCE
+
+4.2_IMPLEMENTATION_UNIT =
+`application/services/register-new-patient.js`
+`backend/persistence/patient-repository.js`
+`backend/persistence/schema.sql`
+
+4.2_CURRENT_STATE = IMPLEMENTED + PROVEN
+
+CURRENT_IMPLEMENTATION_PROOF =
+`ARCHITECTURE/CPN-GENERATION-IMPLEMENTATION-PROOF-V1.md`
+
+INDEPENDENT_TEST =
+`application/tests/generate-clinic-patient-number.test.js`
+
+EXISTING_RUNTIME_PROOF =
+`ARCHITECTURE/API-RUNTIME-IMPLEMENTATION-CLOSURE-PROOF-V1.md`
+
+IDENTITY_BOUNDARY_PROOF =
+`ARCHITECTURE/PATIENT-TECHNICAL-IDENTITY-MAPPING-RECONCILIATION-V1.md`
+
+## 4. CONTROLLED MATRIX CHANGE
+
+The controlled change is limited to:
+
+4.2 IMPLEMENTATION UNIT:
+NOT YET ESTABLISHED
+→
+application/services/register-new-patient.js;
+backend/persistence/patient-repository.js;
+backend/persistence/schema.sql
+
+4.2 CURRENT STATE:
+NOT YET IMPLEMENTED
+→
+IMPLEMENTED + PROVEN
+
+4.2 PROOF / EVIDENCE:
+No independent implementation proof identified
+→
+Current CPN implementation proof + independent test +
+existing runtime and identity evidence.
+
+## 5. MACHINE COUNT RECONCILIATION
+
+AUTHORITATIVE_APPLICATION_CAPABILITY_INVENTORY = 24
+AUTHORIZED_INVENTORY_ITEMS = 24
+
+EXCLUDED_A01_A04_COUNT = 4
+EXCLUDED_COUNT = 4
+
+IMPLEMENTED_AND_PROVEN_COUNT = 3
+AUTHORIZED_NOT_YET_IMPLEMENTED_COUNT = 17
+
+AUTHORIZED_IMPLEMENTED_AND_PROVEN = 3 / 20
+AUTHORIZED_NOT_YET_IMPLEMENTED = 17 / 20
+
+A01-A04_EXCLUSION_PRESERVED = YES
+
+COMPLETE_AUTHORIZED_CAPABILITY_IMPLEMENTATION_COVERAGE =
+NOT YET PROVEN
+
+## 6. BOUNDARY REVIEW
+
+CONTRACT_MUTATION = NO
+NEW_PRODUCT_CAPABILITY = NO
+NEW_ACTOR = NO
+AUTHORITY_TRANSFER = NO
+UNAUTHORIZED_SCOPE_EXPANSION = NO
+DEFERRED_DECISIONS_RESOLVED = NO
+
+The reconciliation does not authorize persistence, API, UI,
+authentication, authorization, or deployment implementation beyond
+their separately established authorization boundaries.
+
+## 7. CHANGE INTEGRITY
+
+The actual matrix diff was restricted to:
+
+- Capability 4.2 row.
+- IMPLEMENTED_AND_PROVEN_COUNT.
+- AUTHORIZED_NOT_YET_IMPLEMENTED_COUNT.
+- AUTHORIZED_IMPLEMENTED_AND_PROVEN.
+- AUTHORIZED_NOT_YET_IMPLEMENTED.
+
+No other capability row was changed.
+
+AFTER_MATRIX_SHA256 =
+`ae1cb136277e7395d9b03577f7b246c7635295b57c2e65bd33016486459b1c14`
+
+## 8. REVIEW DECISION
+
+4.2_RECONCILIATION_SCOPE = CONTROLLED
+4.2_RECONCILIATION_EVIDENCE = PRESENT
+4.2_RECONCILIATION_COUNTS = CONSISTENT
+4.2_BOUNDARY_PRESERVATION = PASS
+4.2_MATRIX_CHANGE_INTEGRITY = PASS
+
+MATRIX_4.2_RECONCILIATION_REVIEW = CLOSED + PROVEN
+
+FAIL = 0
+
+## 9. NEXT GATE
+
+NEXT_GATE = MATRIX PROOF RECONCILIATION

@@ -1,0 +1,48 @@
+# Dr.Roby Clinic — Persistence Physical Structural Definition Snapshot
+
+SNAPSHOT_STATUS = RECORDED
+GATE = PHYSICAL STRUCTURAL DEFINITION PROOF
+SCOPE = PERSISTENCE PHYSICAL STRUCTURE
+
+ACHIEVEMENT:
+- Persistence Physical Structural Definition completed.
+- Physical structure reconciled against the closed clinic persistence model.
+- Physical Structural Definition proven.
+- Clinical History remains derived from preserved Visits.
+- Doctor Case-completion authority preserved.
+- Clinic Day remains bounded by Working Date.
+- Nurse authority remains operational and delegated.
+
+PROOF:
+PHYSICAL_STRUCTURAL_DEFINITION = CLOSED
+RECONCILIATION = PASS
+PHYSICAL_STRUCTURAL_DEFINITION_PROOF = PASS
+FAIL = 0
+
+NOT_IMPLEMENTED:
+BACKEND = NOT_IMPLEMENTED
+PERSISTENCE_IMPLEMENTATION = NOT_IMPLEMENTED
+SQL = NOT_IMPLEMENTED
+MIGRATION = NOT_IMPLEMENTED
+ORM = NOT_IMPLEMENTED
+REPOSITORY = NOT_IMPLEMENTED
+API = NOT_IMPLEMENTED
+UI = NOT_IMPLEMENTED
+AUTHENTICATION = NOT_IMPLEMENTED
+AUTHORIZATION_RUNTIME = NOT_IMPLEMENTED
+
+SOURCE_PROOF_ARTIFACT = ARCHITECTURE/PERSISTENCE-PHYSICAL-STRUCTURAL-DEFINITION-PROOF-V1.md
+SOURCE_PROOF_SHA256 = 2e1ed785cac7d5cb160fda6f64c7ce48b41b3beb7d92e1e56ed349ba44a0a4a4
+
+HISTORICAL_MEANING:
+The clinic persistence model has reached a proven physical
+structural definition without entering backend or database
+implementation.
+
+ENGINEERING_PRINCIPLE:
+DEFINE -> RECONCILE -> PROVE -> SNAPSHOT -> LANDMARK
+
+SNAPSHOT_IS_HISTORICAL_EVIDENCE = YES
+SNAPSHOT_AUTHORIZES_NEW_IMPLEMENTATION = NO
+GITHUB_IS_NOT_ARCHITECTURAL_AUTHORITY = YES
+FAIL = 0

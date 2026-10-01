@@ -1,0 +1,6 @@
+{
+  "name": "Dr.Roby Clinic — Clinical EMR & Practice System",
+  "description": "Clinical longitudinal record and practice workflow system for Dr. Roby Clinic, preserving Patient, Case, Visit, and Clinic Day authority.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
