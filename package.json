@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test": "node --test application/tests/generate-clinic-patient-number.test.js application/tests/patient-age-contract-09.test.js application/tests/register-new-patient.test.js application/tests/retrieve-existing-patient.test.js backend/api/controllers/retrieve-existing-patient-controller.test.js backend/api/routes/patient-routes.test.js backend/persistence/patient-repository.test.js"
+    "test": "node --test application/tests/generate-clinic-patient-number.test.js application/tests/patient-age-contract-09.test.js application/tests/register-new-patient.test.js application/tests/retrieve-existing-patient.test.js backend/api/controllers/retrieve-existing-patient-controller.test.js backend/api/routes/patient-routes.test.js backend/persistence/patient-repository.test.js application/tests/clinic-day-persistence.test.js"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

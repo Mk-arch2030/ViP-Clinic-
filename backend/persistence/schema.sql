@@ -13,3 +13,15 @@ CREATE TABLE patients (
     gender TEXT NOT NULL
         CHECK (gender IN ('Male', 'Female'))
 );
+
+CREATE TABLE clinic_days (
+    clinic_day_id TEXT PRIMARY KEY,
+    working_date DATE NOT NULL UNIQUE,
+    status TEXT NOT NULL CHECK (status IN ('OPEN', 'CLOSED')),
+    lifecycle TEXT NOT NULL CHECK (lifecycle IN ('WORKING', 'CONCLUDED')),
+    counter INT NOT NULL DEFAULT 0,
+    opened_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    closed_at TIMESTAMPTZ,
+    closed_by TEXT CHECK (closed_by IS NULL OR closed_by = 'Doctor')
+);
+
