@@ -25,3 +25,11 @@ CREATE TABLE clinic_days (
     closed_by TEXT CHECK (closed_by IS NULL OR closed_by = 'Doctor')
 );
 
+
+CREATE TABLE actors (
+    actor_id UUID PRIMARY KEY DEFAULT uuidv7(),
+    actor_role TEXT NOT NULL
+        CHECK (actor_role IN ('DOCTOR', 'NURSE')),
+    lifecycle_state TEXT NOT NULL DEFAULT 'ACTIVE'
+        CHECK (lifecycle_state IN ('ACTIVE', 'DEACTIVATED'))
+);
