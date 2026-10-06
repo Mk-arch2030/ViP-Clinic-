@@ -33,6 +33,7 @@ export default function App() {
   );
   const [activeTab, setActiveTab] = useState<MainTab>('CENSUS');
   const [language, setLanguage] = useState<Language>('ar');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   // Active selection pointers
   const [activePatientId, setActivePatientId] = useState<string>(
@@ -52,11 +53,12 @@ export default function App() {
 
   const t = translations[language];
 
-  // Sync RTL and lang attribute with selected language
+  // Sync RTL, language, and presentation theme with document root
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-  }, [language]);
+    document.documentElement.dataset.theme = theme;
+  }, [language, theme]);
 
   const refreshState = () => {
     setStoreState({ ...clinicStore.getState() });
@@ -298,7 +300,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-teal-500 selection:text-white">
+    <div className="min-h-screen theme-canvas flex flex-col font-sans">
       {/* Top Header */}
       <Header
         currentDay={currentDay}
@@ -312,11 +314,15 @@ export default function App() {
         onToggleLanguage={() =>
           setLanguage((prev) => (prev === 'ar' ? 'en' : 'ar'))
         }
+        theme={theme}
+        onToggleTheme={() =>
+          setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+        }
         dailyVisitsCount={dailyVisits.length}
       />
 
       {/* Main Navigation Bar */}
-      <nav className="no-print border-b border-slate-800 bg-slate-900/60 sticky top-[73px] z-30 backdrop-blur-xs">
+      <nav className="no-print border-b theme-border theme-surface sticky top-[73px] z-30 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-2">
             <button
@@ -324,13 +330,13 @@ export default function App() {
               onClick={() => setActiveTab('CENSUS')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'CENSUS'
-                  ? 'bg-teal-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'theme-action-primary text-white shadow-xs'
+                  : 'theme-text-muted hover:text-[color:var(--theme-text-primary)] hover:bg-[color:var(--theme-border)]/60'
               }`}
             >
               <CalendarDays className="w-4 h-4" />
               <span>{t.tabDailyCensus}</span>
-              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-slate-950/60 text-teal-300">
+              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)]">
                 {dailyVisits.length}
               </span>
             </button>
@@ -340,8 +346,8 @@ export default function App() {
               onClick={() => setActiveTab('INTAKE')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'INTAKE'
-                  ? 'bg-teal-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'theme-action-primary text-white shadow-xs'
+                  : 'theme-text-muted hover:text-[color:var(--theme-text-primary)] hover:bg-[color:var(--theme-border)]/60'
               }`}
             >
               <UserPlus className="w-4 h-4" />
@@ -353,14 +359,14 @@ export default function App() {
               onClick={() => setActiveTab('DOSSIER')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'DOSSIER'
-                  ? 'bg-teal-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'theme-action-primary text-white shadow-xs'
+                  : 'theme-text-muted hover:text-[color:var(--theme-text-primary)] hover:bg-[color:var(--theme-border)]/60'
               }`}
             >
               <FolderOpen className="w-4 h-4" />
               <span>{t.tabPatientChart}</span>
               {selectedPatient && (
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-slate-950/60 text-slate-300">
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-border)]/60 theme-text-secondary">
                   {selectedPatient.clinicPatientNumber}
                 </span>
               )}
@@ -371,14 +377,14 @@ export default function App() {
               onClick={() => setActiveTab('CONSULTATION')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'CONSULTATION'
-                  ? 'bg-teal-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'theme-action-primary text-white shadow-xs'
+                  : 'theme-text-muted hover:text-[color:var(--theme-text-primary)] hover:bg-[color:var(--theme-border)]/60'
               }`}
             >
               <Stethoscope className="w-4 h-4" />
               <span>{t.tabDoctorConsultation}</span>
               {activeConsultationVisit?.prescription?.isAuthorized && (
-                <span className="w-2 h-2 rounded-full bg-teal-400" />
+                <span className="w-2 h-2 rounded-full bg-[color:var(--theme-status-active)]" />
               )}
             </button>
 
@@ -387,13 +393,13 @@ export default function App() {
               onClick={() => setActiveTab('DIRECTORY')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'DIRECTORY'
-                  ? 'bg-teal-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'theme-action-primary text-white shadow-xs'
+                  : 'theme-text-muted hover:text-[color:var(--theme-text-primary)] hover:bg-[color:var(--theme-border)]/60'
               }`}
             >
               <Users className="w-4 h-4" />
               <span>{t.tabPatientDirectory}</span>
-              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-slate-950/60 text-slate-400">
+              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-border)]/60 theme-text-muted">
                 {storeState.patients.length}
               </span>
             </button>
@@ -403,8 +409,8 @@ export default function App() {
 
       {/* Toast notification banner */}
       {feedback && (
-        <div className="no-print bg-teal-950/90 border-b border-teal-800/60 px-4 py-2 text-center text-xs text-teal-200 flex items-center justify-center gap-2 transition-all">
-          <CheckCircle className="w-3.5 h-3.5 text-teal-400" />
+        <div className="no-print bg-[color:var(--theme-action-primary)]/10 border-b border-[color:var(--theme-action-primary)]/30 px-4 py-2 text-center text-xs theme-text-secondary flex items-center justify-center gap-2 transition-all">
+          <CheckCircle className="w-3.5 h-3.5 text-[color:var(--theme-status-active)]" />
           <span>{feedback}</span>
         </div>
       )}
@@ -509,24 +515,24 @@ export default function App() {
       )}
 
       {/* Clinical Integrity & Audit Footer */}
-      <footer className="no-print border-t border-slate-900 bg-slate-950 py-4 text-xs text-slate-500">
+      <footer className="no-print border-t theme-border theme-canvas py-4 text-xs theme-text-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-teal-500/60" />
+            <ShieldCheck className="w-4 h-4 text-[color:var(--theme-authority)]/60" />
             <span>
               Dr.Roby Clinic EMR · Longitudinal Record Architecture · Patient → Case → Visit → Clinic Day
             </span>
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="font-mono text-[11px] text-slate-600">
+            <span className="font-mono text-[11px] theme-text-muted">
               Contract-09 Derived Age Validated · PostgreSQL-backed Sequence
             </span>
 
             <button
               type="button"
               onClick={handleResetToBaseline}
-              className="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1"
+              className="theme-text-muted hover:text-[color:var(--theme-text-secondary)] transition-colors flex items-center gap-1"
               title="Reset sample data to initial baseline"
             >
               <RotateCcw className="w-3 h-3" />

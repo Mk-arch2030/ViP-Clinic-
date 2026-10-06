@@ -81,73 +81,73 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
   return (
     <div className="space-y-6">
       {/* Patient Dossier Master Header */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 sm:p-6 shadow-xs">
+      <div className="theme-surface border theme-border rounded-xl p-5 sm:p-6 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           {/* Identity & Derived Age */}
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold font-sans text-lg shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-[color:var(--theme-action-primary)]/10 border border-[color:var(--theme-action-primary)]/30 flex items-center justify-center text-[color:var(--theme-status-active)] font-bold font-sans text-lg shrink-0">
               {patient.name.charAt(0)}
             </div>
 
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
-                <h2 className="text-xl font-bold text-white font-sans">
+                <h2 className="text-xl font-bold theme-text-primary font-sans">
                   {patient.name}
                 </h2>
                 {/* Authoritative CPN */}
-                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded bg-teal-950 text-teal-300 border border-teal-800/60 shadow-xs">
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)] border border-[color:var(--theme-action-primary)]/30 shadow-xs">
                   {patient.clinicPatientNumber}
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="text-xs px-2 py-0.5 rounded theme-surface-nested theme-text-secondary border theme-border">
                   {patient.gender === 'Male' ? t.genderMale : t.genderFemale}
                 </span>
               </div>
 
               {/* Authoritative DOB and Derived Age */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-300">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs theme-text-secondary">
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                  <span className="text-slate-400">{t.dateOfBirth}:</span>
-                  <span className="font-mono font-medium text-slate-200">{patient.dateOfBirth}</span>
+                  <Calendar className="w-3.5 h-3.5 theme-text-muted" />
+                  <span className="theme-text-secondary">{t.dateOfBirth}:</span>
+                  <span className="font-mono font-medium theme-text-primary">{patient.dateOfBirth}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400">{t.derivedAge}:</span>
-                  <strong className="font-mono text-teal-300 font-semibold">
+                  <span className="theme-text-secondary">{t.derivedAge}:</span>
+                  <strong className="font-mono text-[color:var(--theme-status-active)] font-semibold">
                     {detailedAge.years} {t.derivedAgeYears}, {detailedAge.months} {t.derivedAgeMonths} ({detailedAge.days} {t.derivedAgeDays})
                   </strong>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5 text-slate-500" />
-                  <span className="text-slate-200">{patient.profession}</span>
+                  <Briefcase className="w-3.5 h-3.5 theme-text-muted" />
+                  <span className="theme-text-primary">{patient.profession}</span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-slate-500" />
-                  <span className="font-mono text-slate-300">{patient.phone}</span>
+                  <Phone className="w-3.5 h-3.5 theme-text-muted" />
+                  <span className="font-mono theme-text-secondary">{patient.phone}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Quick Case Summary Stats */}
-          <div className="flex items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800/80 text-xs">
-            <div className="text-center px-3 border-r border-slate-800 rtl:border-r-0 rtl:border-l">
-              <span className="text-slate-500 block">Total Cases</span>
-              <strong className="text-base font-mono text-white">{cases.length}</strong>
+          <div className="flex items-center gap-3 theme-surface-input p-3 rounded-lg border theme-border text-xs">
+            <div className="text-center px-3 border-r theme-border rtl:border-r-0 rtl:border-l">
+              <span className="theme-text-muted block">Total Cases</span>
+              <strong className="text-base font-mono theme-text-primary">{cases.length}</strong>
             </div>
             <div className="text-center px-3">
-              <span className="text-slate-500 block">Cumulative Visits</span>
-              <strong className="text-base font-mono text-teal-400">{visits.length}</strong>
+              <span className="theme-text-muted block">Cumulative Visits</span>
+              <strong className="text-base font-mono text-[color:var(--theme-status-active)]">{visits.length}</strong>
             </div>
           </div>
         </div>
 
         {/* Known Allergies Highlight */}
         {patient.pastHistory.knownAllergies.length > 0 && (
-          <div className="mt-4 px-3.5 py-2 bg-amber-950/30 border border-amber-800/40 rounded-lg text-xs text-amber-300 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+          <div className="mt-4 px-3.5 py-2 bg-[color:var(--theme-status-warning)]/10 border border-[color:var(--theme-status-warning)]/30 rounded-lg text-xs text-[color:var(--theme-status-warning)] flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-[color:var(--theme-status-warning)] shrink-0" />
             <span className="font-semibold">{t.knownAllergies}:</span>
             <span>{patient.pastHistory.knownAllergies.join(', ')}</span>
           </div>
@@ -155,14 +155,14 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
       </div>
 
       {/* Dossier Navigation Tabs */}
-      <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-xl">
+      <div className="flex p-1 theme-surface border theme-border rounded-xl">
         <button
           type="button"
           onClick={() => setActiveTab('CASES')}
           className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${
             activeTab === 'CASES'
-              ? 'bg-teal-600 text-white shadow-xs'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'theme-action-primary text-white shadow-xs'
+              : 'theme-text-secondary hover:theme-text-primary'
           }`}
         >
           <FolderOpen className="w-4 h-4" />
@@ -174,8 +174,8 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           onClick={() => setActiveTab('PAST_HISTORY')}
           className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${
             activeTab === 'PAST_HISTORY'
-              ? 'bg-teal-600 text-white shadow-xs'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'theme-action-primary text-white shadow-xs'
+              : 'theme-text-secondary hover:theme-text-primary'
           }`}
         >
           <User className="w-4 h-4" />
@@ -187,8 +187,8 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           onClick={() => setActiveTab('TIMELINE')}
           className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold transition-all ${
             activeTab === 'TIMELINE'
-              ? 'bg-teal-600 text-white shadow-xs'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'theme-action-primary text-white shadow-xs'
+              : 'theme-text-secondary hover:theme-text-primary'
           }`}
         >
           <History className="w-4 h-4" />
@@ -202,10 +202,10 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           {/* Cases Column */}
           <div className="space-y-3">
             <div className="flex items-center justify-between pb-1">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider theme-text-secondary">
                 {language === 'ar' ? 'مسارات الحالات السريرية' : 'Clinical Cases'}
               </h3>
-              <span className="text-xs text-slate-500 font-mono">{cases.length}</span>
+              <span className="text-xs theme-text-muted font-mono">{cases.length}</span>
             </div>
 
             <div className="space-y-2">
@@ -221,30 +221,30 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                     onClick={() => setSelectedCaseId(c.id)}
                     className={`w-full p-4 rounded-xl border text-left rtl:text-right transition-all ${
                       isSelected
-                        ? 'bg-slate-800 border-teal-500 ring-1 ring-teal-500/30'
-                        : 'bg-slate-900 border-slate-800 hover:bg-slate-800/60'
+                        ? 'theme-surface-nested border-[color:var(--theme-status-active)] ring-1 ring-[color:var(--theme-status-active)]/30'
+                        : 'theme-surface border theme-border hover:bg-[color:var(--theme-border)]/60'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold text-teal-400">
+                      <span className="font-mono text-xs font-bold text-[color:var(--theme-status-active)]">
                         {c.id}
                       </span>
                       <span
                         className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                           isCompleted
-                            ? 'bg-slate-800 text-slate-400'
-                            : 'bg-teal-950 text-teal-300 border border-teal-800/40'
+                            ? 'theme-surface-nested theme-text-secondary'
+                            : 'bg-[color:var(--theme-status-active)]/10 text-[color:var(--theme-status-active)] border border-[color:var(--theme-status-active)]/30'
                         }`}
                       >
                         {c.state}
                       </span>
                     </div>
 
-                    <h4 className="text-xs font-bold text-white mt-1.5 font-sans line-clamp-2">
+                    <h4 className="text-xs font-bold theme-text-primary mt-1.5 font-sans line-clamp-2">
                       {c.title}
                     </h4>
 
-                    <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                    <div className="mt-3 flex items-center justify-between text-[11px] theme-text-muted font-mono">
                       <span>{c.openedDate}</span>
                       <span>{caseVisitsCount} {t.recordedVisits}</span>
                     </div>
@@ -257,20 +257,20 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           {/* Visits Under Selected Case Column */}
           <div className="lg:col-span-2 space-y-4">
             {selectedCase ? (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 sm:p-6 shadow-xs space-y-6">
+              <div className="theme-surface border theme-border rounded-xl p-5 sm:p-6 shadow-xs space-y-6">
                 {/* Case Header with Doctor Complete Action */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b theme-border pb-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm font-bold text-teal-400">
+                      <span className="font-mono text-sm font-bold text-[color:var(--theme-status-active)]">
                         {selectedCase.id}
                       </span>
-                      <span className="text-slate-600">·</span>
-                      <span className="text-xs text-slate-400">
+                      <span className="theme-text-muted">·</span>
+                      <span className="text-xs theme-text-secondary">
                         Opened on {selectedCase.openedDate}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-white mt-0.5 font-sans">
+                    <h3 className="text-lg font-bold theme-text-primary mt-0.5 font-sans">
                       {selectedCase.title}
                     </h3>
                   </div>
@@ -283,17 +283,17 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                         disabled={actorRole !== 'Doctor'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                           actorRole === 'Doctor'
-                            ? 'bg-slate-800 hover:bg-emerald-950/60 hover:text-emerald-300 text-slate-300 border border-slate-700'
-                            : 'opacity-50 cursor-not-allowed bg-slate-900 text-slate-500 border border-slate-800'
+                            ? 'theme-action-secondary hover:bg-[color:var(--theme-status-success)]/10 hover:text-[color:var(--theme-status-success)] text-white border theme-border'
+                            : 'opacity-50 cursor-not-allowed theme-surface theme-text-muted border theme-border'
                         }`}
                         title={actorRole === 'Doctor' ? t.completeCaseAction : t.completeCaseDoctorOnly}
                       >
-                        <FileCheck2 className="w-3.5 h-3.5 text-emerald-400" />
+                        <FileCheck2 className="w-3.5 h-3.5 text-[color:var(--theme-status-success)]" />
                         <span>{t.completeCaseAction}</span>
                       </button>
                     ) : (
-                      <span className="flex items-center gap-1 px-3 py-1 bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 rounded-lg text-xs font-semibold">
-                        <CheckCircle2Icon className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="flex items-center gap-1 px-3 py-1 bg-[color:var(--theme-status-success)]/10 text-[color:var(--theme-status-success)] border border-[color:var(--theme-status-success)]/30 rounded-lg text-xs font-semibold">
+                        <CheckCircle2Icon className="w-3.5 h-3.5 text-[color:var(--theme-status-success)]" />
                         <span>{t.caseCompletedBadge}</span>
                       </span>
                     )}
@@ -302,7 +302,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                       <button
                         type="button"
                         onClick={() => onStartNewVisitForCase(patient.patientId, selectedCase.id)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
+                        className="flex items-center gap-1.5 px-3 py-1.5 theme-action-primary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
                       >
                         <PlusCircle className="w-3.5 h-3.5" />
                         <span>{language === 'ar' ? 'تسجيل زيارة جديدة للحالة' : 'New Visit for Case'}</span>
@@ -314,33 +314,33 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 {/* Visits Chronological Stream for this Case */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-teal-400">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[color:var(--theme-status-active)]">
                       {t.visitsUnderCase}
                     </span>
-                    <span className="text-[11px] font-mono text-slate-500">
+                    <span className="text-[11px] font-mono theme-text-muted">
                       {visitsForSelectedCase.length} Encounters
                     </span>
                   </div>
 
                   {visitsForSelectedCase.length === 0 ? (
-                    <div className="p-6 bg-slate-950 rounded-lg border border-slate-800 text-center text-xs text-slate-500">
+                    <div className="p-6 theme-surface-input rounded-lg border theme-border text-center text-xs theme-text-muted">
                       {t.noPastVisits}
                     </div>
                   ) : (
                     visitsForSelectedCase.map((v, index) => (
                       <div
                         key={v.id}
-                        className="p-4 bg-slate-950 rounded-xl border border-slate-800/80 space-y-3"
+                        className="p-4 theme-surface-input rounded-xl border theme-border space-y-3"
                       >
                         {/* Visit Card Header */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-xs">
-                            <span className="font-mono font-bold text-teal-300 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                            <span className="font-mono font-bold text-[color:var(--theme-status-active)] theme-surface px-2 py-0.5 rounded border theme-border">
                               {v.id}
                             </span>
-                            <span className="font-mono text-slate-400">{v.date} · {v.time}</span>
-                            <span className="text-slate-600">·</span>
-                            <span className="text-slate-400 font-sans">{v.visitType}</span>
+                            <span className="font-mono theme-text-secondary">{v.date} · {v.time}</span>
+                            <span className="theme-text-muted">·</span>
+                            <span className="theme-text-secondary font-sans">{v.visitType}</span>
                           </div>
 
                           <div className="flex items-center gap-2">
@@ -348,9 +348,9 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                               <button
                                 type="button"
                                 onClick={() => onPrintPrescription(v, selectedCase)}
-                                className="flex items-center gap-1 px-2.5 py-1 bg-slate-900 hover:bg-teal-950 text-teal-300 border border-teal-800/60 rounded text-[11px] font-medium transition-colors"
+                                className="flex items-center gap-1 px-2.5 py-1 theme-surface hover:bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)] border border-[color:var(--theme-action-primary)]/30 rounded text-[11px] font-medium transition-colors"
                               >
-                                <Printer className="w-3 h-3 text-teal-400" />
+                                <Printer className="w-3 h-3 text-[color:var(--theme-status-active)]" />
                                 <span>{t.printCertifiedRxBtn}</span>
                               </button>
                             )}
@@ -358,7 +358,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                             <button
                               type="button"
                               onClick={() => onOpenConsultation(v.id)}
-                              className="flex items-center gap-1 px-2.5 py-1 bg-teal-600/20 hover:bg-teal-600 text-teal-300 hover:text-white border border-teal-500/30 rounded text-[11px] font-semibold transition-colors"
+                              className="flex items-center gap-1 px-2.5 py-1 bg-[color:var(--theme-status-active)]/10 hover:bg-[color:var(--theme-status-active)] text-[color:var(--theme-status-active)] hover:text-white border border-[color:var(--theme-status-active)]/30 rounded text-[11px] font-semibold transition-colors"
                             >
                               <Stethoscope className="w-3 h-3" />
                               <span>{t.enterConsultation}</span>
@@ -367,13 +367,13 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                         </div>
 
                         {/* Complaint & Vitals Summary */}
-                        <div className="text-xs text-slate-300 bg-slate-900/60 p-2.5 rounded border border-slate-800/60">
-                          <span className="text-slate-500 font-medium block mb-0.5">{t.complaintLabel}:</span>
+                        <div className="text-xs theme-text-secondary theme-surface p-2.5 rounded border theme-border">
+                          <span className="theme-text-muted font-medium block mb-0.5">{t.complaintLabel}:</span>
                           <p>{v.currentComplaint}</p>
                         </div>
 
                         {v.vitals && (
-                          <div className="flex flex-wrap gap-3 text-[11px] font-mono text-slate-400 pt-0.5">
+                          <div className="flex flex-wrap gap-3 text-[11px] font-mono theme-text-secondary pt-0.5">
                             {v.vitals.bloodPressureSystolic && (
                               <span>BP: {v.vitals.bloodPressureSystolic}/{v.vitals.bloodPressureDiastolic} mmHg</span>
                             )}
@@ -385,17 +385,17 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
 
                         {/* Diagnoses & Treatment */}
                         {(v.finalDiagnosis || v.preliminaryDiagnosis) && (
-                          <div className="text-xs border-t border-slate-900 pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div className="text-xs border-t theme-border pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {v.finalDiagnosis && (
                               <div>
-                                <span className="text-teal-400 font-semibold block">{t.finalDiagnosis}:</span>
-                                <span className="text-slate-200">{v.finalDiagnosis}</span>
+                                <span className="text-[color:var(--theme-status-active)] font-semibold block">{t.finalDiagnosis}:</span>
+                                <span className="theme-text-primary">{v.finalDiagnosis}</span>
                               </div>
                             )}
                             {v.preliminaryDiagnosis && (
                               <div>
-                                <span className="text-amber-400 font-semibold block">{t.preliminaryDiagnosis}:</span>
-                                <span className="text-slate-300">{v.preliminaryDiagnosis}</span>
+                                <span className="text-[color:var(--theme-status-warning)] font-semibold block">{t.preliminaryDiagnosis}:</span>
+                                <span className="theme-text-secondary">{v.preliminaryDiagnosis}</span>
                               </div>
                             )}
                           </div>
@@ -403,16 +403,16 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
 
                         {/* Prescribed Medications Chips */}
                         {v.prescription?.items && v.prescription.items.length > 0 && (
-                          <div className="pt-2 border-t border-slate-900">
-                            <span className="text-[11px] text-slate-500 font-medium block mb-1.5 flex items-center gap-1.5">
-                              <Pill className="w-3.5 h-3.5 text-teal-400" />
+                          <div className="pt-2 border-t theme-border">
+                            <span className="text-[11px] theme-text-muted font-medium block mb-1.5 flex items-center gap-1.5">
+                              <Pill className="w-3.5 h-3.5 text-[color:var(--theme-status-active)]" />
                               <span>{t.rxWorkspaceTitle}:</span>
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {v.prescription.items.map((m) => (
                                 <span
                                   key={m.id}
-                                  className="text-[11px] px-2 py-0.5 bg-slate-900 text-teal-200 rounded border border-teal-900/50"
+                                  className="text-[11px] px-2 py-0.5 theme-surface text-[color:var(--theme-text-technical)] rounded border border-[color:var(--theme-action-primary)]/30"
                                 >
                                   {m.name} {m.strength} ({m.dose} · {m.frequency})
                                 </span>
@@ -426,7 +426,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-500 text-xs">
+              <div className="theme-surface border theme-border rounded-xl p-8 text-center theme-text-muted text-xs">
                 No active case selected.
               </div>
             )}
@@ -436,25 +436,25 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
 
       {/* TAB 2: PAST MEDICAL HISTORY */}
       {activeTab === 'PAST_HISTORY' && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xs space-y-6">
+        <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs space-y-6">
           <div>
-            <h3 className="text-base font-bold text-white font-sans">
+            <h3 className="text-base font-bold theme-text-primary font-sans">
               {t.pastHistorySection}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs theme-text-secondary mt-1">
               {t.pastHistoryHelp}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-              <span className="text-xs font-bold text-teal-400 uppercase tracking-wider block">
+            <div className="p-4 theme-surface-input rounded-xl border theme-border space-y-2">
+              <span className="text-xs font-bold text-[color:var(--theme-status-active)] uppercase tracking-wider block">
                 {t.chronicIllnesses}
               </span>
               {patient.pastHistory.chronicIllnesses.length === 0 ? (
-                <span className="text-xs text-slate-500">None reported</span>
+                <span className="text-xs theme-text-muted">None reported</span>
               ) : (
-                <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                <ul className="text-xs theme-text-secondary space-y-1 list-disc list-inside">
                   {patient.pastHistory.chronicIllnesses.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
@@ -462,14 +462,14 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
               )}
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block">
+            <div className="p-4 theme-surface-input rounded-xl border theme-border space-y-2">
+              <span className="text-xs font-bold text-[color:var(--theme-status-warning)] uppercase tracking-wider block">
                 {t.knownAllergies}
               </span>
               {patient.pastHistory.knownAllergies.length === 0 ? (
-                <span className="text-xs text-slate-500">No known allergies</span>
+                <span className="text-xs theme-text-muted">No known allergies</span>
               ) : (
-                <ul className="text-xs text-amber-200 space-y-1 list-disc list-inside">
+                <ul className="text-xs text-[color:var(--theme-status-warning)] space-y-1 list-disc list-inside">
                   {patient.pastHistory.knownAllergies.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
@@ -477,14 +477,14 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
               )}
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+            <div className="p-4 theme-surface-input rounded-xl border theme-border space-y-2">
+              <span className="text-xs font-bold theme-text-secondary uppercase tracking-wider block">
                 {t.surgicalHistory}
               </span>
               {patient.pastHistory.surgicalHistory.length === 0 ? (
-                <span className="text-xs text-slate-500">None</span>
+                <span className="text-xs theme-text-muted">None</span>
               ) : (
-                <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                <ul className="text-xs theme-text-secondary space-y-1 list-disc list-inside">
                   {patient.pastHistory.surgicalHistory.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
@@ -492,14 +492,14 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
               )}
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+            <div className="p-4 theme-surface-input rounded-xl border theme-border space-y-2">
+              <span className="text-xs font-bold theme-text-secondary uppercase tracking-wider block">
                 {t.familyHistory}
               </span>
               {patient.pastHistory.familyHistory.length === 0 ? (
-                <span className="text-xs text-slate-500">Non-contributory</span>
+                <span className="text-xs theme-text-muted">Non-contributory</span>
               ) : (
-                <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                <ul className="text-xs theme-text-secondary space-y-1 list-disc list-inside">
                   {patient.pastHistory.familyHistory.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
@@ -508,11 +508,11 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
             </div>
           </div>
 
-          <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+          <div className="p-4 theme-surface-input rounded-xl border theme-border space-y-2">
+            <span className="text-xs font-bold theme-text-secondary uppercase tracking-wider block">
               {t.lifestyleNotes}
             </span>
-            <p className="text-xs text-slate-300 font-sans">
+            <p className="text-xs theme-text-secondary font-sans">
               {patient.pastHistory.lifestyleNotes || 'No specific habits recorded.'}
             </p>
           </div>
@@ -521,55 +521,55 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
 
       {/* TAB 3: LONGITUDINAL TIMELINE */}
       {activeTab === 'TIMELINE' && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xs space-y-6">
+        <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs space-y-6">
           <div>
-            <h3 className="text-base font-bold text-white font-sans">
+            <h3 className="text-base font-bold theme-text-primary font-sans">
               {t.longitudinalTimelineTab}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs theme-text-secondary mt-1">
               {language === 'ar'
                 ? 'مسار تراكمي زمني متسلسل لجميع الزيارات والقرارات السريرية للمريض عبر الأيام والحالات.'
                 : 'Cumulative chronological continuum of all patient visits and clinical decisions across clinic days.'}
             </p>
           </div>
 
-          <div className="relative border-l-2 rtl:border-l-0 rtl:border-r-2 border-slate-800 ml-4 rtl:ml-0 rtl:mr-4 space-y-8 pl-6 rtl:pl-0 rtl:pr-6">
+          <div className="relative border-l-2 rtl:border-l-0 rtl:border-r-2 theme-border ml-4 rtl:ml-0 rtl:mr-4 space-y-8 pl-6 rtl:pl-0 rtl:pr-6">
             {sortedPatientVisits.map((v) => {
               const caseRecord = cases.find((c) => c.id === v.caseId);
               return (
                 <div key={v.id} className="relative group">
                   {/* Timeline dot */}
-                  <div className="absolute -left-[31px] rtl:-left-auto rtl:-right-[31px] top-1.5 w-3.5 h-3.5 rounded-full bg-teal-500 border-4 border-slate-900" />
+                  <div className="absolute -left-[31px] rtl:-left-auto rtl:-right-[31px] top-1.5 w-3.5 h-3.5 rounded-full bg-[color:var(--theme-status-active)] border-4 border-[color:var(--theme-canvas)]" />
 
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                  <div className="theme-surface-input p-4 rounded-xl border theme-border space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-teal-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                        <span className="font-mono text-xs font-bold text-[color:var(--theme-status-active)] theme-surface px-2 py-0.5 rounded border theme-border">
                           {v.id}
                         </span>
-                        <span className="font-mono text-xs text-slate-300 font-semibold">{v.date}</span>
-                        <span className="text-slate-600">·</span>
-                        <span className="text-xs text-slate-400">{caseRecord?.id}: {caseRecord?.title}</span>
+                        <span className="font-mono text-xs theme-text-secondary font-semibold">{v.date}</span>
+                        <span className="theme-text-muted">·</span>
+                        <span className="text-xs theme-text-secondary">{caseRecord?.id}: {caseRecord?.title}</span>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => onOpenConsultation(v.id)}
-                        className="text-xs text-teal-400 hover:text-teal-300 font-medium flex items-center gap-1"
+                        className="text-xs text-[color:var(--theme-status-active)] hover:text-[color:var(--theme-status-active)] font-medium flex items-center gap-1"
                       >
                         <span>{t.enterConsultation}</span>
                         <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
                       </button>
                     </div>
 
-                    <p className="text-xs text-slate-300 font-sans">
-                      <strong className="text-slate-400 font-medium">{t.complaintLabel}: </strong>
+                    <p className="text-xs theme-text-secondary font-sans">
+                      <strong className="theme-text-secondary font-medium">{t.complaintLabel}: </strong>
                       {v.currentComplaint}
                     </p>
 
                     {(v.finalDiagnosis || v.preliminaryDiagnosis) && (
-                      <div className="text-xs text-teal-300 bg-teal-950/30 p-2.5 rounded border border-teal-800/40">
-                        <strong className="text-teal-400 block mb-0.5">
+                      <div className="text-xs text-[color:var(--theme-status-active)] bg-[color:var(--theme-status-active)]/10 p-2.5 rounded border border-[color:var(--theme-status-active)]/30">
+                        <strong className="text-[color:var(--theme-status-active)] block mb-0.5">
                           {v.finalDiagnosis ? t.finalDiagnosis : t.preliminaryDiagnosis}:
                         </strong>
                         <span>{v.finalDiagnosis || v.preliminaryDiagnosis}</span>
@@ -577,12 +577,12 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                     )}
 
                     {v.prescription?.items && v.prescription.items.length > 0 && (
-                      <div className="text-xs text-slate-400 flex items-center gap-2 flex-wrap">
-                        <span className="font-medium text-slate-300">{t.rxWorkspaceTitle}:</span>
+                      <div className="text-xs theme-text-secondary flex items-center gap-2 flex-wrap">
+                        <span className="font-medium theme-text-secondary">{t.rxWorkspaceTitle}:</span>
                         {v.prescription.items.map((m) => (
                           <span
                             key={m.id}
-                            className="font-mono text-[11px] px-2 py-0.5 bg-slate-900 text-teal-300 rounded border border-slate-800"
+                            className="font-mono text-[11px] px-2 py-0.5 theme-surface text-[color:var(--theme-status-active)] rounded border theme-border"
                           >
                             {m.name} {m.strength}
                           </span>

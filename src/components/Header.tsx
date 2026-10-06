@@ -11,6 +11,8 @@ import {
   Users,
   Shield,
   Clock,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -23,6 +25,8 @@ interface HeaderProps {
   onOpenClinicDay: () => void;
   language: Language;
   onToggleLanguage: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
   dailyVisitsCount: number;
 }
 
@@ -36,18 +40,20 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenClinicDay,
   language,
   onToggleLanguage,
+  theme,
+  onToggleTheme,
   dailyVisitsCount,
 }) => {
   const t = translations[language];
 
   return (
-    <header className="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
+    <header className="border-b theme-border theme-surface backdrop-blur-md sticky top-0 z-40">
       {/* Top Identity & Controls Row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Brand & Clinic Authority */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 shadow-inner">
+            <div className="w-10 h-10 rounded-xl bg-[color:var(--theme-action-primary)]/10 border border-[color:var(--theme-action-primary)]/30 flex items-center justify-center text-[color:var(--theme-authority)] shadow-inner">
               <Stethoscope className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
@@ -55,11 +61,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <h1 className="text-lg font-bold tracking-tight text-white font-sans">
                   {t.appTitle}
                 </h1>
-                <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-teal-950 text-teal-300 border border-teal-800/60">
+                <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)] border border-[color:var(--theme-action-primary)]/30">
                   EMR & Practice
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs theme-text-secondary">
                 {t.appSubtitle}
               </p>
             </div>
@@ -68,14 +74,14 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Right Action Controls: Actor Switcher, Mode, Language, Clinic Day */}
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs">
             {/* Actor Switcher Segmented Control */}
-            <div className="flex items-center p-1 bg-slate-950 rounded-lg border border-slate-800">
+            <div className="flex items-center p-1 theme-surface-nested rounded-lg border theme-border">
               <button
                 type="button"
                 onClick={() => onSetActorRole('Doctor')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
                   actorRole === 'Doctor'
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'theme-action-primary shadow-xs'
+                    : 'theme-text-muted hover:text-[color:var(--theme-text-primary)]'
                 }`}
                 title={t.doctorAuthorityBadge}
               >
@@ -89,8 +95,8 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => onSetActorRole('Nurse')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
                     actorRole === 'Nurse'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-[color:var(--theme-status-info)] text-white shadow-xs'
+                      : 'theme-text-muted hover:text-[color:var(--theme-text-primary)]'
                   }`}
                   title={t.nurseDelegatedBadge}
                 >
@@ -102,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Operating Mode Toggle (Only Doctor can change operating mode) */}
             {actorRole === 'Doctor' && (
-              <div className="flex items-center p-1 bg-slate-950 rounded-lg border border-slate-800">
+              <div className="flex items-center p-1 theme-surface-nested rounded-lg border theme-border">
                 <button
                   type="button"
                   onClick={() =>
@@ -112,10 +118,10 @@ export const Header: React.FC<HeaderProps> = ({
                         : 'DOCTOR_ONLY'
                     )
                   }
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-slate-300 hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 theme-text-secondary hover:text-[color:var(--theme-text-primary)] transition-colors"
                   title="Toggle Doctor Only / Doctor + Nurse operational modes"
                 >
-                  <Users className="w-3.5 h-3.5 text-slate-400" />
+                  <Users className="w-3.5 h-3.5 theme-text-muted" />
                   <span>
                     {operatingMode === 'DOCTOR_ONLY'
                       ? t.doctorOnlyMode
@@ -125,50 +131,66 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
+            {/* Theme Switch — Presentation Preference */}
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              className="flex items-center gap-1.5 px-3 py-1.5 theme-surface-nested hover:bg-[color:var(--theme-border)] theme-text-secondary border theme-border rounded-lg font-medium transition-colors"
+              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-3.5 h-3.5 text-[color:var(--theme-status-warning)]" />
+              ) : (
+                <Moon className="w-3.5 h-3.5 text-[color:var(--theme-status-info)]" />
+              )}
+              <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+            </button>
+
             {/* Language Switch */}
             <button
               type="button"
               onClick={onToggleLanguage}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-lg font-medium transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 theme-surface-nested hover:bg-[color:var(--theme-border)] theme-text-secondary border theme-border rounded-lg font-medium transition-colors"
             >
-              <Languages className="w-3.5 h-3.5 text-teal-400" />
+              <Languages className="w-3.5 h-3.5 text-[color:var(--theme-authority)]" />
               <span>{t.switchLanguage}</span>
             </button>
           </div>
         </div>
 
         {/* Clinic Day Context Bar */}
-        <div className="mt-3 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-4 text-slate-300">
+        <div className="mt-3 pt-3 border-t theme-border flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-4 theme-text-secondary">
             <div className="flex items-center gap-1.5 font-mono">
-              <Calendar className="w-3.5 h-3.5 text-teal-400" />
+              <Calendar className="w-3.5 h-3.5 text-[color:var(--theme-authority)]" />
               <span className="font-semibold text-white">{currentDay.id}</span>
-              <span className="text-slate-500">({currentDay.workingDate})</span>
+              <span className="theme-text-muted">({currentDay.workingDate})</span>
             </div>
 
-            <span className="text-slate-700">|</span>
+            <span className="theme-text-muted">|</span>
 
             <div className="flex items-center gap-1.5">
               {currentDay.status === 'OPEN' ? (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-emerald-400 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-[color:var(--theme-status-success)] animate-pulse" />
+                  <span className="theme-status-success font-medium">
                     {t.openDayStatus}
                   </span>
                 </>
               ) : (
                 <>
-                  <Lock className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-amber-400 font-medium">
+                  <Lock className="w-3.5 h-3.5 text-[color:var(--theme-status-warning)]" />
+                  <span className="theme-status-warning font-medium">
                     {t.closedDayStatus}
                   </span>
                 </>
               )}
             </div>
 
-            <span className="text-slate-700">|</span>
+            <span className="theme-text-muted">|</span>
 
-            <div className="flex items-center gap-1 text-slate-400">
+            <div className="flex items-center gap-1 theme-text-muted">
               <Clock className="w-3.5 h-3.5" />
               <span>
                 {t.recordedVisits}: <strong className="text-white font-mono">{dailyVisitsCount}</strong>
@@ -185,8 +207,8 @@ export const Header: React.FC<HeaderProps> = ({
                 disabled={actorRole !== 'Doctor'}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-colors ${
                   actorRole === 'Doctor'
-                    ? 'bg-slate-800 hover:bg-rose-950/50 hover:text-rose-300 hover:border-rose-700/50 text-slate-300 border border-slate-700'
-                    : 'opacity-50 cursor-not-allowed bg-slate-900 text-slate-500 border border-slate-800'
+                    ? 'theme-surface-nested hover:bg-[color:var(--theme-status-danger)]/10 hover:text-[color:var(--theme-status-danger)] hover:border-[color:var(--theme-status-danger)]/50 theme-text-secondary border theme-border'
+                    : 'opacity-50 cursor-not-allowed theme-surface theme-text-muted border theme-border'
                 }`}
                 title={actorRole === 'Doctor' ? t.closeClinicDay : t.cannotCloseDayNurse}
               >
@@ -198,7 +220,7 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={onOpenClinicDay}
                 disabled={actorRole !== 'Doctor'}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-700 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors border border-teal-600"
+                className="flex items-center gap-1.5 px-3 py-1.5 theme-action-primary hover:brightness-110 text-white rounded-lg font-medium transition-colors border border-[color:var(--theme-action-primary)]"
               >
                 <Unlock className="w-3.5 h-3.5" />
                 <span>{t.openClinicDay}</span>

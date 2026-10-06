@@ -44,3 +44,184 @@
     box-shadow: none !important;
   }
 }
+
+:root {
+  --theme-canvas: #020617;
+  --theme-surface: #0f172a;
+  --theme-surface-nested: #1e293b;
+  --theme-surface-input: #020617;
+
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #64748b;
+  --theme-text-technical: #67e8f9;
+
+  --theme-border: #1e293b;
+  --theme-border-focus: #14b8a6;
+
+  --theme-action-primary: #0d9488;
+  --theme-action-secondary: #334155;
+  --theme-action-destructive: #9f1239;
+
+  --theme-status-success: #059669;
+  --theme-status-warning: #d97706;
+  --theme-status-danger: #e11d48;
+  --theme-status-info: #4f46e5;
+  --theme-status-active: #0d9488;
+
+  --theme-authority: #0d9488;
+  --theme-focus: #14b8a6;
+
+  --theme-radius: 0.75rem;
+  --theme-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+[data-theme="light"] {
+  --theme-canvas: #ffffff;
+  --theme-surface: #f8fafc;
+  --theme-surface-nested: #f1f5f9;
+  --theme-surface-input: #ffffff;
+
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-muted: #64748b;
+  --theme-text-technical: #0f766e;
+
+  --theme-border: #cbd5e1;
+  --theme-border-focus: #2563eb;
+
+  --theme-action-primary: #2563eb;
+  --theme-action-secondary: #475569;
+  --theme-action-destructive: #be123c;
+
+  --theme-status-success: #059669;
+  --theme-status-warning: #d97706;
+  --theme-status-danger: #e11d48;
+  --theme-status-info: #4f46e5;
+  --theme-status-active: #2563eb;
+
+  --theme-authority: #2563eb;
+  --theme-focus: #2563eb;
+
+  --theme-radius: 0.75rem;
+  --theme-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+[data-theme="dark"] {
+  --theme-canvas: #020617;
+  --theme-surface: #0f172a;
+  --theme-surface-nested: #1e293b;
+  --theme-surface-input: #020617;
+
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #64748b;
+  --theme-text-technical: #67e8f9;
+
+  --theme-border: #1e293b;
+  --theme-border-focus: #14b8a6;
+
+  --theme-action-primary: #0d9488;
+  --theme-action-secondary: #334155;
+  --theme-action-destructive: #9f1239;
+
+  --theme-status-success: #059669;
+  --theme-status-warning: #d97706;
+  --theme-status-danger: #e11d48;
+  --theme-status-info: #4f46e5;
+  --theme-status-active: #0d9488;
+
+  --theme-authority: #0d9488;
+  --theme-focus: #14b8a6;
+
+  --theme-radius: 0.75rem;
+  --theme-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+@layer utilities {
+  .theme-canvas {
+    background-color: var(--theme-canvas);
+    color: var(--theme-text-primary);
+  }
+
+  .theme-surface {
+    background-color: var(--theme-surface);
+    color: var(--theme-text-primary);
+  }
+
+  .theme-surface-nested {
+    background-color: var(--theme-surface-nested);
+    color: var(--theme-text-primary);
+  }
+
+  .theme-input {
+    background-color: var(--theme-surface-input);
+    color: var(--theme-text-primary);
+    border-color: var(--theme-border);
+  }
+
+  .theme-border {
+    border-color: var(--theme-border);
+  }
+
+  .theme-text-primary {
+    color: var(--theme-text-primary);
+  }
+
+  .theme-text-secondary {
+    color: var(--theme-text-secondary);
+  }
+
+  .theme-text-muted {
+    color: var(--theme-text-muted);
+  }
+
+  .theme-text-technical {
+    color: var(--theme-text-technical);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .theme-action-primary {
+    background-color: var(--theme-action-primary);
+    color: #ffffff;
+  }
+
+  .theme-action-secondary {
+    background-color: var(--theme-action-secondary);
+    color: #ffffff;
+  }
+
+  .theme-action-destructive {
+    background-color: var(--theme-action-destructive);
+    color: #ffffff;
+  }
+
+  .theme-focus:focus-visible {
+    outline: 2px solid var(--theme-focus);
+    outline-offset: 2px;
+  }
+
+  .theme-authority {
+    border-color: var(--theme-authority);
+  }
+
+  .theme-status-success {
+    color: var(--theme-status-success);
+  }
+
+  .theme-status-warning {
+    color: var(--theme-status-warning);
+  }
+
+  .theme-status-danger {
+    color: var(--theme-status-danger);
+  }
+
+  .theme-status-info {
+    color: var(--theme-status-info);
+  }
+
+  .theme-status-active {
+    color: var(--theme-status-active);
+  }
+}
