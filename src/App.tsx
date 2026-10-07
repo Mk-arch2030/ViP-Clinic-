@@ -33,7 +33,7 @@ export default function App() {
   );
   const [activeTab, setActiveTab] = useState<MainTab>('CENSUS');
   const [language, setLanguage] = useState<Language>('ar');
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   // Active selection pointers
   const [activePatientId, setActivePatientId] = useState<string>(

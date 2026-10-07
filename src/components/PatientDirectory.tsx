@@ -48,17 +48,17 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 theme-surface border theme-border rounded-xl p-5 shadow-xs">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-white font-sans">
+            <h2 className="text-base font-semibold theme-text-primary font-sans">
               {t.tabPatientDirectory}
             </h2>
-            <span className="font-mono text-xs text-teal-400 bg-teal-950 px-2 py-0.5 rounded border border-teal-800/40">
+            <span className="font-mono text-xs theme-text-technical theme-surface-nested px-2 py-0.5 rounded border theme-border/40">
               {patients.length} Registered Patients
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1 max-w-xl">
+          <p className="text-xs theme-text-muted mt-1 max-w-xl">
             {language === 'ar'
               ? 'السجل الشامل والدائم لجميع مرضى العيادة مع إمكانية الوصول الفوري للملف السريري التراكمي.'
               : 'Persistent registry of all clinic patients with direct access to longitudinal dossiers.'}
@@ -67,13 +67,13 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
 
         {/* Search Input */}
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 rtl:left-auto rtl:right-3 top-2.5 pointer-events-none" />
+          <Search className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-2.5 pointer-events-none" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.searchPatientPlaceholder}
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 px-9 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-hidden focus:border-teal-500"
+            className="w-full theme-input border theme-border rounded-lg py-2 px-9 text-xs theme-text-primary placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
           />
         </div>
       </div>
@@ -81,7 +81,7 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
       {/* Patients Table / Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredPatients.length === 0 ? (
-          <div className="col-span-full bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-xs text-slate-500">
+          <div className="col-span-full theme-surface border theme-border rounded-xl p-8 text-center text-xs theme-text-muted">
             {t.noPatientFound}
           </div>
         ) : (
@@ -93,62 +93,62 @@ export const PatientDirectory: React.FC<PatientDirectoryProps> = ({
             return (
               <div
                 key={p.patientId}
-                className="bg-slate-900 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition-colors shadow-xs flex flex-col justify-between space-y-4"
+                className="theme-surface border theme-border rounded-xl p-5 hover:theme-border transition-colors shadow-xs flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-teal-950 text-teal-300 border border-teal-800/60">
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded theme-surface-nested theme-text-technical border theme-border/60">
                       {p.clinicPatientNumber}
                     </span>
-                    <span className="text-[11px] text-slate-500 font-mono">
+                    <span className="text-[11px] theme-text-muted font-mono">
                       {p.gender === 'Male' ? t.genderMale : t.genderFemale}
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-white font-sans mt-2">
+                  <h3 className="text-base font-bold theme-text-primary font-sans mt-2">
                     {p.name}
                   </h3>
 
-                  <div className="mt-2 space-y-1 text-xs text-slate-400">
+                  <div className="mt-2 space-y-1 text-xs theme-text-muted">
                     <div className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                      <Calendar className="w-3.5 h-3.5 theme-text-muted" />
                       <span>{t.derivedAge}:</span>
-                      <strong className="text-slate-200 font-mono">
+                      <strong className="theme-text-secondary font-mono">
                         {detailedAge.years} {t.derivedAgeYears} ({p.dateOfBirth})
                       </strong>
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5 text-slate-500" />
+                      <Phone className="w-3.5 h-3.5 theme-text-muted" />
                       <span className="font-mono">{p.phone}</span>
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <Briefcase className="w-3.5 h-3.5 text-slate-500" />
+                      <Briefcase className="w-3.5 h-3.5 theme-text-muted" />
                       <span>{p.profession}</span>
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                  <div className="mt-3 pt-3 border-t theme-border/80 flex items-center justify-between text-[11px] font-mono theme-text-muted">
                     <span>{patientCases.length} Clinical Cases</span>
                     <span>{patientVisits.length} Visits</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-800">
+                <div className="flex items-center gap-2 pt-2 border-t theme-border">
                   <button
                     type="button"
                     onClick={() => onInspectDossier(p.patientId)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors border border-slate-700"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 theme-action-secondary hover:bg-slate-700 theme-text-secondary rounded-lg text-xs font-medium transition-colors border theme-border"
                   >
-                    <FolderOpen className="w-3.5 h-3.5 text-teal-400" />
+                    <FolderOpen className="w-3.5 h-3.5 theme-text-technical" />
                     <span>{t.inspectDossier}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onStartVisit(p.patientId)}
-                    className="flex items-center justify-center gap-1 px-3 py-2 bg-teal-600/20 hover:bg-teal-600 text-teal-300 hover:text-white rounded-lg text-xs font-medium transition-colors border border-teal-500/30"
+                    className="flex items-center justify-center gap-1 px-3 py-2 theme-action-primary/20 hover:theme-action-primary theme-text-technical hover:theme-text-primary rounded-lg text-xs font-medium transition-colors border border-[color:var(--theme-border-focus)]/30"
                     title={t.startVisitForPatient}
                   >
                     <PlusCircle className="w-3.5 h-3.5" />

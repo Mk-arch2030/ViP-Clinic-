@@ -287,27 +287,27 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
   return (
     <div className="space-y-6">
       {/* Patient & Case Master Context Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs">
+      <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs font-bold px-2 py-0.5 bg-teal-950 text-teal-300 rounded border border-teal-800/60">
+              <span className="font-mono text-xs font-bold px-2 py-0.5 theme-surface-nested theme-text-technical rounded border border-[color:var(--theme-border)]">
                 {patient.clinicPatientNumber}
               </span>
-              <span className="text-slate-600">·</span>
-              <h2 className="text-lg font-bold text-white font-sans">
+              <span className="theme-text-muted">·</span>
+              <h2 className="text-lg font-bold theme-text-primary font-sans">
                 {patient.name}
               </h2>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs theme-text-muted font-mono">
                 ({detailedAge.years} {t.derivedAgeYears}, {patient.gender === 'Male' ? t.genderMale : t.genderFemale})
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-slate-400 font-mono">
-              <span className="text-teal-400 font-semibold">{caseRecord.id}:</span>
-              <span className="text-slate-200">{caseRecord.title}</span>
-              <span className="text-slate-600">·</span>
-              <span className="text-slate-400">Visit: {visit.id} ({visit.time})</span>
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-xs theme-text-muted font-mono">
+              <span className="theme-text-technical font-semibold">{caseRecord.id}:</span>
+              <span className="theme-text-secondary">{caseRecord.title}</span>
+              <span className="theme-text-muted">·</span>
+              <span className="theme-text-muted">Visit: {visit.id} ({visit.time})</span>
             </div>
           </div>
 
@@ -315,7 +315,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
             <button
               type="button"
               onClick={onGoToDossier}
-              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700 transition-colors"
+              className="px-3.5 py-1.5 theme-action-secondary hover:bg-[color:var(--theme-border)] theme-text-secondary rounded-lg text-xs font-medium border theme-border transition-colors"
             >
               {t.inspectDossier}
             </button>
@@ -324,7 +324,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
               <button
                 type="button"
                 onClick={onOpenPrintModal}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 theme-action-primary hover:bg-[color:var(--theme-border-focus)] theme-text-primary rounded-lg text-xs font-semibold shadow-xs transition-colors"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>{t.printCertifiedRxBtn}</span>
@@ -335,8 +335,8 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
 
         {/* Known Allergies Callout */}
         {patient.pastHistory.knownAllergies.length > 0 && (
-          <div className="mt-3 px-3 py-1.5 bg-amber-950/40 border border-amber-800/50 rounded-lg text-xs text-amber-300 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+          <div className="mt-3 px-3 py-1.5 theme-surface-nested border border-[color:var(--theme-status-warning)] rounded-lg text-xs theme-status-warning flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 theme-status-warning shrink-0" />
             <strong>{t.knownAllergies}:</strong>
             <span>{patient.pastHistory.knownAllergies.join(', ')}</span>
           </div>
@@ -360,8 +360,8 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
         {/* LEFT COLUMN: Complaint, Vitals, Physical Exam, Investigations, Diagnoses */}
         <div className="space-y-6">
           {/* Section 1: Current Complaint & Physical Exam */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider">
+          <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 theme-text-technical text-xs font-bold uppercase tracking-wider">
               <ClipboardList className="w-4 h-4" />
               <span>{t.complaintLabel}</span>
             </div>
@@ -371,19 +371,19 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
               value={complaint}
               onChange={(e) => setComplaint(e.target.value)}
               disabled={!isDoctor}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500 disabled:opacity-70"
+              className="w-full theme-input border theme-border rounded-lg p-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)] disabled:opacity-70"
             />
 
             {/* Vital Signs Grid */}
-            <div className="border-t border-slate-800 pt-4 space-y-2">
-              <div className="flex items-center gap-2 text-slate-300 text-xs font-bold uppercase tracking-wider">
-                <Activity className="w-4 h-4 text-teal-400" />
+            <div className="border-t theme-border pt-4 space-y-2">
+              <div className="flex items-center gap-2 theme-text-secondary text-xs font-bold uppercase tracking-wider">
+                <Activity className="w-4 h-4 theme-text-technical" />
                 <span>{t.vitalsSection}</span>
               </div>
 
               <div className="grid grid-cols-3 gap-2.5 text-xs">
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">
+                  <label className="block text-[11px] theme-text-muted mb-1">
                     BP (Sys / Dia)
                   </label>
                   <div className="flex items-center gap-1 font-mono">
@@ -393,22 +393,22 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                       value={bpSys}
                       onChange={(e) => setBpSys(e.target.value)}
                       disabled={!isDoctor}
-                      className="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-center text-xs text-white"
+                      className="w-full theme-input border theme-border rounded p-1.5 text-center text-xs theme-text-primary"
                     />
-                    <span className="text-slate-600">/</span>
+                    <span className="theme-text-muted">/</span>
                     <input
                       type="number"
                       placeholder="80"
                       value={bpDia}
                       onChange={(e) => setBpDia(e.target.value)}
                       disabled={!isDoctor}
-                      className="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-center text-xs text-white"
+                      className="w-full theme-input border theme-border rounded p-1.5 text-center text-xs theme-text-primary"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">
+                  <label className="block text-[11px] theme-text-muted mb-1">
                     Heart Rate (bpm)
                   </label>
                   <input
@@ -417,12 +417,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     value={heartRate}
                     onChange={(e) => setHeartRate(e.target.value)}
                     disabled={!isDoctor}
-                    className="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-center text-xs text-white font-mono"
+                    className="w-full theme-input border theme-border rounded p-1.5 text-center text-xs theme-text-primary font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">
+                  <label className="block text-[11px] theme-text-muted mb-1">
                     Resp Rate (c/m)
                   </label>
                   <input
@@ -431,12 +431,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     value={respRate}
                     onChange={(e) => setRespRate(e.target.value)}
                     disabled={!isDoctor}
-                    className="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-center text-xs text-white font-mono"
+                    className="w-full theme-input border theme-border rounded p-1.5 text-center text-xs theme-text-primary font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">
+                  <label className="block text-[11px] theme-text-muted mb-1">
                     Temp (°C)
                   </label>
                   <input
@@ -446,12 +446,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     value={temp}
                     onChange={(e) => setTemp(e.target.value)}
                     disabled={!isDoctor}
-                    className="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-center text-xs text-white font-mono"
+                    className="w-full theme-input border theme-border rounded p-1.5 text-center text-xs theme-text-primary font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">
+                  <label className="block text-[11px] theme-text-muted mb-1">
                     SpO2 (%)
                   </label>
                   <input
@@ -460,15 +460,15 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     value={spo2}
                     onChange={(e) => setSpo2(e.target.value)}
                     disabled={!isDoctor}
-                    className="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-center text-xs text-white font-mono"
+                    className="w-full theme-input border theme-border rounded p-1.5 text-center text-xs theme-text-primary font-mono"
                   />
                 </div>
               </div>
             </div>
 
             {/* Physical Exam Findings */}
-            <div className="border-t border-slate-800 pt-3">
-              <label className="block text-[11px] font-medium text-slate-300 mb-1">
+            <div className="border-t theme-border pt-3">
+              <label className="block text-[11px] font-medium theme-text-secondary mb-1">
                 {t.doctorExaminationNotes}
               </label>
               <textarea
@@ -477,19 +477,19 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                 onChange={(e) => setExamNotes(e.target.value)}
                 disabled={!isDoctor}
                 placeholder="Chest clear, heart sounds normal, abdomen soft..."
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500 disabled:opacity-70"
+                className="w-full theme-input border theme-border rounded-lg p-2.5 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)] disabled:opacity-70"
               />
             </div>
           </div>
 
           {/* Section 2: Clinical Investigation Catalog */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
+          <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-2 theme-text-technical text-xs font-bold uppercase tracking-wider">
                 <FlaskConical className="w-4 h-4" />
                 <span>{t.investigationSection}</span>
               </div>
-              <span className="text-[11px] text-slate-500 font-mono">
+              <span className="text-[11px] theme-text-muted font-mono">
                 {investigations.length} Selected
               </span>
             </div>
@@ -500,13 +500,13 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                 {investigations.map((inv) => (
                   <div
                     key={inv.id}
-                    className="flex items-center justify-between p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-xs"
+                    className="flex items-center justify-between p-2.5 theme-input rounded-lg border theme-border text-xs"
                   >
                     <div>
-                      <span className="font-semibold text-white block">
+                      <span className="font-semibold theme-text-primary block">
                         {inv.name}
                       </span>
-                      <span className="text-[11px] text-slate-400 font-mono">
+                      <span className="text-[11px] theme-text-muted font-mono">
                         {inv.category === 'Laboratory' ? t.labCategory : t.radiologyCategory}
                         {inv.notes && ` — ${inv.notes}`}
                       </span>
@@ -516,7 +516,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveInvestigation(inv.id)}
-                        className="text-slate-500 hover:text-rose-400 p-1"
+                        className="theme-text-muted hover:text-[color:var(--theme-status-danger)] p-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -528,10 +528,10 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
 
             {/* Add Investigation Form (Doctor Authority) */}
             {isDoctor && (
-              <div className="p-3 bg-slate-950/80 rounded-lg border border-slate-800 space-y-2.5 text-xs">
+              <div className="p-3 theme-surface-nested/80 rounded-lg border theme-border space-y-2.5 text-xs">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] theme-text-muted mb-1">
                       Category
                     </label>
                     <select
@@ -541,7 +541,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                         setNewInvCategory(cat);
                         setNewInvName(cat === 'Laboratory' ? CATALOG_LABS[0] : CATALOG_RADIOLOGY[0]);
                       }}
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     >
                       <option value="Laboratory">{t.labCategory}</option>
                       <option value="Radiology">{t.radiologyCategory}</option>
@@ -549,13 +549,13 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] theme-text-muted mb-1">
                       Investigation
                     </label>
                     <select
                       value={newInvName}
                       onChange={(e) => setNewInvName(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     >
                       {(newInvCategory === 'Laboratory' ? CATALOG_LABS : CATALOG_RADIOLOGY).map(
                         (item) => (
@@ -574,7 +574,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     value={newInvNotes}
                     onChange={(e) => setNewInvNotes(e.target.value)}
                     placeholder="Specific clinical objective or urgency notes..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white"
+                    className="w-full theme-surface border theme-border rounded p-2 text-xs theme-text-primary"
                   />
                 </div>
 
@@ -582,7 +582,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   <button
                     type="button"
                     onClick={handleAddInvestigation}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-teal-300 rounded text-xs font-medium border border-slate-700"
+                    className="flex items-center gap-1.5 px-3 py-1.5 theme-action-secondary hover:bg-[color:var(--theme-border)] theme-text-technical rounded text-xs font-medium border theme-border"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>{t.addInvestigationBtn}</span>
@@ -593,15 +593,15 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
           </div>
 
           {/* Section 3: Clinical Diagnoses & Treatment Advice */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider">
+          <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 theme-text-technical text-xs font-bold uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" />
               <span>{t.diagnosisSection}</span>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-medium theme-text-secondary mb-1">
                   {t.preliminaryDiagnosis}
                 </label>
                 <input
@@ -610,12 +610,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   onChange={(e) => setPrelimDx(e.target.value)}
                   disabled={!isDoctor}
                   placeholder="e.g. Acute Pharyngitis / Suspected Bronchitis"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white disabled:opacity-70 font-sans"
+                  className="w-full theme-input border theme-border rounded-lg p-2.5 text-xs theme-text-primary disabled:opacity-70 font-sans"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-teal-300 mb-1">
+                <label className="block text-[11px] font-medium theme-text-technical mb-1">
                   {t.finalDiagnosis} (Authoritative)
                 </label>
                 <input
@@ -624,12 +624,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   onChange={(e) => setFinalDx(e.target.value)}
                   disabled={!isDoctor}
                   placeholder="e.g. Viral Upper Respiratory Tract Infection with Reactive Wheeze"
-                  className="w-full bg-slate-950 border border-teal-800/80 rounded-lg p-2.5 text-xs text-teal-200 font-semibold disabled:opacity-70 font-sans"
+                  className="w-full theme-input border border-[color:var(--theme-border)] rounded-lg p-2.5 text-xs theme-text-secondary font-semibold disabled:opacity-70 font-sans"
                 />
               </div>
 
               <div className="pt-2">
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-medium theme-text-secondary mb-1">
                   {t.treatmentSection}
                 </label>
                 <textarea
@@ -638,7 +638,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   onChange={(e) => setTreatment(e.target.value)}
                   disabled={!isDoctor}
                   placeholder={t.treatmentAdvicePlaceholder}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white disabled:opacity-70 font-sans"
+                  className="w-full theme-input border theme-border rounded-lg p-2.5 text-xs theme-text-primary disabled:opacity-70 font-sans"
                 />
               </div>
             </div>
@@ -647,32 +647,32 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
 
         {/* RIGHT COLUMN: AUTHORIZED PHARMACOTHERAPY & RX REGIMEN WORKSPACE */}
         <div className="space-y-6">
-          <div className="bg-slate-900 border border-teal-500/40 rounded-xl p-5 sm:p-6 shadow-sm space-y-5">
+          <div className="theme-surface border border-[color:var(--theme-border-focus)] rounded-xl p-5 sm:p-6 shadow-sm space-y-5">
             {/* Header with Rx Status Indicator */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b theme-border pb-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-serif font-black text-teal-400">
+                  <span className="text-2xl font-serif font-black theme-text-technical">
                     ℞
                   </span>
-                  <h3 className="text-base font-bold text-white font-sans">
+                  <h3 className="text-base font-bold theme-text-primary font-sans">
                     {t.rxWorkspaceTitle}
                   </h3>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-[11px] theme-text-muted mt-0.5">
                   {t.rxWorkspaceSubtitle}
                 </p>
               </div>
 
               <div>
                 {visit.prescription.isAuthorized ? (
-                  <div className="flex items-center gap-1.5 px-3 py-1 bg-teal-950/80 text-teal-300 border border-teal-700/60 rounded-lg text-xs font-semibold">
-                    <ShieldCheck className="w-4 h-4 text-teal-400" />
+                  <div className="flex items-center gap-1.5 px-3 py-1 theme-surface-nested theme-text-technical border border-[color:var(--theme-border)] rounded-lg text-xs font-semibold">
+                    <ShieldCheck className="w-4 h-4 theme-text-technical" />
                     <span>{t.rxAuthorizedBadge}</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-950/80 text-amber-300 border border-amber-800/60 rounded-lg text-xs font-semibold">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                  <div className="flex items-center gap-1.5 px-3 py-1 theme-surface-nested theme-status-warning border border-[color:var(--theme-status-warning)] rounded-lg text-xs font-semibold">
+                    <AlertTriangle className="w-4 h-4 theme-status-warning" />
                     <span>Pending Authorization</span>
                   </div>
                 )}
@@ -682,7 +682,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
             {/* Quick Medications Formulary Picks */}
             {isDoctor && (
               <div className="space-y-2">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[11px] font-bold theme-text-muted uppercase tracking-wider block">
                   {t.quickMedPicks}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -691,7 +691,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                       key={drug.name}
                       type="button"
                       onClick={() => handlePickQuickMed(drug)}
-                      className="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 text-teal-300 border border-slate-800 rounded-md text-[11px] font-medium transition-colors"
+                      className="px-2.5 py-1 theme-input hover:theme-action-secondary theme-text-technical border theme-border rounded-md text-[11px] font-medium transition-colors"
                     >
                       + {drug.name} {drug.strength}
                     </button>
@@ -702,63 +702,63 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
 
             {/* Active Prescription Regimen Items */}
             <div className="space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-teal-400 block">
+              <span className="text-xs font-bold uppercase tracking-wider theme-text-technical block">
                 Prescription Items ({meds.length})
               </span>
 
               {meds.length === 0 ? (
-                <div className="p-6 bg-slate-950 rounded-lg border border-dashed border-slate-800 text-center text-xs text-slate-500">
+                <div className="p-6 theme-input rounded-lg border border-dashed theme-border text-center text-xs theme-text-muted">
                   No medications added to the regimen yet.
                 </div>
               ) : (
                 meds.map((m, idx) => (
                   <div
                     key={m.id}
-                    className="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-2 text-xs"
+                    className="p-3 theme-input rounded-lg border theme-border space-y-2 text-xs"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-baseline gap-2">
-                        <span className="font-mono text-teal-400 font-bold">
+                        <span className="font-mono theme-text-technical font-bold">
                           {idx + 1}.
                         </span>
-                        <strong className="text-white font-semibold text-sm">
+                        <strong className="theme-text-primary font-semibold text-sm">
                           {m.name}
                         </strong>
-                        <span className="font-mono text-xs px-2 py-0.5 bg-slate-900 rounded text-teal-300 border border-slate-800">
+                        <span className="font-mono text-xs px-2 py-0.5 theme-surface rounded theme-text-technical border theme-border">
                           {m.strength}
                         </span>
-                        <span className="text-slate-400">({m.form})</span>
+                        <span className="theme-text-muted">({m.form})</span>
                       </div>
 
                       {isDoctor && (
                         <button
                           type="button"
                           onClick={() => handleRemoveMedication(m.id)}
-                          className="text-slate-500 hover:text-rose-400 p-1"
+                          className="theme-text-muted hover:text-[color:var(--theme-status-danger)] p-1"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-slate-300 text-[11px]">
+                    <div className="grid grid-cols-2 gap-2 theme-text-secondary text-[11px]">
                       <div>
-                        <span className="text-slate-500">{t.medDose}: </span>
+                        <span className="theme-text-muted">{t.medDose}: </span>
                         <span>{m.dose}</span>
-                        <span className="text-slate-600 mx-1">·</span>
-                        <span className="text-teal-300 font-medium">{m.frequency}</span>
+                        <span className="theme-text-muted mx-1">·</span>
+                        <span className="theme-text-technical font-medium">{m.frequency}</span>
                       </div>
                       <div>
-                        <span className="text-slate-500">{t.medRoute}: </span>
+                        <span className="theme-text-muted">{t.medRoute}: </span>
                         <span>{m.route}</span>
-                        <span className="text-slate-600 mx-1">·</span>
-                        <span className="text-slate-500">{t.medDuration}: </span>
+                        <span className="theme-text-muted mx-1">·</span>
+                        <span className="theme-text-muted">{t.medDuration}: </span>
                         <span>{m.duration}</span>
                       </div>
                     </div>
 
                     {m.instructions && (
-                      <div className="text-[11px] text-slate-400 italic bg-slate-900/60 p-1.5 rounded">
+                      <div className="text-[11px] theme-text-muted italic theme-surface/60 p-1.5 rounded">
                         ↳ {m.instructions}
                       </div>
                     )}
@@ -769,97 +769,97 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
 
             {/* Custom Medication Entry (Doctor Authority) */}
             {isDoctor && (
-              <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-3 text-xs">
-                <span className="font-bold text-slate-300 uppercase tracking-wider block text-[11px]">
+              <div className="p-3.5 theme-input rounded-xl border theme-border space-y-3 text-xs">
+                <span className="font-bold theme-text-secondary uppercase tracking-wider block text-[11px]">
                   {t.addMedicationBtn}
                 </span>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   <div className="col-span-2 sm:col-span-1">
-                    <label className="block text-[11px] text-slate-400 mb-0.5">{t.medName}</label>
+                    <label className="block text-[11px] theme-text-muted mb-0.5">{t.medName}</label>
                     <input
                       type="text"
                       value={newMedName}
                       onChange={(e) => setNewMedName(e.target.value)}
                       placeholder="Medication name"
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-0.5">{t.medStrength}</label>
+                    <label className="block text-[11px] theme-text-muted mb-0.5">{t.medStrength}</label>
                     <input
                       type="text"
                       value={newMedStrength}
                       onChange={(e) => setNewMedStrength(e.target.value)}
                       placeholder="e.g. 500mg"
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white font-mono"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-0.5">{t.medDose}</label>
+                    <label className="block text-[11px] theme-text-muted mb-0.5">{t.medDose}</label>
                     <input
                       type="text"
                       value={newMedDose}
                       onChange={(e) => setNewMedDose(e.target.value)}
                       placeholder="1 tablet"
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-0.5">{t.medFrequency}</label>
+                    <label className="block text-[11px] theme-text-muted mb-0.5">{t.medFrequency}</label>
                     <input
                       type="text"
                       value={newMedFreq}
                       onChange={(e) => setNewMedFreq(e.target.value)}
                       placeholder="e.g. BID every 12h"
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-0.5">{t.medRoute}</label>
+                    <label className="block text-[11px] theme-text-muted mb-0.5">{t.medRoute}</label>
                     <input
                       type="text"
                       value={newMedRoute}
                       onChange={(e) => setNewMedRoute(e.target.value)}
                       placeholder="Oral / Inhalation"
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-0.5">{t.medDuration}</label>
+                    <label className="block text-[11px] theme-text-muted mb-0.5">{t.medDuration}</label>
                     <input
                       type="text"
                       value={newMedDuration}
                       onChange={(e) => setNewMedDuration(e.target.value)}
                       placeholder="7 days"
-                      className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                      className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-0.5">{t.medInstructions}</label>
+                  <label className="block text-[11px] theme-text-muted mb-0.5">{t.medInstructions}</label>
                   <input
                     type="text"
                     value={newMedInst}
                     onChange={(e) => setNewMedInst(e.target.value)}
                     placeholder="e.g. Take with a full glass of water after food"
-                    className="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"
+                    className="w-full theme-surface border theme-border rounded p-1.5 text-xs theme-text-primary"
                   />
                 </div>
 
                 <div className="flex justify-between items-center pt-1">
-                  <label className="flex items-center gap-2 cursor-pointer text-slate-300 text-[11px]">
+                  <label className="flex items-center gap-2 cursor-pointer theme-text-secondary text-[11px]">
                     <input
                       type="checkbox"
                       checked={newMedPrn}
                       onChange={(e) => setNewMedPrn(e.target.checked)}
-                      className="rounded text-teal-600 focus:ring-teal-500"
+                      className="rounded theme-text-technical focus:ring-[color:var(--theme-border-focus)]"
                     />
                     <span>{t.medPrn}</span>
                   </label>
@@ -867,7 +867,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   <button
                     type="button"
                     onClick={handleAddMedication}
-                    className="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
+                    className="px-3.5 py-1.5 theme-action-primary hover:bg-[color:var(--theme-border-focus)] theme-text-primary rounded text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>{t.addMedicationBtn}</span>
@@ -877,9 +877,9 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
             )}
 
             {/* Clinical Counseling & Patient Guidance */}
-            <div className="space-y-3 border-t border-slate-800 pt-4 text-xs">
+            <div className="space-y-3 border-t theme-border pt-4 text-xs">
               <div>
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-medium theme-text-secondary mb-1">
                   {t.clinicalCounseling}
                 </label>
                 <textarea
@@ -888,12 +888,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   onChange={(e) => setCounseling(e.target.value)}
                   disabled={!isDoctor}
                   placeholder="Medication interactions, warning signs, counseling on inhaler technique..."
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white disabled:opacity-70 font-sans"
+                  className="w-full theme-input border theme-border rounded-lg p-2.5 text-xs theme-text-primary disabled:opacity-70 font-sans"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-medium theme-text-secondary mb-1">
                   {t.patientGuidance}
                 </label>
                 <textarea
@@ -902,17 +902,17 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   onChange={(e) => setPatientInstructions(e.target.value)}
                   disabled={!isDoctor}
                   placeholder="Storage instructions, avoidance of sun, hydration requirements..."
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white disabled:opacity-70 font-sans"
+                  className="w-full theme-input border theme-border rounded-lg p-2.5 text-xs theme-text-primary disabled:opacity-70 font-sans"
                 />
               </div>
             </div>
 
             {/* DOCTOR EXPLICIT AUTHORIZATION ACTION */}
-            <div className="border-t border-slate-800 pt-4">
+            <div className="border-t theme-border pt-4">
               {!visit.prescription.isAuthorized ? (
                 <div className="space-y-3">
-                  <div className="p-3 bg-amber-950/30 border border-amber-800/50 rounded-lg text-xs text-amber-300 flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <div className="p-3 theme-surface-nested border border-[color:var(--theme-status-warning)] rounded-lg text-xs theme-status-warning flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 theme-status-warning shrink-0 mt-0.5" />
                     <p>{t.rxNotAuthorizedWarning}</p>
                   </div>
 
@@ -922,8 +922,8 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     disabled={!isDoctor}
                     className={`w-full py-2.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs ${
                       isDoctor
-                        ? 'bg-teal-600 hover:bg-teal-500 text-white'
-                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                        ? 'theme-action-primary hover:bg-[color:var(--theme-border-focus)] theme-text-primary'
+                        : 'theme-action-secondary theme-text-muted cursor-not-allowed border theme-border'
                     }`}
                   >
                     <ShieldCheck className="w-4 h-4" />
@@ -931,12 +931,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-teal-950/40 border border-teal-800/50 rounded-lg">
-                  <div className="text-xs text-teal-300">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 theme-surface-nested border border-[color:var(--theme-border)] rounded-lg">
+                  <div className="text-xs theme-text-technical">
                     <strong className="block font-semibold">
                       {visit.prescription.authorizedBy}
                     </strong>
-                    <span className="font-mono text-[10px] text-slate-400">
+                    <span className="font-mono text-[10px] theme-text-muted">
                       {visit.prescription.authorizedAt
                         ? new Date(visit.prescription.authorizedAt).toLocaleString()
                         : ''}
@@ -946,7 +946,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                   <button
                     type="button"
                     onClick={onOpenPrintModal}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
+                    className="flex items-center gap-1.5 px-4 py-2 theme-action-primary hover:bg-[color:var(--theme-border-focus)] theme-text-primary rounded-lg text-xs font-semibold transition-colors shadow-xs"
                   >
                     <Printer className="w-4 h-4" />
                     <span>{t.printCertifiedRxBtn}</span>
@@ -957,22 +957,22 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
           </div>
 
           {/* Follow-up Decision Card */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
+          <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-2 theme-text-technical text-xs font-bold uppercase tracking-wider">
                 <Calendar className="w-4 h-4" />
                 <span>{t.followUpSection}</span>
               </div>
             </div>
 
             <div className="space-y-3 text-xs">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-200">
+              <label className="flex items-center gap-2 cursor-pointer theme-text-secondary">
                 <input
                   type="checkbox"
                   checked={followUpRequired}
                   onChange={(e) => setFollowUpRequired(e.target.checked)}
                   disabled={!isDoctor}
-                  className="rounded text-teal-600 focus:ring-teal-500"
+                  className="rounded theme-text-technical focus:ring-[color:var(--theme-border-focus)]"
                 />
                 <span className="font-medium">{t.followUpRequired}</span>
               </label>
@@ -980,7 +980,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
               {followUpRequired && (
                 <div className="space-y-2 pt-1">
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] theme-text-muted mb-1">
                       {t.followUpInterval}
                     </label>
                     <input
@@ -988,12 +988,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                       value={followUpDays}
                       onChange={(e) => setFollowUpDays(e.target.value)}
                       disabled={!isDoctor}
-                      className="w-32 bg-slate-950 border border-slate-700 rounded p-1.5 text-xs text-white font-mono"
+                      className="w-32 theme-input border theme-border rounded p-1.5 text-xs theme-text-primary font-mono"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] theme-text-muted mb-1">
                       {t.followUpInstructions}
                     </label>
                     <input
@@ -1002,7 +1002,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                       onChange={(e) => setFollowUpInst(e.target.value)}
                       disabled={!isDoctor}
                       placeholder="e.g. Bring laboratory report on day 7"
-                      className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-white"
+                      className="w-full theme-input border theme-border rounded p-2 text-xs theme-text-primary"
                     />
                   </div>
                 </div>
@@ -1013,10 +1013,10 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
       </div>
 
       {/* Global Bottom Actions Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+      <div className="theme-surface border theme-border rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-2">
           {saveSuccessNotice && (
-            <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+            <span className="text-xs theme-status-success font-medium flex items-center gap-1">
               <CheckCircle2 className="w-4 h-4" />
               <span>Encounter records saved successfully.</span>
             </span>
@@ -1027,7 +1027,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
           <button
             type="button"
             onClick={handleSaveProgress}
-            className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition-colors border border-slate-700"
+            className="px-5 py-2.5 theme-action-secondary hover:bg-[color:var(--theme-border)] theme-text-primary rounded-lg text-xs font-semibold transition-colors border theme-border"
           >
             {language === 'ar' ? 'حفظ التقدم السريري' : 'Save Encounter'}
           </button>
@@ -1035,7 +1035,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
           <button
             type="button"
             onClick={onRecordExit}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-950 hover:bg-rose-950 text-slate-300 hover:text-rose-200 border border-slate-800 hover:border-rose-900 rounded-lg text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2.5 theme-input hover:bg-[color:var(--theme-action-destructive)] theme-text-secondary hover:text-[color:var(--theme-text-primary)] border theme-border hover:border-[color:var(--theme-status-danger)] rounded-lg text-xs font-medium transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>{t.exitVisitBtn}</span>
@@ -1045,7 +1045,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
             <button
               type="button"
               onClick={onCompleteCase}
-              className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 theme-status-success hover:bg-[color:var(--theme-status-success)] theme-text-primary rounded-lg text-xs font-semibold shadow-xs transition-colors"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>{t.completeCaseAction}</span>

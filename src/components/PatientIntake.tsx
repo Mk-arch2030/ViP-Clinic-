@@ -171,7 +171,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Mode Selector Segmented Tabs */}
-      <div className="flex p-1 bg-slate-900 border border-slate-800 rounded-xl">
+      <div className="flex p-1 theme-surface border theme-border rounded-xl">
         <button
           type="button"
           onClick={() => {
@@ -181,8 +181,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
           }}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-semibold transition-all ${
             mode === 'NEW'
-              ? 'bg-teal-600 text-white shadow-xs'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'theme-action-primary text-white shadow-xs'
+              : 'theme-text-muted hover:theme-text-secondary'
           }`}
         >
           <UserPlus className="w-4 h-4" />
@@ -198,8 +198,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
           }}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-semibold transition-all ${
             mode === 'LOOKUP'
-              ? 'bg-teal-600 text-white shadow-xs'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'theme-action-primary text-white shadow-xs'
+              : 'theme-text-muted hover:theme-text-secondary'
           }`}
         >
           <Search className="w-4 h-4" />
@@ -209,40 +209,40 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
       {/* MODE 1: NEW PATIENT REGISTRATION */}
       {mode === 'NEW' && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xs">
+        <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs">
           {intakeSuccessPatient ? (
             <div className="space-y-6 text-center py-4">
-              <div className="w-14 h-14 rounded-full bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 mx-auto">
+              <div className="w-14 h-14 rounded-full theme-surface-nested border theme-border flex items-center justify-center theme-status-success mx-auto">
                 <CheckCircle className="w-8 h-8" />
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-white font-sans">
+                <h3 className="text-xl font-bold theme-text-primary font-sans">
                   {language === 'ar' ? 'تم إنشاء ملف المريض بنجاح' : 'Patient Registered Successfully'}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs theme-text-muted mt-1">
                   {t.cpnHelp}
                 </p>
-                <div className="inline-block mt-3 px-4 py-2 bg-teal-950 border border-teal-700 rounded-lg">
-                  <span className="text-xs text-teal-400 block">{t.cpnLabel}</span>
-                  <span className="font-mono text-xl font-bold text-white tracking-wider">
+                <div className="inline-block mt-3 px-4 py-2 theme-surface-nested border theme-border rounded-lg">
+                  <span className="text-xs theme-text-technical block">{t.cpnLabel}</span>
+                  <span className="font-mono text-xl font-bold theme-text-primary tracking-wider">
                     {intakeSuccessPatient.clinicPatientNumber}
                   </span>
                 </div>
               </div>
 
-              <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 text-left rtl:text-right max-w-md mx-auto text-xs space-y-1">
+              <div className="theme-surface-nested p-4 rounded-lg border theme-border text-left rtl:text-right max-w-md mx-auto text-xs space-y-1">
                 <div>
-                  <span className="text-slate-500">{t.patientName}: </span>
-                  <strong className="text-slate-200">{intakeSuccessPatient.name}</strong>
+                  <span className="theme-text-muted">{t.patientName}: </span>
+                  <strong className="theme-text-secondary">{intakeSuccessPatient.name}</strong>
                 </div>
                 <div>
-                  <span className="text-slate-500">{t.dateOfBirth}: </span>
-                  <span className="text-slate-300 font-mono">{intakeSuccessPatient.dateOfBirth}</span>
+                  <span className="theme-text-muted">{t.dateOfBirth}: </span>
+                  <span className="theme-text-secondary font-mono">{intakeSuccessPatient.dateOfBirth}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">{t.phone}: </span>
-                  <span className="text-slate-300 font-mono">{intakeSuccessPatient.phone}</span>
+                  <span className="theme-text-muted">{t.phone}: </span>
+                  <span className="theme-text-secondary font-mono">{intakeSuccessPatient.phone}</span>
                 </div>
               </div>
 
@@ -254,7 +254,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     setSelectedPatientId(intakeSuccessPatient.patientId);
                     setIntakeSuccessPatient(null);
                   }}
-                  className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 shadow-xs"
+                  className="px-5 py-2.5 theme-action-primary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 shadow-xs"
                 >
                   <HeartPulse className="w-4 h-4" />
                   <span>{t.startVisitForPatient}</span>
@@ -263,7 +263,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectPatientDossier(intakeSuccessPatient.patientId)}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition-colors border border-slate-700"
+                  className="px-5 py-2.5 theme-action-secondary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors border theme-border"
                 >
                   {t.inspectDossier}
                 </button>
@@ -271,11 +271,11 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
             </div>
           ) : (
             <form onSubmit={handleRegisterSubmit} className="space-y-6">
-              <div className="border-b border-slate-800 pb-4">
-                <h3 className="text-base font-bold text-white font-sans">
+              <div className="border-b theme-border pb-4">
+                <h3 className="text-base font-bold theme-text-primary font-sans">
                   {t.intakeModeNew}
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs theme-text-muted mt-0.5">
                   {language === 'ar'
                     ? 'يتم إصدار رقم ملف المريض CPN تسلسلياً ودائماً، والعمر يتم حسابه تلقائياً من تاريخ الميلاد وفق المبدأ السريري المعتمد.'
                     : 'CPN is allocated sequentially and persistently; age is strictly derived from date of birth.'}
@@ -285,59 +285,59 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               {/* Personal Demographic Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    {t.patientName} <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-medium theme-text-secondary mb-1">
+                    {t.patientName} <span className="theme-status-danger">*</span>
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-slate-500 absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
+                    <User className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder={language === 'ar' ? 'الاسم الثلاثي أو الرباعي' : 'Full Name'}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-9 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    {t.phone} <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-medium theme-text-secondary mb-1">
+                    {t.phone} <span className="theme-status-danger">*</span>
                   </label>
                   <div className="relative">
-                    <Phone className="w-4 h-4 text-slate-500 absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
+                    <Phone className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
                     <input
                       type="text"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+20 100 000 0000"
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-9 text-xs text-slate-100 font-mono placeholder:text-slate-600 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary font-mono placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    {t.dateOfBirth} <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-medium theme-text-secondary mb-1">
+                    {t.dateOfBirth} <span className="theme-status-danger">*</span>
                   </label>
                   <div className="relative">
-                    <Calendar className="w-4 h-4 text-slate-500 absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
+                    <Calendar className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
                     <input
                       type="date"
                       required
                       value={dateOfBirth}
                       onChange={(e) => setDateOfBirth(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-9 text-xs text-slate-100 font-mono focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary font-mono focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
 
                   {/* Derived Age Feedback Preview */}
                   {derivedAgeInfo && (
-                    <div className="mt-1.5 p-2 bg-teal-950/40 border border-teal-800/40 rounded text-xs text-teal-300 font-mono flex items-center justify-between">
+                    <div className="mt-1.5 p-2 theme-surface-nested border theme-border rounded text-xs theme-status-success font-mono flex items-center justify-between">
                       <span>{t.derivedAge}:</span>
-                      <strong className="text-teal-200">
+                      <strong className="theme-status-success">
                         {derivedAgeInfo.years} {t.derivedAgeYears}, {derivedAgeInfo.months} {t.derivedAgeMonths}, {derivedAgeInfo.days} {t.derivedAgeDays}
                       </strong>
                     </div>
@@ -346,13 +346,13 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium theme-text-secondary mb-1">
                       {t.gender}
                     </label>
                     <select
                       value={gender}
                       onChange={(e) => setGender(e.target.value as 'Male' | 'Female')}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2.5 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     >
                       <option value="Male">{t.genderMale}</option>
                       <option value="Female">{t.genderFemale}</option>
@@ -360,17 +360,17 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium theme-text-secondary mb-1">
                       {t.profession}
                     </label>
                     <div className="relative">
-                      <Briefcase className="w-4 h-4 text-slate-500 absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
+                      <Briefcase className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
                       <input
                         type="text"
                         value={profession}
                         onChange={(e) => setProfession(e.target.value)}
                         placeholder="Engineer, Teacher..."
-                        className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-9 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                        className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                       />
                     </div>
                   </div>
@@ -378,19 +378,19 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               </div>
 
               {/* Past History Section (Patient-level background) */}
-              <div className="border-t border-slate-800 pt-5 space-y-4">
+              <div className="border-t theme-border pt-5 space-y-4">
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-teal-400">
+                  <h4 className="text-xs font-bold uppercase tracking-wider theme-text-technical">
                     {t.pastHistorySection}
                   </h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[11px] theme-text-muted mt-0.5">
                     {t.pastHistoryHelp}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium theme-text-secondary mb-1">
                       {t.chronicIllnesses}
                     </label>
                     <input
@@ -398,12 +398,12 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       value={chronic}
                       onChange={(e) => setChronic(e.target.value)}
                       placeholder="e.g. Hypertension, Diabetes Type 2"
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium theme-text-secondary mb-1">
                       {t.knownAllergies}
                     </label>
                     <input
@@ -411,12 +411,12 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       value={allergies}
                       onChange={(e) => setAllergies(e.target.value)}
                       placeholder="e.g. Penicillin, Sulfa, NSAIDs"
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium theme-text-secondary mb-1">
                       {t.surgicalHistory}
                     </label>
                     <input
@@ -424,12 +424,12 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       value={surgeries}
                       onChange={(e) => setSurgeries(e.target.value)}
                       placeholder="e.g. Cholecystectomy (2018)"
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium theme-text-secondary mb-1">
                       {t.familyHistory}
                     </label>
                     <input
@@ -437,13 +437,13 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       value={family}
                       onChange={(e) => setFamily(e.target.value)}
                       placeholder="e.g. Family history of coronary artery disease"
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                      className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium theme-text-secondary mb-1">
                     {t.lifestyleNotes}
                   </label>
                   <input
@@ -451,7 +451,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     value={lifestyle}
                     onChange={(e) => setLifestyle(e.target.value)}
                     placeholder="e.g. Smoker 10 pack-years, sedentary office lifestyle"
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                    className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                   />
                 </div>
               </div>
@@ -460,7 +460,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               <div className="pt-2 flex justify-end">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 shadow-xs"
+                  className="px-6 py-2.5 theme-action-primary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 shadow-xs"
                 >
                   <CheckCircle className="w-4 h-4" />
                   <span>{t.registerPatientBtn}</span>
@@ -475,26 +475,26 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
       {mode === 'LOOKUP' && (
         <div className="space-y-6">
           {/* Search Box */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xs">
-            <label className="block text-xs font-medium text-slate-300 mb-2">
+          <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs">
+            <label className="block text-xs font-medium theme-text-secondary mb-2">
               {language === 'ar' ? 'البحث عن ملف المريض' : 'Search Patient Registry'}
             </label>
             <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
+              <Search className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t.searchPatientPlaceholder}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-9 text-xs text-slate-100 placeholder:text-slate-600 focus:outline-hidden focus:border-teal-500"
+                className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
               />
             </div>
 
             {/* Quick Result Suggestions */}
             {searchQuery.trim() && (
-              <div className="mt-3 divide-y divide-slate-800 bg-slate-950 rounded-lg border border-slate-800 max-h-56 overflow-y-auto">
+              <div className="mt-3 divide-y divide-[color:var(--theme-border)] theme-surface-nested rounded-lg border theme-border max-h-56 overflow-y-auto">
                 {searchResults.length === 0 ? (
-                  <div className="p-3 text-xs text-slate-500 text-center">
+                  <div className="p-3 text-xs theme-text-muted text-center">
                     {t.noPatientFound}
                   </div>
                 ) : (
@@ -507,15 +507,15 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                         setSearchQuery('');
                         setArrivalSuccess(false);
                       }}
-                      className="w-full p-3 text-left rtl:text-right hover:bg-slate-900 transition-colors flex items-center justify-between"
+                      className="w-full p-3 text-left rtl:text-right hover:theme-surface transition-colors flex items-center justify-between"
                     >
                       <div>
-                        <strong className="text-xs text-white block">{p.name}</strong>
-                        <span className="text-[11px] text-slate-400">
+                        <strong className="text-xs theme-text-primary block">{p.name}</strong>
+                        <span className="text-[11px] theme-text-muted">
                           {p.phone} · {p.profession}
                         </span>
                       </div>
-                      <span className="font-mono text-xs font-bold text-teal-400 bg-teal-950 px-2 py-0.5 rounded border border-teal-800/50">
+                      <span className="font-mono text-xs font-bold theme-text-technical theme-surface-nested px-2 py-0.5 rounded border theme-border">
                         {p.clinicPatientNumber}
                       </span>
                     </button>
@@ -527,16 +527,16 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
           {/* Selected Patient Arrival Context Card */}
           {selectedPatient && (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xs space-y-6">
+            <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs space-y-6">
               {arrivalSuccess ? (
                 <div className="text-center py-6 space-y-4">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+                  <div className="w-12 h-12 rounded-full theme-surface-nested border theme-border flex items-center justify-center theme-status-success mx-auto">
                     <CheckCircle className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-white font-sans">
+                  <h3 className="text-lg font-bold theme-text-primary font-sans">
                     {language === 'ar' ? 'تم تسجيل وصول المريض بنجاح' : 'Patient Arrival Recorded'}
                   </h3>
-                  <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  <p className="text-xs theme-text-muted max-w-md mx-auto">
                     {language === 'ar'
                       ? 'تمت إضافة الزيارة إلى قائمة اليوم بانتظار الطبيب المعالج.'
                       : 'Visit added to today’s census awaiting physician encounter.'}
@@ -545,7 +545,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     <button
                       type="button"
                       onClick={() => onSelectPatientDossier(selectedPatient.patientId)}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium border border-slate-700"
+                      className="px-4 py-2 theme-action-secondary hover:brightness-110 text-white rounded-lg text-xs font-medium border theme-border"
                     >
                       {t.inspectDossier}
                     </button>
@@ -555,7 +555,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                         setSelectedPatientId(null);
                         setArrivalSuccess(false);
                       }}
-                      className="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold"
+                      className="px-4 py-2 theme-action-primary hover:brightness-110 text-white rounded-lg text-xs font-semibold"
                     >
                       {language === 'ar' ? 'تسجيل وصول آخر' : 'Record Another Arrival'}
                     </button>
@@ -564,23 +564,23 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               ) : (
                 <form onSubmit={handleArrivalSubmit} className="space-y-6">
                   {/* Patient Banner */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-950 rounded-lg border border-slate-800 text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 theme-surface-nested rounded-lg border theme-border text-xs">
                     <div>
-                      <span className="text-slate-500 block">{t.patientName}</span>
-                      <strong className="text-white text-sm font-semibold">{selectedPatient.name}</strong>
+                      <span className="theme-text-muted block">{t.patientName}</span>
+                      <strong className="theme-text-primary text-sm font-semibold">{selectedPatient.name}</strong>
                     </div>
                     <div>
-                      <span className="text-slate-500 block">{t.cpnLabel}</span>
-                      <strong className="text-teal-300 font-mono">{selectedPatient.clinicPatientNumber}</strong>
+                      <span className="theme-text-muted block">{t.cpnLabel}</span>
+                      <strong className="theme-text-technical font-mono">{selectedPatient.clinicPatientNumber}</strong>
                     </div>
                     <div>
-                      <span className="text-slate-500 block">{t.dateOfBirth}</span>
-                      <strong className="text-slate-300 font-mono">{selectedPatient.dateOfBirth}</strong>
+                      <span className="theme-text-muted block">{t.dateOfBirth}</span>
+                      <strong className="theme-text-secondary font-mono">{selectedPatient.dateOfBirth}</strong>
                     </div>
                     <button
                       type="button"
                       onClick={() => onSelectPatientDossier(selectedPatient.patientId)}
-                      className="text-xs text-teal-400 hover:underline font-medium"
+                      className="text-xs theme-text-technical hover:underline font-medium"
                     >
                       {t.inspectDossier} →
                     </button>
@@ -588,26 +588,26 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
                   {/* Case Selection or Creation */}
                   <div className="space-y-3">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-teal-400">
+                    <label className="block text-xs font-bold uppercase tracking-wider theme-text-technical">
                       {t.selectOrCreateCase}
                     </label>
 
                     <div className="space-y-2">
                       {/* Option to create a new case */}
-                      <label className="flex items-center gap-3 p-3 bg-slate-950 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer">
+                      <label className="flex items-center gap-3 p-3 theme-surface-nested rounded-lg border theme-border hover:theme-border cursor-pointer">
                         <input
                           type="radio"
                           name="caseOption"
                           value="NEW"
                           checked={selectedCaseId === 'NEW'}
                           onChange={() => setSelectedCaseId('NEW')}
-                          className="text-teal-600 focus:ring-teal-500"
+                          className="text-[color:var(--theme-action-primary)] focus:ring-[color:var(--theme-border-focus)]"
                         />
                         <div className="flex-1">
-                          <strong className="text-xs text-white block">
+                          <strong className="text-xs theme-text-primary block">
                             {t.createNewCaseBtn}
                           </strong>
-                          <span className="text-[11px] text-slate-500">
+                          <span className="text-[11px] theme-text-muted">
                             {language === 'ar' ? 'لحالة مرضية أو مشكلة جديدة' : 'For a newly presenting problem or condition'}
                           </span>
                         </div>
@@ -617,7 +617,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       {patientCases.map((c) => (
                         <label
                           key={c.id}
-                          className="flex items-center gap-3 p-3 bg-slate-950 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer"
+                          className="flex items-center gap-3 p-3 theme-surface-nested rounded-lg border theme-border hover:theme-border cursor-pointer"
                         >
                           <input
                             type="radio"
@@ -625,14 +625,14 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                             value={c.id}
                             checked={selectedCaseId === c.id}
                             onChange={() => setSelectedCaseId(c.id)}
-                            className="text-teal-600 focus:ring-teal-500"
+                            className="text-[color:var(--theme-action-primary)] focus:ring-[color:var(--theme-border-focus)]"
                           />
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-mono text-xs font-bold text-teal-400">{c.id}</span>
-                              <strong className="text-xs text-white">{c.title}</strong>
+                              <span className="font-mono text-xs font-bold theme-text-technical">{c.id}</span>
+                              <strong className="text-xs theme-text-primary">{c.title}</strong>
                             </div>
-                            <span className="text-[11px] text-slate-400">
+                            <span className="text-[11px] theme-text-muted">
                               {t.caseStatusLabel}: {c.state} · {language === 'ar' ? 'تاريخ البدء' : 'Opened'}: {c.openedDate}
                             </span>
                           </div>
@@ -643,8 +643,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     {/* New Case Title input if selected NEW */}
                     {selectedCaseId === 'NEW' && (
                       <div className="pt-2">
-                        <label className="block text-xs font-medium text-slate-300 mb-1">
-                          {t.newCaseTitle} <span className="text-rose-400">*</span>
+                        <label className="block text-xs font-medium theme-text-secondary mb-1">
+                          {t.newCaseTitle} <span className="theme-status-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -652,17 +652,17 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                           value={newCaseTitle}
                           onChange={(e) => setNewCaseTitle(e.target.value)}
                           placeholder="e.g. Acute Lower Back Pain / Routine Health Check"
-                          className="w-full bg-slate-950 border border-slate-700 rounded-lg py-2.5 px-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                          className="w-full theme-input border theme-border rounded-lg py-2.5 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                         />
                       </div>
                     )}
                   </div>
 
                   {/* Visit Arrival Details */}
-                  <div className="border-t border-slate-800 pt-5 space-y-4">
+                  <div className="border-t theme-border pt-5 space-y-4">
                     <div>
-                      <label className="block text-xs font-medium text-slate-300 mb-1">
-                        {t.arrivalComplaint} <span className="text-rose-400">*</span>
+                      <label className="block text-xs font-medium theme-text-secondary mb-1">
+                        {t.arrivalComplaint} <span className="theme-status-danger">*</span>
                       </label>
                       <textarea
                         required
@@ -670,12 +670,12 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                         value={currentComplaint}
                         onChange={(e) => setCurrentComplaint(e.target.value)}
                         placeholder="e.g. Fever and productive cough for 3 days, worsening at night..."
-                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-xs text-slate-100 focus:outline-hidden focus:border-teal-500"
+                        className="w-full theme-input border theme-border rounded-lg p-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-slate-300 mb-1">
+                      <label className="block text-xs font-medium theme-text-secondary mb-1">
                         {t.arrivalConditionPrompt}
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -688,11 +688,11 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                               className={`p-2 rounded-lg text-xs font-medium border text-center transition-all ${
                                 arrivalCondition === cond
                                   ? cond === 'Severely Unwell'
-                                    ? 'bg-rose-950/60 border-rose-500 text-rose-200'
+                                    ? 'theme-surface-nested border theme-status-danger'
                                     : cond === 'Moderately Unwell'
-                                    ? 'bg-amber-950/60 border-amber-500 text-amber-200'
-                                    : 'bg-teal-950/60 border-teal-500 text-teal-200'
-                                  : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+                                    ? 'theme-surface-nested border theme-status-warning'
+                                    : 'theme-surface-nested theme-border theme-status-success'
+                                  : 'theme-surface-nested theme-border theme-text-muted hover:theme-text-secondary'
                               }`}
                             >
                               {cond === 'Normal'
@@ -711,7 +711,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                   <div className="flex justify-end gap-3 pt-2">
                     <button
                       type="submit"
-                      className="px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 shadow-xs"
+                      className="px-6 py-2.5 theme-action-primary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-2 shadow-xs"
                     >
                       <CheckCircle className="w-4 h-4" />
                       <span>{t.recordArrivalBtn}</span>
