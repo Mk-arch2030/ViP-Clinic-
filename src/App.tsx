@@ -218,8 +218,8 @@ export default function App() {
     }
   };
 
-  const handleUpdateEncounter = (updates: any) => {
-    if (!activeConsultationVisit) return;
+  const handleUpdateEncounter = (updates: any): boolean => {
+    if (!activeConsultationVisit) return false;
     try {
       clinicStore.updateEncounter(
         activeConsultationVisit.id,
@@ -227,8 +227,10 @@ export default function App() {
         storeState.actorRole
       );
       refreshState();
+      return true;
     } catch (err: any) {
       alert(err.message || 'Failed to update encounter');
+      return false;
     }
   };
 

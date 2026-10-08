@@ -35,7 +35,7 @@ interface DoctorConsultationProps {
   caseRecord: CaseRecord;
   actorRole: ActorRole;
   language: Language;
-  onUpdateEncounter: (updates: Partial<VisitRecord>) => void;
+  onUpdateEncounter: (updates: Partial<VisitRecord>) => boolean;
   onAuthorizePrescription: () => void;
   onRecordExit: () => void;
   onCompleteCase: () => void;
@@ -251,7 +251,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
   };
 
   const handleSaveProgress = () => {
-    onUpdateEncounter({
+    const saved = onUpdateEncounter(isDoctor ? {
       currentComplaint: complaint,
       vitals: {
         bloodPressureSystolic: bpSys ? Number(bpSys) : undefined,
@@ -278,8 +278,19 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
         clinicalInstructions: followUpInst,
       },
       operationalStatus: 'WITH_DOCTOR',
+    } : {
+      currentComplaint: complaint,
+      vitals: {
+        bloodPressureSystolic: bpSys ? Number(bpSys) : undefined,
+        bloodPressureDiastolic: bpDia ? Number(bpDia) : undefined,
+        heartRate: heartRate ? Number(heartRate) : undefined,
+        respiratoryRate: respRate ? Number(respRate) : undefined,
+        temperatureCelsius: temp ? Number(temp) : undefined,
+        oxygenSaturation: spo2 ? Number(spo2) : undefined,
+      },
     });
 
+    if (!saved) return;
     setSaveSuccessNotice(true);
     setTimeout(() => setSaveSuccessNotice(false), 3000);
   };

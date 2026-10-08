@@ -701,10 +701,33 @@ export class ClinicStore {
       (updates.finalDiagnosis !== undefined ||
         updates.preliminaryDiagnosis !== undefined ||
         updates.investigations !== undefined ||
-        updates.treatmentAdvice !== undefined) &&
+        updates.treatmentAdvice !== undefined ||
+        updates.prescription !== undefined ||
+        updates.followUp !== undefined) &&
       actorRole !== 'Doctor'
     ) {
       throw new Error('Clinical diagnoses, investigations, and treatment plans are Doctor authority only.');
+    }
+
+    // Prescription authorization is reserved for authorizePrescription().
+    if (updates.prescription !== undefined) {
+      const proposed = updates.prescription;
+      const current = visit.prescription;
+
+      // An authorized prescription cannot be edited in place.
+      if (
+        current.isAuthorized &&
+        JSON.stringify(proposed) !== JSON.stringify(current)
+      ) {
+        throw new Error('Authorized prescription cannot be modified through encounter updates.');
+      }
+      if (
+        proposed.isAuthorized !== current.isAuthorized ||
+        proposed.authorizedAt !== current.authorizedAt ||
+        proposed.authorizedBy !== current.authorizedBy
+      ) {
+        throw new Error('Prescription authorization cannot be changed through encounter updates.');
+      }
     }
 
     if (updates.currentComplaint !== undefined) visit.currentComplaint = updates.currentComplaint;
