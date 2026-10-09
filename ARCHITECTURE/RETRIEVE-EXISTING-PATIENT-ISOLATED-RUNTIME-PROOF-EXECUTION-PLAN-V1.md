@@ -1,0 +1,111 @@
+# ROBY — Retrieve Existing Patient Isolated Runtime Proof Execution Plan V1
+
+STATUS = EXECUTION_PLAN_DRAFT
+OWNER = MOHAMED.K_ROBY
+EXECUTION_AUTHORIZATION = NOT_GRANTED
+IMPLEMENTATION_AUTHORIZATION = NOT_GRANTED
+FULL_RUNTIME_PROOF = NOT_ESTABLISHED
+
+## 1. PURPOSE
+
+Define a bounded, non-production proof plan for:
+
+GET /patients/:patientId
+
+This plan does not authorize execution.
+
+## 2. HISTORICAL PRESERVATION
+
+P4_MOCK = PRESERVED
+P4_MOCK_DATABASE_AUTHORITY = NO
+A06_PERSISTENCE_SNAPSHOT = DISTINCT
+HISTORICAL_PERSISTENCE_CLOSURE = PRESERVED
+
+## 3. ISOLATION BOUNDARY
+
+PROTECTED_CLUSTER =
+$PREFIX/var/lib/postgresql
+
+PROPOSED_TEST_ROOT =
+$HOME/vip-retrieve-proof-isolated
+
+PROPOSED_TEST_PORT = 55439
+TEST_PORT_VERIFICATION = PENDING
+TEST_CLUSTER_CREATION = NOT_EXECUTED
+
+Separate data, socket and runtime boundaries are required.
+
+No connection to or mutation of the protected cluster is authorized.
+
+## 4. FIXTURE BOUNDARY
+
+FIXTURE_SOURCE = INDEPENDENT_SYNTHETIC_DATA
+P4_MOCK_REUSE_AS_DATABASE_DATA = NO
+A06_SNAPSHOT_REUSE = NO
+
+Fixture preparation is permitted only after separate
+bounded execution authorization.
+
+## 5. HTTP COMPOSITION
+
+Use a dedicated test-only Fastify composition.
+
+REGISTERED_ROUTE = GET /patients/:patientId
+POST_ROUTE_REGISTRATION = NO
+PRODUCTION_RUNTIME_MUTATION = NO
+
+Use the existing retrieval controller, application
+service and PostgreSQL repository.
+
+Any new test harness code requires separate
+implementation authorization.
+
+## 6. ACCEPTANCE CRITERIA
+
+FOUND_HTTP_STATUS = 200
+MISSING_HTTP_STATUS = 404
+
+FOUND_PATIENT_IDENTITY = VERIFIED
+FOUND_CPN = PRESERVED
+DATE_OF_BIRTH = VERIFIED
+DERIVED_AGE = VERIFIED
+
+HTTP_TO_REAL_POSTGRESQL = REQUIRED
+
+## 7. DATA PRESERVATION
+
+Capture test database state after fixture preparation
+and before retrieval.
+
+Repeat checks after both GET scenarios.
+
+PATIENT_ROW_MUTATION_DURING_GET = PROHIBITED
+CPN_SEQUENCE_MUTATION_DURING_GET = PROHIBITED
+SCHEMA_MUTATION = PROHIBITED
+
+## 8. REGRESSION AND CLEANUP
+
+REGRESSION_EXECUTION = PENDING
+TEST_CLUSTER_CLEANUP = PENDING
+
+Cleanup must verify the isolated cluster identity
+and must never target the protected PostgreSQL cluster.
+
+## 9. CURRENT AUTHORITY
+
+APPROACH_APPROVED_BY_OWNER = YES
+PLAN_REVIEW = OPEN
+
+TEST_CLUSTER_CREATION_AUTHORIZATION = NOT_GRANTED
+FIXTURE_INSERT_AUTHORIZATION = NOT_GRANTED
+TEST_HARNESS_IMPLEMENTATION_AUTHORIZATION = NOT_GRANTED
+GET_RUNTIME_EXECUTION_AUTHORIZATION = NOT_GRANTED
+
+PRODUCTION_AUTHORIZATION = NONE
+REAL_CLINICAL_USE_AUTHORIZATION = NONE
+
+## 10. NEXT GATE
+
+BOUNDED_IMPLEMENTATION_AND_EXECUTION_AUTHORITY_DECISION
+
+END
