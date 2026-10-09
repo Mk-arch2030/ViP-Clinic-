@@ -1,11 +1,12 @@
 # Stage 4 — Bounded Real-PostgreSQL Patient Composition Proof V1
 
 OWNER: MOHAMED.K_ROBY  
-STATUS: PACKAGE_PREPARED — TERMUX_RUNTIME_PROOF_PENDING  
+STATUS: BOUNDED_RUNTIME_PROOF_PASSED — OWNER_TERMUX_EVIDENCE_RECORDED  
 SOURCE_BASELINE: 5aff19634533d08b4d8db0d4652cb57ddbfa0b23  
 CURRENT_COMPOSITION_IMPLEMENTATION_COMMIT: 2e15e88dc15f6a927a13ce4dd87c2c44455be4c5  
 PACKAGE_PREPARATION_AND_SCOPED_GITHUB_PRESERVATION: OWNER_AUTHORIZED_IN_CHAT  
-REAL_POSTGRESQL_COMPOSITION_PROOF: NOT_EXECUTED  
+REAL_POSTGRESQL_COMPOSITION_PROOF: PASS_FOR_TESTED_ISOLATED_PATHS  
+TESTED_COMMIT: 9d207d4a1a0fbffd0bc38035279a7ae3f3b43925  
 PRODUCTION_GET_ENABLEMENT: NOT_GRANTED  
 DEPLOYMENT: NOT_GRANTED  
 CLINICAL_USE: NOT_GRANTED  
@@ -214,3 +215,24 @@ package does not prewrite a successful result.
 
 Stage 4 closes only on reviewed real execution evidence for the specified paths.
 Production GET, deployment, clinical use, and cluster cleanup remain separate.
+
+## Later execution authorization and evidence reconciliation
+
+The preparation-time instructions above are retained as the original plan,
+not current declarations that execution has never occurred.
+
+After scoped download verification and owner-reported 12/12 guard tests plus
+52/52 active regression tests with zero failures, the owner separately authorized
+isolated GET execution on roby_retrieve_proof_c only. The owner returned the
+runner's full acceptance output, including the final isolated composition PASS
+and STAGE4_PROOF_COMMAND_EXIT=0.
+
+See the [Stage 4 Milestone](./RETRIEVE-EXISTING-PATIENT-COMPOSITION-POSTGRESQL-PROOF-MILESTONE-V1.md)
+for the exact reported output, tested commit, runner hashes, comparison scope,
+authorization sequence and limits.
+
+The evidence comes from Termux output supplied by the owner; Work did not
+independently rerun the real database proof. This satisfies bounded Stage 4 runtime
+acceptance. Production GET, deployment, clinical use, cleanup E and Stage 5
+implementation remain outside this grant. No rerun is required by this
+documentation update, and no prior grant becomes open-ended.
