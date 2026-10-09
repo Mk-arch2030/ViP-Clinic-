@@ -3,10 +3,13 @@ const ACTOR_ROLES = Object.freeze([
   'Nurse'
 ]);
 
-const NURSE_LIFECYCLE = Object.freeze([
+const ACTOR_LIFECYCLE = Object.freeze([
   'ACTIVE',
   'DEACTIVATED'
 ]);
+
+// Preserve the existing Nurse vocabulary as a compatibility alias.
+const NURSE_LIFECYCLE = ACTOR_LIFECYCLE;
 
 class Actor {
   constructor({
@@ -27,11 +30,16 @@ class Actor {
       throw new Error('Invalid Nurse Lifecycle');
     }
 
+    if (role === 'Doctor' && lifecycle !== undefined && !ACTOR_LIFECYCLE.includes(lifecycle)) {
+      throw new Error('Invalid Doctor Lifecycle');
+    }
+
     this.actorIdentityReference = actorIdentityReference;
     this.role = role;
     this.authorityContext = authorityContext;
 
-    if (role === 'Nurse') {
+    // Legacy Doctors may omit lifecycle; omission must not imply ACTIVE.
+    if (role === 'Nurse' || lifecycle !== undefined) {
       this.lifecycle = lifecycle;
     }
   }
@@ -40,5 +48,6 @@ class Actor {
 module.exports = {
   Actor,
   ACTOR_ROLES,
+  ACTOR_LIFECYCLE,
   NURSE_LIFECYCLE
 };
