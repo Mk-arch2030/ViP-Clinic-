@@ -97,3 +97,81 @@ test('owned pool is closed if route registration fails', async () => {
   assert.equal(endCount(), 1);
   await app.close();
 });
+
+
+test('explicit false preserves POST-only composition', async () => {
+  const app = Fastify();
+  const { pool } = makePool();
+  try {
+    await composePatientRegistration(app, { pool, enableRetrieveExistingPatient: false });
+    await app.ready();
+    assert.equal(app.hasRoute({ method: 'POST', url: '/patients' }), true);
+    assert.equal(app.hasRoute({ method: 'GET', url: '/patients/:patientId' }), false);
+  } finally { await app.close(); }
+});
+
+test('opt-in GET dispatches through existing retrieval and preserves POST', async () => {
+  const { calculateAge } = require('../../domain/patient');
+  const found = '66666666-6666-4666-8666-666666666666';
+  const missing = '77777777-7777-4777-8777-777777777777';
+  const row = { patient_id: found, clinic_patient_number: 'CPN-9002',
+    name: 'Synthetic Composition Fixture', date_of_birth: '1990-02-01',
+    profession: 'Tester', phone: '00000000000', gender: 'Male' };
+  const calls = [];
+  const forbidden = () => { assert.fail('GET attempted a mutation or connection'); };
+  const pool = {
+    connect: forbidden,
+    end: forbidden,
+    async query(sql, params) {
+      assert.match(sql, /^\s*SELECT\b/i);
+      assert.match(sql, /FROM patients/i);
+      assert.match(sql, /WHERE patient_id = \$1/i);
+      assert.doesNotMatch(sql, /nextval|INSERT|UPDATE|DELETE|BEGIN|COMMIT|ROLLBACK/i);
+      calls.push({ sql, params });
+      return { rows: params[0] === found ? [{ ...row }] : [] };
+    },
+  };
+  const app = Fastify();
+  try {
+    await composePatientRegistration(app, { pool, enableRetrieveExistingPatient: true });
+    await app.ready();
+    assert.equal(calls.length, 0);
+    assert.equal(app.hasRoute({ method: 'POST', url: '/patients' }), true);
+    assert.equal(app.hasRoute({ method: 'GET', url: '/patients/:patientId' }), true);
+    app.patientRepository.allocateClinicPatientNumber = forbidden;
+    app.patientRepository.createPatient = forbidden;
+    const before = new Date();
+    const response = await app.inject({ method: 'GET', url: '/patients/' + found });
+    const after = new Date();
+    assert.equal(response.statusCode, 200);
+    const body = response.json();
+    const { age, ...persisted } = body;
+    assert.deepEqual(persisted, row);
+    assert.ok([calculateAge(row.date_of_birth, before), calculateAge(row.date_of_birth, after)].includes(age));
+    const absent = await app.inject({ method: 'GET', url: '/patients/' + missing });
+    assert.equal(absent.statusCode, 404);
+    assert.deepEqual(absent.json(), { error: 'Patient not found' });
+    assert.deepEqual(calls.map(c => c.params), [[found], [missing]]);
+  } finally { await app.close(); }
+});
+
+test('opt-in owned pool closes once on normal close', async () => {
+  const app = Fastify();
+  const { pool, endCount } = makePool();
+  await composePatientRegistration(app, { createPool: () => pool, enableRetrieveExistingPatient: true });
+  await app.close();
+  assert.equal(endCount(), 1);
+});
+
+test('opt-in duplicate GET closes owned pool on composition failure', async () => {
+  const app = Fastify();
+  const { pool, endCount } = makePool();
+  app.get('/patients/:patientId', async () => ({}));
+  try {
+    await assert.rejects(() => composePatientRegistration(app, {
+      createPool: () => pool, enableRetrieveExistingPatient: true,
+    }), error => error.code === 'FST_ERR_DUPLICATED_ROUTE');
+    assert.equal(endCount(), 1);
+  } finally { await app.close(); }
+  assert.equal(endCount(), 1);
+});

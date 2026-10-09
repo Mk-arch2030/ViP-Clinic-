@@ -110,3 +110,40 @@ test('runtime closes owned pool when listen fails', async () => {
 
   assert.equal(closed, 1);
 });
+
+
+test('runtime forwards explicit GET opt-in without listening', async () => {
+  const { PatientRepository } = require('../persistence/patient-repository');
+  const found = '88888888-8888-4888-8888-888888888888';
+  const missing = '99999999-9999-4999-8999-999999999999';
+  const queries = [];
+  const deps = dependencies();
+  const client = { async query(sql, params) {
+    assert.match(sql, /^\s*SELECT\b/i);
+    assert.match(sql, /WHERE patient_id = \$1/i);
+    queries.push(params);
+    return { rows: params[0] === found ? [{ patient_id: found,
+      clinic_patient_number: 'CPN-9003', date_of_birth: null }] : [] };
+  } };
+  const app = Fastify();
+  app.listen = async () => { assert.fail('Build/injection proof must not listen'); };
+  try {
+    await buildPatientRegistrationRuntime({ app, composition: {
+      pool: deps.pool, repository: new PatientRepository(client),
+      enableRetrieveExistingPatient: true,
+    } });
+    await app.ready();
+    assert.equal(app.server.listening, false);
+    assert.equal(queries.length, 0);
+    assert.equal(app.hasRoute({ method: 'POST', url: '/patients' }), true);
+    assert.equal(app.hasRoute({ method: 'GET', url: '/patients/:patientId' }), true);
+    const response = await app.inject({ method: 'GET', url: '/patients/' + found });
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.json().patient_id, found);
+    const absent = await app.inject({ method: 'GET', url: '/patients/' + missing });
+    assert.equal(absent.statusCode, 404);
+    assert.deepEqual(absent.json(), { error: 'Patient not found' });
+    assert.deepEqual(queries, [[found], [missing]]);
+  } finally { await app.close(); }
+  assert.equal(deps.getClosed(), 0);
+});
