@@ -3,11 +3,12 @@ import type { BasicPatient, Registration } from './basic-patient';
 export interface SessionView {
   readonly state: 'checking' | 'unauthenticated' | 'authenticated' | 'unavailable';
   readonly session: ServerSession | null; readonly patient: BasicPatient | null;
+  readonly searchResults: readonly BasicPatient[]; readonly searchHasMore: boolean;
   readonly busy: boolean; readonly failure: FailureKind | null; readonly retryAfter?: number;
   readonly mutationsBlocked: boolean; readonly logoutUnconfirmed: boolean;
   readonly registrationUnconfirmed: boolean;
 }
-const initial: SessionView = Object.freeze({ state:'checking',session:null,patient:null,busy:false,failure:null,
+const initial: SessionView = Object.freeze({ searchResults:Object.freeze([]),searchHasMore:false, state:'checking',session:null,patient:null,busy:false,failure:null,
   mutationsBlocked:true,logoutUnconfirmed:false,registrationUnconfirmed:false });
 export class SessionCoordinator {
   private view: SessionView = initial;
@@ -21,7 +22,7 @@ export class SessionCoordinator {
   private begin(patch: Partial<SessionView>): { id: number; signal: AbortSignal } {
     this.pending?.abort(); this.pending = new AbortController();
     const id = ++this.generation;
-    this.set({ busy:true,failure:null,...patch });
+    this.set({ busy:true,failure:null,searchResults:Object.freeze([]),searchHasMore:false,...patch });
     return { id,signal:this.pending.signal };
   }
   private failed(error: unknown, id: number, mutation = false) {
@@ -63,6 +64,15 @@ export class SessionCoordinator {
       this.failed(error,id);
       if (id === this.generation && this.view.state === 'checking') this.set({ state:'unauthenticated' });
     }
+  }
+  async search(mode: 'cpn' | 'name', value: string) {
+    if (this.view.busy || this.view.state !== 'authenticated') return;
+    const { id,signal } = this.begin({ patient:null });
+    try {
+      if (!this.api.search) throw new ApiFailure(503,'unavailable');
+      const result = await this.api.search(mode,value,signal);
+      if (id === this.generation) this.set({ searchResults:result.patients,searchHasMore:result.hasMore,busy:false, failure:result.patients.length ? null : 'not-found' });
+    } catch (error) { this.failed(error,id); }
   }
   async retrieve(patientId: string) {
     if (this.view.busy || this.view.state !== 'authenticated') return;

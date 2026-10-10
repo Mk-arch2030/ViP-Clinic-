@@ -5,6 +5,7 @@ const { PatientRepository } = require('../persistence/patient-repository');
 const { registerNewPatient } = require('../../application/services/register-new-patient');
 const { retrieveExistingPatient } = require('../../application/services/retrieve-existing-patient');
 const { calculateAge } = require('../../domain/patient');
+const { searchPatients } = require('../persistence/patient-search');
 const COOKIE = '__Host-vip_session';
 const COOKIE_OPTIONS = '; Path=/; Secure; HttpOnly; SameSite=Strict';
 
@@ -35,8 +36,8 @@ async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
   let parsed;
   try { parsed = new URL(trustedOrigin); } catch { throw new AuthError(503); }
   if (parsed.protocol !== 'https:' || parsed.origin !== trustedOrigin || parsed.username || parsed.password) throw new AuthError(503);
-  if (['/auth/login','/auth/session','/auth/logout','/patients','/patients/:patientId'].some(url =>
-    app.hasRoute({ method: url === '/auth/session' || url.includes(':') ? 'GET' : 'POST', url }))) throw new AuthError(503);
+  if (['/auth/login','/auth/session','/auth/logout','/patients','/patients/:patientId','/patients/search'].some(url =>
+    app.hasRoute({ method: url === '/auth/session' || url === '/patients/search' || url.includes(':') ? 'GET' : 'POST', url }))) throw new AuthError(503);
 
   await app.register(async scope => {
     scope.addHook('onRequest', async (request, reply) => {
@@ -70,6 +71,9 @@ async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
       reply.header('Set-Cookie', `${COOKIE}=${COOKIE_OPTIONS}; Max-Age=0`);
       return reply.code(204).send();
     });
+    scope.get('/patients/search', async request => auth.withAuthorized(
+      cookieToken(request.headers.cookie), 'PATIENT_RETRIEVE', undefined,
+      ({ client }) => searchPatients(client, request.query)));
     scope.get('/patients/:patientId', async (request, reply) => {
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(request.params.patientId)) throw new AuthError(400);
       const patient = await auth.withAuthorized(cookieToken(request.headers.cookie), 'PATIENT_RETRIEVE', undefined,

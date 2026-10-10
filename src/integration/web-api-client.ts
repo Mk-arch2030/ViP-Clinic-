@@ -9,7 +9,9 @@ export class ApiFailure extends Error {
     super(kind); this.name = 'ApiFailure';
   }
 }
+export interface PatientSearch { readonly patients: readonly BasicPatient[]; readonly hasMore: boolean }
 export interface WebApi {
+  search?(mode: 'cpn' | 'name', value: string, signal?: AbortSignal): Promise<PatientSearch>;
   session(signal?: AbortSignal): Promise<ServerSession>;
   login(loginLabel: string, password: string, signal?: AbortSignal): Promise<void>;
   logout(csrf: string, signal?: AbortSignal): Promise<void>;
@@ -67,6 +69,19 @@ export function createWebApi({ origin, fetcher = globalThis.fetch }: { origin: s
       });
     },
     async logout(csrf, signal) { await request('/auth/logout','POST',204,{},csrf,signal); },
+    search(mode, value, signal) {
+      if (!['cpn','name'].includes(mode) || typeof value !== 'string') return Promise.reject(new ApiFailure(400,'invalid'));
+      const canonical = value.normalize('NFC').trim();
+      if ((mode === 'cpn' && !/^(?:CPN-)?[1-9][0-9]{0,18}$/i.test(canonical)) ||
+          (mode === 'name' && (canonical.length < 2 || canonical.length > 80 || /[\u0000-\u001f\u007f]/.test(canonical)))) return Promise.reject(new ApiFailure(400,'invalid'));
+      return parsed(request('/patients/search?mode='+mode+'&value='+encodeURIComponent(canonical),'GET',200,undefined,undefined,signal), value => {
+        const row = record(value);
+        if (Object.keys(row).length !== 2 || !Array.isArray(row.patients) || row.patients.length > 25 || typeof row.hasMore !== 'boolean') throw new Error('Invalid response');
+        const patients = row.patients.map(parsePatient);
+        if (new Set(patients.map(p => p.patientId)).size !== patients.length || (row.hasMore && patients.length !== 25)) throw new Error('Invalid response');
+        return Object.freeze({ patients:Object.freeze(patients), hasMore:row.hasMore });
+      });
+    },
     retrieve(patientId, signal) {
       if (!UUID.test(patientId)) return Promise.reject(new ApiFailure(400,'invalid'));
       return parsed(request('/patients/'+encodeURIComponent(patientId),'GET',200,undefined,undefined,signal),parsePatient);

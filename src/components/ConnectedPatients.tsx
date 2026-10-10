@@ -38,7 +38,8 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
   const text = (arabic: string, english: string) => ar ? arabic : english;
   const [label, setLabel] = useState('');
   const [password, setPassword] = useState('');
-  const [patientId, setPatientId] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+  const [searchMode, setSearchMode] = useState<'cpn' | 'name'>('cpn');
   const [draft, setDraft] = useState<Registration>({ ...blank });
   const previousActor = useRef<string | null>(null);
   const doctor = view.state === 'authenticated' && view.session?.role === 'Doctor';
@@ -55,7 +56,7 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
   useEffect(() => {
     const actor = view.session?.actorIdentityReference ?? null;
     if (view.state === 'unauthenticated' || view.state === 'unavailable' ||
-        (actor && previousActor.current && actor !== previousActor.current)) { setPassword(''); setPatientId(''); setDraft({ ...blank }); }
+        (actor && previousActor.current && actor !== previousActor.current)) { setPassword(''); setSearchValue(''); setDraft({ ...blank }); }
     if (actor || view.state === 'unauthenticated' || view.state === 'unavailable') previousActor.current = actor;
   }, [view.state, view.session?.actorIdentityReference]);
   const message = (kind: FailureKind) => messages[kind][ar ? 0 : 1];
@@ -70,7 +71,7 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
       {view.registrationUnconfirmed && <p role="alert" className="theme-status-danger">{message('outcome-unknown')}</p>}
       <div className="flex flex-wrap gap-3">
         <button type="button" className={actionClass} disabled={view.busy} onClick={() => void model.refresh()}>{text('إعادة فحص الجلسة', 'Recheck session')}</button>
-        {view.session && <button type="button" className={actionClass} disabled={view.busy} onClick={() => { setPassword(''); setPatientId(''); setDraft({ ...blank }); void model.logout(); }}><LogOut className="w-4 h-4 inline" /> {text('تسجيل الخروج', 'Sign out')}</button>}
+        {view.session && <button type="button" className={actionClass} disabled={view.busy} onClick={() => { setPassword(''); setSearchValue(''); setDraft({ ...blank }); void model.logout(); }}><LogOut className="w-4 h-4 inline" /> {text('تسجيل الخروج', 'Sign out')}</button>}
       </div>
       {!view.session && <form onSubmit={event => { event.preventDefault(); const submitted = password; setPassword(''); void model.login(label, submitted); }}>
         <fieldset disabled={view.busy || view.logoutUnconfirmed || view.state === 'checking' || view.state === 'unavailable'} className="space-y-4">
@@ -83,12 +84,15 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
     </section>
     <section className={panelClass} aria-label={text('استرجاع مريض من الخادم', 'Retrieve server patient')}>
       <h2 className="flex gap-2 font-semibold"><Search className="w-5 h-5" />{text('استرجاع مريض', 'Retrieve patient')}</h2>
-      <form onSubmit={event => { event.preventDefault(); void model.retrieve(patientId); }}>
+      <form onSubmit={event => { event.preventDefault(); void model.search(searchMode, searchValue); }}>
         <fieldset disabled={!doctor || view.busy} className="space-y-4">
-          <label className="block space-y-2">{text('معرف المريض UUID', 'Patient UUID')}<input className={inputClass} dir="ltr" required maxLength={36} value={patientId} onChange={e => setPatientId(e.target.value)} /></label>
+          <label className="block space-y-2">{text('البحث باستخدام', 'Search by')}<select className={inputClass} value={searchMode} onChange={e => { setSearchMode(e.target.value as 'cpn' | 'name'); setSearchValue(''); }}><option value="cpn">{text('رقم الملف CPN','Patient number CPN')}</option><option value="name">{text('اسم المريض','Patient name')}</option></select></label>
+          <label className="block space-y-2">{searchMode === 'cpn' ? text('رقم الملف — مثل CPN-8 أو 8','Patient number — e.g. CPN-8 or 8') : text('اسم المريض — حرفان على الأقل','Patient name — at least two characters')}<input className={inputClass} required maxLength={80} value={searchValue} onChange={e => setSearchValue(e.target.value)} /></label>
           <button type="submit" className={actionClass}>{text('استرجاع', 'Retrieve')}</button>
         </fieldset>
       </form>{notice('retrieve')}
+      {view.searchHasMore && <p role="status">{text('ظهرت أول 25 نتيجة. اكتب اسمًا أكثر تحديدًا.','First 25 results shown. Refine the name to narrow the search.')}</p>}
+      {view.searchResults.length > 0 && <ul className="space-y-3" aria-label={text('نتائج بحث المريض','Patient search results')}>{view.searchResults.map(patient => <li key={patient.patientId} className="theme-surface-nested border theme-border rounded-lg p-3"><button type="button" className="w-full text-start theme-focus rounded-lg" disabled={!doctor || view.busy} onClick={() => void model.retrieve(patient.patientId)}><span className="font-semibold">{patient.name}</span> · <span className="font-mono theme-text-technical">{patient.clinicPatientNumber}</span><span className="block text-sm theme-text-secondary">{patient.dateOfBirth ?? text('تاريخ الميلاد غير مسجل','Date of birth not recorded')} · {patient.phone}</span></button></li>)}</ul>}
     </section>
     <section className={panelClass} aria-label={text('تسجيل مريض بالخادم', 'Register server patient')}>
       <h2 className="flex gap-2 font-semibold"><UserPlus className="w-5 h-5" />{text('تسجيل مريض — بيانات أساسية', 'Register patient — basic details')}</h2>
@@ -109,7 +113,7 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
       <h2 className="flex gap-2 font-semibold"><FolderOpen className="w-5 h-5" />{view.patient.name}</h2>
       <div className="font-mono theme-text-technical">{view.patient.clinicPatientNumber}</div>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {Object.entries({ [text('معرف المريض','Patient UUID')]:view.patient.patientId, [text('تاريخ الميلاد','Date of birth')]:view.patient.dateOfBirth ?? text('غير مسجل','Not recorded'), [text('العمر المشتق','Derived age')]:view.patient.age ?? text('غير متاح','Unavailable'), [text('المهنة','Profession')]:view.patient.profession, [text('الهاتف','Phone')]:view.patient.phone, [text('النوع','Gender')]:view.patient.gender }).map(([key, value]) => <div key={key}><dt className="theme-text-muted text-xs">{key}</dt><dd className="theme-text-primary break-all">{value}</dd></div>)}
+        {Object.entries({ [text('تاريخ الميلاد','Date of birth')]:view.patient.dateOfBirth ?? text('غير مسجل','Not recorded'), [text('العمر المشتق','Derived age')]:view.patient.age ?? text('غير متاح','Unavailable'), [text('المهنة','Profession')]:view.patient.profession, [text('الهاتف','Phone')]:view.patient.phone, [text('النوع','Gender')]:view.patient.gender }).map(([key, value]) => <div key={key}><dt className="theme-text-muted text-xs">{key}</dt><dd className="theme-text-primary break-all">{value}</dd></div>)}
       </dl>
     </section>}
   </div>;

@@ -41,6 +41,12 @@ export class ConnectedPatientSession {
     if (operation === 'register' && (view.mutationsBlocked || view.registrationUnconfirmed)) return false;
     this.notice = null; this.publish(); return true;
   }
+  async search(mode: 'cpn' | 'name', value: string) {
+    if (!this.allowed('retrieve')) return;
+    await this.coordinator.search(mode,value);
+    const failure = this.coordinator.getSnapshot().failure;
+    if (failure) { this.notice = { operation:'retrieve',kind:failure }; this.publish(); }
+  }
   async retrieve(id: string) {
     if (!this.allowed('retrieve')) return;
     await this.coordinator.retrieve(id);
