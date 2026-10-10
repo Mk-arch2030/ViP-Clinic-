@@ -16,6 +16,9 @@ import {
 } from 'lucide-react';
 
 interface HeaderProps {
+  serverMode?: boolean;
+  serverRole?: ActorRole | null;
+  serverChecking?: boolean;
   currentDay: ClinicDayRecord;
   actorRole: ActorRole;
   operatingMode: OperatingMode;
@@ -31,6 +34,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  serverMode = false,
+  serverRole = null,
+  serverChecking = false,
   currentDay,
   actorRole,
   operatingMode,
@@ -58,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold tracking-tight text-white font-sans">
+                <h1 className="text-lg font-bold tracking-tight theme-text-primary font-sans">
                   {t.appTitle}
                 </h1>
                 <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)] border border-[color:var(--theme-action-primary)]/30">
@@ -73,6 +79,12 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Controls: Actor Switcher, Mode, Language, Clinic Day */}
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs">
+            {serverMode ? (
+              <div className="flex items-center gap-2 p-2 theme-surface-nested rounded-lg border theme-border">
+                <Shield className="w-4 h-4 theme-text-technical" />
+                <span>{serverChecking ? (language === 'ar' ? 'جار التحقق من هوية الخادم…' : 'Checking server identity…') : serverRole ? (language === 'ar' ? 'هوية الخادم: ' : 'Server identity: ') + serverRole : (language === 'ar' ? 'تسجيل الدخول مطلوب' : 'Sign in required')}</span>
+              </div>
+            ) : <>
             {/* Actor Switcher Segmented Control */}
             <div className="flex items-center p-1 theme-surface-nested rounded-lg border theme-border">
               <button
@@ -131,6 +143,8 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
+            </>}
+
             {/* Theme Switch — Presentation Preference */}
             <button
               type="button"
@@ -159,7 +173,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Clinic Day Context Bar */}
+        {/* Clinic Day Context Bar — demonstration context only */}
+      {!serverMode && (
         <div className="mt-3 pt-3 border-t theme-border flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-4 theme-text-secondary">
             <div className="flex items-center gap-1.5 font-mono">
@@ -228,6 +243,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
         </div>
+      )}
       </div>
     </header>
   );

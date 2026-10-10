@@ -4,6 +4,8 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { ConnectedPatients, type ConnectedIdentity } from './components/ConnectedPatients';
+import { TEST_ORIGIN } from './integration/web-api-client';
 import { clinicStore, ClinicState } from './services/clinicStore';
 import { translations, Language } from './i18n/translations';
 import { Header } from './components/Header';
@@ -25,15 +27,17 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
-type MainTab = 'CENSUS' | 'INTAKE' | 'DOSSIER' | 'CONSULTATION' | 'DIRECTORY';
+type MainTab = 'CENSUS' | 'INTAKE' | 'DOSSIER' | 'CONSULTATION' | 'DIRECTORY' | 'SERVER';
 
 export default function App() {
   const [storeState, setStoreState] = useState<ClinicState>(() =>
     clinicStore.getState()
   );
-  const [activeTab, setActiveTab] = useState<MainTab>('CENSUS');
+  const [activeTab, setActiveTab] = useState<MainTab>(() => window.location.origin === TEST_ORIGIN ? 'SERVER' : 'CENSUS');
   const [language, setLanguage] = useState<Language>('ar');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  const [serverIdentity, setServerIdentity] = useState<ConnectedIdentity>({ role:null, checking:false, blocked:false });
 
   // Active selection pointers
   const [activePatientId, setActivePatientId] = useState<string>(
@@ -306,6 +310,9 @@ export default function App() {
       {/* Top Header */}
       <Header
         currentDay={currentDay}
+        serverMode={activeTab === 'SERVER'}
+        serverRole={serverIdentity.role}
+        serverChecking={serverIdentity.checking}
         actorRole={storeState.actorRole}
         operatingMode={storeState.operatingMode}
         onSetActorRole={handleSetActorRole}
@@ -327,8 +334,15 @@ export default function App() {
       <nav className="no-print border-b theme-border theme-surface sticky top-[73px] z-30 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-2">
+            <button type="button" disabled={serverIdentity.blocked}
+              onClick={() => setActiveTab('SERVER')}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap theme-focus ${activeTab === 'SERVER' ? 'theme-action-primary' : 'theme-text-muted'}`}>
+              <ShieldCheck className="w-4 h-4" />
+              <span>{language === 'ar' ? 'مرضى الخادم' : 'Server patients'}</span>
+            </button>
             <button
               type="button"
+              disabled={serverIdentity.blocked}
               onClick={() => setActiveTab('CENSUS')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'CENSUS'
@@ -337,14 +351,15 @@ export default function App() {
               }`}
             >
               <CalendarDays className="w-4 h-4" />
-              <span>{t.tabDailyCensus}</span>
-              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)]">
+              <span>{t.tabDailyCensus}{activeTab === 'SERVER' ? (language === 'ar' ? ' (نموذجي)' : ' (Demo)') : ''}</span>
+              {activeTab !== 'SERVER' && <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-action-primary)]/10 text-[color:var(--theme-text-technical)]">
                 {dailyVisits.length}
-              </span>
+              </span>}
             </button>
 
             <button
               type="button"
+              disabled={serverIdentity.blocked}
               onClick={() => setActiveTab('INTAKE')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'INTAKE'
@@ -353,11 +368,12 @@ export default function App() {
               }`}
             >
               <UserPlus className="w-4 h-4" />
-              <span>{t.tabPatientIntake}</span>
+              <span>{t.tabPatientIntake}{activeTab === 'SERVER' ? (language === 'ar' ? ' (نموذجي)' : ' (Demo)') : ''}</span>
             </button>
 
             <button
               type="button"
+              disabled={serverIdentity.blocked}
               onClick={() => setActiveTab('DOSSIER')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'DOSSIER'
@@ -366,8 +382,8 @@ export default function App() {
               }`}
             >
               <FolderOpen className="w-4 h-4" />
-              <span>{t.tabPatientChart}</span>
-              {selectedPatient && (
+              <span>{t.tabPatientChart}{activeTab === 'SERVER' ? (language === 'ar' ? ' (نموذجي)' : ' (Demo)') : ''}</span>
+              {activeTab !== 'SERVER' && selectedPatient && (
                 <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-border)]/60 theme-text-secondary">
                   {selectedPatient.clinicPatientNumber}
                 </span>
@@ -376,6 +392,7 @@ export default function App() {
 
             <button
               type="button"
+              disabled={serverIdentity.blocked}
               onClick={() => setActiveTab('CONSULTATION')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'CONSULTATION'
@@ -384,14 +401,15 @@ export default function App() {
               }`}
             >
               <Stethoscope className="w-4 h-4" />
-              <span>{t.tabDoctorConsultation}</span>
-              {activeConsultationVisit?.prescription?.isAuthorized && (
+              <span>{t.tabDoctorConsultation}{activeTab === 'SERVER' ? (language === 'ar' ? ' (نموذجي)' : ' (Demo)') : ''}</span>
+              {activeTab !== 'SERVER' && activeConsultationVisit?.prescription?.isAuthorized && (
                 <span className="w-2 h-2 rounded-full bg-[color:var(--theme-status-active)]" />
               )}
             </button>
 
             <button
               type="button"
+              disabled={serverIdentity.blocked}
               onClick={() => setActiveTab('DIRECTORY')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                 activeTab === 'DIRECTORY'
@@ -400,17 +418,23 @@ export default function App() {
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>{t.tabPatientDirectory}</span>
-              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-border)]/60 theme-text-muted">
+              <span>{t.tabPatientDirectory}{activeTab === 'SERVER' ? (language === 'ar' ? ' (نموذجي)' : ' (Demo)') : ''}</span>
+              {activeTab !== 'SERVER' && <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-[color:var(--theme-border)]/60 theme-text-muted">
                 {storeState.patients.length}
-              </span>
+              </span>}
             </button>
           </div>
         </div>
       </nav>
 
+      <div className="no-print theme-surface-nested theme-text-secondary px-4 py-2 text-center text-xs" role="status">
+        {activeTab === 'SERVER'
+          ? (language === 'ar' ? 'مرضى الخادم — هوية وبيانات مستقلة عن السجلات النموذجية' : 'Server patients — identity and records separate from demonstration data')
+          : (language === 'ar' ? 'السجلات النموذجية — دليل واجهة محفوظ، وليس سجلات الخادم' : 'Demonstration records — preserved UI reference, separate from server records')}
+      </div>
+
       {/* Toast notification banner */}
-      {feedback && (
+      {feedback && activeTab !== 'SERVER' && (
         <div className="no-print bg-[color:var(--theme-action-primary)]/10 border-b border-[color:var(--theme-action-primary)]/30 px-4 py-2 text-center text-xs theme-text-secondary flex items-center justify-center gap-2 transition-all">
           <CheckCircle className="w-3.5 h-3.5 text-[color:var(--theme-status-active)]" />
           <span>{feedback}</span>
@@ -419,6 +443,9 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div hidden={activeTab !== 'SERVER'}>
+          <ConnectedPatients language={language} onIdentity={setServerIdentity} />
+        </div>
         {activeTab === 'CENSUS' && (
           <DailyCensus
             visits={dailyVisits}
@@ -503,7 +530,7 @@ export default function App() {
       </main>
 
       {/* Certified Printable Prescription Modal */}
-      {printVisit && printCase && (
+      {activeTab !== 'SERVER' && printVisit && printCase && (
         <PrintPrescriptionModal
           isOpen={printModalOpen}
           onClose={() => setPrintModalOpen(false)}
@@ -522,16 +549,16 @@ export default function App() {
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[color:var(--theme-authority)]/60" />
             <span>
-              Dr.Roby Clinic EMR · Longitudinal Record Architecture · Patient → Case → Visit → Clinic Day
+              {activeTab === 'SERVER' ? 'Dr.Roby Clinic · Server basic Patient data' : 'Dr.Roby Clinic EMR · Longitudinal Record Architecture · Patient → Case → Visit → Clinic Day'}
             </span>
           </div>
 
           <div className="flex items-center gap-4">
             <span className="font-mono text-[11px] theme-text-muted">
-              Contract-09 Derived Age Validated · PostgreSQL-backed Sequence
+              {activeTab === 'SERVER' ? 'PostgreSQL · Server identity · Basic Patient registration/retrieval' : 'Contract-09 Derived Age Validated · PostgreSQL-backed Sequence'}
             </span>
 
-            <button
+            {activeTab !== 'SERVER' && <button
               type="button"
               onClick={handleResetToBaseline}
               className="theme-text-muted hover:text-[color:var(--theme-text-secondary)] transition-colors flex items-center gap-1"
@@ -539,7 +566,7 @@ export default function App() {
             >
               <RotateCcw className="w-3 h-3" />
               <span>Reset Data</span>
-            </button>
+            </button>}
           </div>
         </div>
       </footer>
