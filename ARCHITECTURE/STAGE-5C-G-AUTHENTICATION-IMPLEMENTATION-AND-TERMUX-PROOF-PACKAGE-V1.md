@@ -283,3 +283,20 @@ application/runtime/frontend code and all protected files.
 - [Fastify hooks](https://fastify.dev/docs/latest/Reference/Hooks/): encapsulated request boundary.
 
 These inform engineering; none grants production or clinical authority.
+
+## Post-implementation isolated proof closure
+
+The owner subsequently supplied successful Termux execution at
+c59fe2b48d2b2adb882a95dcf05bdb8fd8e0c59c: scoped synchronization and downloaded
+bytes verified, 10/10 guard tests, guarded resume-empty preparation, all 19
+real PostgreSQL service cases and all additional integration checks passed.
+The final marker is REAL_POSTGRESQL_AUTH_PROOF=PASS_FOR_TESTED_ISOLATED_PATHS.
+Protected bytes/status/index/HEAD were reported unchanged; no network listener,
+cluster cleanup, production deployment or clinical use was authorized or run.
+
+See the [Stage 5-G Milestone](./STAGE-5G-ISOLATED-POSTGRESQL-AUTHENTICATION-PROOF-MILESTONE-V1.md)
+for provenance, exact result markers, intended synthetic POST mutation,
+preservation limits and the next Stage 6 Web gate. Earlier NOT_EXECUTED/pending
+statements above retain their original pre-execution chronology; this later
+closure records the new evidence, not a blanket grant or an independent Work
+rerun. The retained database must not be silently reset or rerun.

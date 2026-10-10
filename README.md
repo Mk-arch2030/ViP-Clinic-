@@ -11,8 +11,9 @@ The aim is a small, focused, useful, provable, repeatable, and sellable product 
 ## Current position
 
 This status incorporates owner-reported Termux execution evidence received on
-**2026-10-10 (Africa/Cairo)** at tested commit
-[`9d207d4a1a0fbffd0bc38035279a7ae3f3b43925`](https://github.com/Mk-arch2030/ViP-Clinic-/commit/9d207d4a1a0fbffd0bc38035279a7ae3f3b43925).
+**2026-10-10 (Africa/Cairo)**. The latest isolated authentication proof ran at
+[`c59fe2b48d2b2adb882a95dcf05bdb8fd8e0c59c`](https://github.com/Mk-arch2030/ViP-Clinic-/commit/c59fe2b48d2b2adb882a95dcf05bdb8fd8e0c59c);
+the earlier Stage 4 composition proof ran at `9d207d4a1a0fbffd0bc38035279a7ae3f3b43925`.
 Subsequent documentation commits preserve that evidence; they are not new runtime executions.
 
 | Area | Evidence and boundary |
@@ -24,12 +25,12 @@ Subsequent documentation commits preserve that evidence; they are not new runtim
 | Current composition tests | Owner-provided Termux evidence records **17/17 scoped tests** and **52/52 active regression tests**, with zero failures. The scoped evidence covers tested fake-dependency composition paths. |
 | Earlier PostgreSQL GET proof | Decisions A–D established bounded GET-only Fastify injection against a separate synthetic PostgreSQL cluster, including 200/404 and compared patient-data/sequence preservation. |
 | Current PostgreSQL composition proof | Stage 4 passed for the tested isolated paths: current opt-in composition, GET 200/404, POST present but not invoked, compared patient/sequence/schema state preserved, no listener, protected local state preserved, exit 0. See the [Stage 4 Milestone](./ARCHITECTURE/RETRIEVE-EXISTING-PATIENT-COMPOSITION-POSTGRESQL-PROOF-MILESTONE-V1.md). |
-| Authentication | Technical contract closure is documented at the definition level. It does not establish implemented login, sessions, or server-side authorization. |
+| Authentication | Stage 5-B–F backend lifecycle, password verifier, persisted identity/session policy and separate secured Fastify composition are implemented. Stage 5-G passed 19 real PostgreSQL service cases plus concurrency, credential replacement, HTTP injection denial/GET/POST, rollback and logout checks. This is bounded isolated proof, not browser/production assurance. See the [Stage 5-G Milestone](./ARCHITECTURE/STAGE-5G-ISOLATED-POSTGRESQL-AUTHENTICATION-PROOF-MILESTONE-V1.md). |
 | Integration and release | The current frontend-to-API/database journey, production GET enablement, deployment, and clinical readiness are not established by these proofs. |
 
 The owner also reported the package guard tests passing 12/12 and active regression passing 52/52 before real execution. These are separate runs. Results above are recorded execution evidence, not tests rerun while updating this README. No product completion percentage is inferred from them.
 
-**Stage 4's bounded isolated composition proof is passed and documented. The next roadmap gate is Stage 5 authentication/server authorization review; implementation needs its own bounded decision. The browser-state frontend continues in parallel.**
+**Stage 5's backend authentication foundation and bounded isolated proof are passed and documented. We are at the Stage 6 entry gate: bounded Web authentication/session/CSRF integration and the current Patient UI/API adapter. Browser integration requires its applicable owner decision and execution proof; the browser-state frontend continues in parallel.**
 
 ## Product foundation and continuity
 
@@ -138,8 +139,8 @@ The sequence below is a planning index. Each implementation increment needs its 
 | 2 | Domain and basic persistence | Bounded representations and historical proofs exist; preserve their limits. |
 | 3 | Patient API foundation | POST foundation and explicit opt-in GET preserved; default GET OFF. |
 | **4** | **Real-PostgreSQL composition proof** | **Bounded proof passed:** reviewed Termux output at 9d207d4, GET 200/404, compared state preserved, POST not invoked, no listener, exit 0. |
-| **5** | **Authentication and server authorization** | **Next gate:** review contracts/current source, then obtain a bounded implementation decision for identity, session lifecycle, and operation-specific role enforcement. |
-| 6 | Current patient UI/API adapter | Prove frontend → API → isolated database, explicit error handling, identity mapping, and preserved demo-data boundaries. |
+| **5** | **Authentication and server authorization** | **Bounded backend proof passed:** Stage 5-B–F delivered; Stage 5-G real PostgreSQL proof at c59fe2b, including lifecycle/session/role enforcement and tested failure/concurrency paths. No browser/production claim. |
+| **6** | **Web authentication and current patient UI/API adapter** | **Next gate:** decide the bounded same-origin transport/session/CSRF and UI adapter scope, then prove frontend → secured API → isolated database, denial/error handling, server identity and preserved demo-data boundaries. |
 | 7 | Case, Visit, and history persistence/API | Deliver small contracted vertical slices with transactional, continuity, and failure proof. |
 | 8 | Clinical and operational workflow | Prove clinical record, prescription/follow-up, Case completion, day protection, delegation, and notifications within their contracts. |
 | 9 | Integrated Web journey | Prove the full authorized workflow, durable reopening, server role enforcement, and contracted failure/concurrency behavior. |
@@ -165,6 +166,8 @@ Current recorded boundaries:
 ```text
 DEFAULT_GET = OFF
 REAL_POSTGRESQL_COMPOSITION_PROOF = PASS_FOR_TESTED_ISOLATED_PATHS
+REAL_POSTGRESQL_AUTH_PROOF = PASS_FOR_TESTED_ISOLATED_PATHS
+BROWSER_AUTH_INTEGRATION = NOT_ESTABLISHED
 PRODUCTION_GET_ENABLEMENT = NOT_GRANTED
 PRODUCTION_DEPLOYMENT = NOT_GRANTED
 CLINICAL_AUTHORITY = NOT_GRANTED
@@ -199,6 +202,8 @@ The separate proof cluster under `$HOME/vip-retrieve-proof-isolated` is recorded
 - [Authentication Contract Closure Proof](./ARCHITECTURE/AUTHENTICATION-TECHNICAL-CONTRACT-CLOSURE-PROOF-V1.md)
 - [Isolated PostgreSQL GET Milestone and Later Grant Reconciliation](./ARCHITECTURE/RETRIEVE-EXISTING-PATIENT-ISOLATED-POSTGRESQL-GET-RUNTIME-PROOF-MILESTONE-V1.md)
 - [Stage 4 Composition PostgreSQL Milestone](./ARCHITECTURE/RETRIEVE-EXISTING-PATIENT-COMPOSITION-POSTGRESQL-PROOF-MILESTONE-V1.md)
+- [Stage 5-G Authentication PostgreSQL Milestone](./ARCHITECTURE/STAGE-5G-ISOLATED-POSTGRESQL-AUTHENTICATION-PROOF-MILESTONE-V1.md)
+- [Stage 5 Authentication Implementation and Termux Package](./ARCHITECTURE/STAGE-5C-G-AUTHENTICATION-IMPLEMENTATION-AND-TERMUX-PROOF-PACKAGE-V1.md)
 - [Current Patient Composition](./backend/api/patient-registration-composition.js)
 - [Current Runtime](./backend/api/patient-registration-runtime.js)
 - [Current Frontend State](./src/services/clinicStore.ts)
