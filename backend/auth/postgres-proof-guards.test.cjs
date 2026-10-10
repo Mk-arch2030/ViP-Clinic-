@@ -49,3 +49,18 @@ test('proof import loads no database or HTTP driver and performs no execution', 
   `],{encoding:'utf8',timeout:5000});
   assert.equal(probe.status,0,probe.stderr);
 });
+
+test('the runner-configured search path passes the guard with or without separator spaces', () => {
+  const { connectionOptions } = require('./postgres-proof.cjs');
+  const configured = connectionOptions(expected, DATABASE).options.match(/search_path=([^ ]+)/)[1];
+  for (const search_path of [configured, 'pg_catalog, public', ' pg_catalog , public ']) {
+    assert.equal(validateIdentity({ ...identity, search_path }, expected, DATABASE), '123456789');
+  }
+});
+
+test('normalizing separator spaces does not permit extra schemas, reordered entries or malformed paths', () => {
+  for (const search_path of [null, ['pg_catalog','public'], 'public,pg_catalog', 'pg_catalog,public,pg_temp',
+    'pg_catalog,public,', 'pg_catalog,$user,public', 'pg_catalog,public,public', '']) {
+    assert.throws(() => validateIdentity({ ...identity, search_path }, expected, DATABASE));
+  }
+});

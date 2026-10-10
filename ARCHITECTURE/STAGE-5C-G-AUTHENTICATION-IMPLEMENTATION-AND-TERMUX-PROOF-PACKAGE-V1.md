@@ -196,6 +196,38 @@ subsequent review/preservation. No current document labels it complete.
 The following Web gate then needs explicit same-origin transport, browser
 session/CSRF wiring and preservation of existing demo/workflow data.
 
+## Termux execution report and bounded correction
+
+At c87db12194252db9724ee2b45967a2ccaba9a86a, owner-provided output confirms
+safe synchronization, protected-worktree preservation, 60/60 scoped tests and
+52/52 active regression tests. Both preparation and proof commands failed;
+their generic error messages did not establish which stage had failed.
+A subsequent read-only diagnostic reported ECONNREFUSED before any SQL result.
+A process/socket inspection then reported recorded PID 26713 absent, a remaining
+Unix socket and matching lock file, and EACCES reading the kernel socket table.
+Thus the recorded ready metadata is stale with respect to process liveness.
+The cause of process termination and auth-database existence remain unknown.
+No SQL creation/proof, protected-file mutation, historical-cluster operation or
+cleanup is claimed from these failed commands.
+
+Independent source review also found that the runner configures
+search_path=pg_catalog,public while the previous guard required the exact string
+pg_catalog, public. A bounded correction compares the same two ordered entries
+after whitespace trimming; extra/reordered/malformed entries still reject.
+Regression tests use the runner's actual connection options. This inconsistency
+was reproduced in Work but was not the reached cause of ECONNREFUSED on Termux.
+The runner now reports a fixed execution-phase label and sanitized error code,
+without printing passwords, verifier material or full database diagnostics.
+
+Continuation remains within the owner's 5-G execution grant: establish the
+existing isolated cluster's control identity, start that stopped isolated cluster
+only, verify Unix-only identity using a read-only session, and inspect whether
+auth preparation left state. Do not use restart/stop, manually remove locks,
+drop/reset databases, recreate the cluster or blindly repeat preparation.
+PostgreSQL-managed startup/crash recovery changes its own runtime files; this
+does not authorize Decision E removal of the cluster. Stage 4 records are not
+queried or altered by the auth continuation; historical storage remains excluded.
+
 ## Primary engineering references
 
 - [Node crypto](https://nodejs.org/docs/latest-v24.x/api/crypto.html): scrypt/randomBytes/timingSafeEqual.

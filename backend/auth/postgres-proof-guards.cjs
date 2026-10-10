@@ -55,7 +55,9 @@ function validateIdentity(row, expected, database) {
   assert.equal(row.port, String(expected.port));
   assert.equal(row.listen_addresses, '');
   assert.equal(row.address, null);
-  assert.equal(row.search_path, 'pg_catalog, public');
+  assert.equal(typeof row.search_path, 'string');
+  assert.deepEqual(row.search_path.split(',').map(part => part.trim()), ['pg_catalog', 'public'],
+    'Unexpected search-path entries or order');
   assert.ok(Number(row.version) >= 180000 && Number(row.version) < 190000, 'PostgreSQL 18 required');
   assert.match(row.system_identifier, /^[0-9]+$/);
   return row.system_identifier;

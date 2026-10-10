@@ -8,6 +8,7 @@ const { randomBytes } = require('node:crypto');
 const guards = require('./postgres-proof-guards.cjs');
 const PATIENT = '55555555-5555-4555-8555-555555555555';
 const MISSING = '66666666-6666-4666-8666-666666666666';
+let executionPhase = 'SOURCE_AND_CLUSTER_PREFLIGHT';
 
 async function identity(client, expected, database) {
   const row = (await client.query(`SELECT current_database() AS database,
@@ -38,18 +39,25 @@ async function patientBaseline(client) {
 async function prepare(repo, expected, head) {
   const { Client } = require('pg');
   const admin = new Client(connectionOptions(expected, 'postgres'));
+  executionPhase = 'ISOLATED_MAINTENANCE_CONNECTION';
   await admin.connect();
   let systemId;
   try {
+    executionPhase = 'ISOLATED_MAINTENANCE_IDENTITY';
     systemId = await identity(admin, expected, 'postgres');
+    executionPhase = 'AUTH_DATABASE_EXISTENCE';
     assert.equal((await admin.query('SELECT 1 FROM pg_database WHERE datname=$1', [guards.DATABASE])).rows.length, 0,
       'Auth database already exists: refuse overwrite, reset or drop');
+    executionPhase = 'AUTH_DATABASE_CREATION';
     await admin.query('CREATE DATABASE roby_auth_proof_stage5');
   } finally { await admin.end(); }
   const client = new Client(connectionOptions(expected, guards.DATABASE));
+  executionPhase = 'NEW_AUTH_DATABASE_CONNECTION';
   await client.connect();
   try {
+    executionPhase = 'NEW_AUTH_DATABASE_IDENTITY';
     assert.equal(await identity(client, expected, guards.DATABASE), systemId);
+    executionPhase = 'NEW_AUTH_SCHEMA_AND_SYNTHETIC_FIXTURE';
     await client.query('BEGIN');
     await client.query(fs.readFileSync(path.join(repo,'backend/persistence/schema.sql'), 'utf8'));
     await client.query(fs.readFileSync(path.join(repo,'backend/persistence/auth-schema.sql'), 'utf8'));
@@ -80,9 +88,11 @@ async function prove(repo, expected, head) {
   const pool = new Pool(connectionOptions(expected, guards.DATABASE));
   let app;
   try {
+    executionPhase = 'AUTH_PROOF_DATABASE_CONNECTION';
     const client = await pool.connect();
     let baseline;
     try {
+      executionPhase = 'AUTH_PROOF_IDENTITY_AND_BASELINE';
       const systemId = await identity(client, expected, guards.DATABASE);
       const manifest = (await client.query('SELECT * FROM vip_auth.proof_manifest')).rows;
       assert.deepEqual(manifest, [{ singleton: true, head, system_identifier: systemId }]);
@@ -129,10 +139,12 @@ async function prove(repo, expected, head) {
       };
     }
     for (let i = 0; i < cases.length; i++) {
+      executionPhase = 'AUTH_SERVICE_CASE_' + String(i + 1).padStart(2,'0');
       await cases[i][1](await harness());
       console.log(`REAL_PG_AUTH_CASE_${String(i+1).padStart(2,'0')}=PASS`);
     }
     // Independent pool/repository instances share SQL locks, not a JS mutex.
+    executionPhase = 'INDEPENDENT_REPOSITORY_CAP_AND_CREDENTIAL_REPLACEMENT';
     const h = await harness();
     const otherStore = new AuthRepository(pool);
     const otherAuth = createAuthService({ store: otherStore,dummyVerifier });
@@ -148,6 +160,7 @@ async function prove(repo, expected, head) {
     await assert.rejects(login(h),error => error.statusCode === 401);
     console.log('ATOMIC_CREDENTIAL_REPLACEMENT_AND_SESSION_REVOCATION=PASS');
     const transport = await harness();
+    executionPhase = 'FASTIFY_AUTHENTICATION_AND_DENIALS';
     app = Fastify({ logger:false,trustProxy:false });
     const origin = 'https://vip.synthetic.invalid';
     await composeSecuredPatients(app, { auth:transport.auth,trustedOrigin:origin });
@@ -177,6 +190,7 @@ async function prove(repo, expected, head) {
     console.log('DENIAL_AND_GET_PATIENT_SEQUENCE_SCHEMA_PRESERVATION=PASS');
     console.log('REAL_PG_FASTIFY_IDENTITY_CSRF_DEACTIVATION_AND_200_404=PASS');
     // Prove rollback across auth + business data before the successful registration.
+    executionPhase = 'AUTH_AND_BUSINESS_ROLLBACK';
     const markerId = '77777777-7777-4777-8777-777777777777';
     const rawToken = cookie.slice('__Host-vip_session='.length);
     const csrf = session.json().csrf;
@@ -187,12 +201,14 @@ async function prove(repo, expected, head) {
     }),error => error.statusCode === 503);
     assert.equal((await pool.query('SELECT 1 FROM public.patients WHERE patient_id=$1',[markerId])).rows.length,0);
     console.log('AUTH_AND_BUSINESS_TRANSACTION_ROLLBACK=PASS');
+    executionPhase = 'AUTHORIZED_DOCTOR_POST';
     const created = await request({ method:'POST',url:'/patients',headers:{cookie,origin,'x-csrf-token':csrf},payload:body });
     assert.equal(created.statusCode,201);
     assert.equal((await pool.query('SELECT count(*)::integer AS count FROM public.patients')).rows[0].count,2);
     assert.deepEqual((await pool.query('SELECT last_value::text,is_called FROM public.clinic_patient_number_seq')).rows,[{last_value:'1',is_called:true}]);
     console.log('AUTHORIZED_DOCTOR_POST_PERSISTENCE=PASS');
     console.log('EXPECTED_POST_EFFECT=ONE_NEW_SYNTHETIC_PATIENT_AND_ONE_CPN_ALLOCATION');
+    executionPhase = 'LOGOUT_AND_REUSE_DENIAL';
     const logout = await request({ method:'POST',url:'/auth/logout',headers:{cookie,origin,'x-csrf-token':csrf},payload:{} });
     assert.equal(logout.statusCode,204);
     assert.equal((await request({ method:'GET',url:'/patients/'+PATIENT,headers:{cookie} })).statusCode,401);
@@ -225,8 +241,10 @@ async function main(args) {
   if (succeeded && mode === 'prove') console.log('REAL_POSTGRESQL_AUTH_PROOF=PASS_FOR_TESTED_ISOLATED_PATHS');
 }
 
-if (require.main === module) main(process.argv.slice(2)).catch(() => {
+if (require.main === module) main(process.argv.slice(2)).catch(error => {
   console.error('STAGE5_AUTH_COMMAND=FAILED — proof not established; inspect bounded state before retry');
+  console.error('FAILED_PHASE=' + executionPhase);
+  console.error('ERROR_CODE=' + (/^[A-Z0-9_]{1,40}$/.test(String(error.code)) ? error.code : 'UNCLASSIFIED'));
   process.exitCode = 1;
 });
 
