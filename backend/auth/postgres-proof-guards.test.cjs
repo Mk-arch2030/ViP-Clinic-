@@ -8,8 +8,62 @@ const identity = { database: DATABASE, data_directory: expected.data, socket_dir
 
 test('explicit mode, matching token and full HEAD are required', () => {
   assert.equal(parseArgs(['prove','ROBY_STAGE5_AUTH_PROVE','a'.repeat(40)]).mode, 'prove');
+  assert.equal(parseArgs(['resume-empty','ROBY_STAGE5_AUTH_RESUME_EMPTY','a'.repeat(40)]).mode, 'resume-empty');
+  assert.throws(() => parseArgs(['resume-empty','ROBY_STAGE5_AUTH_PREPARE','a'.repeat(40)]));
   for (const args of [[], ['prove'], ['prove','ROBY_STAGE5_AUTH_PREPARE','a'.repeat(40)], ['prove','ROBY_STAGE5_AUTH_PROVE','short'],
     ['prove','ROBY_STAGE5_AUTH_PROVE','a'.repeat(40),'extra']]) assert.throws(() => parseArgs(args));
+});
+
+const emptyState = { current_user_owns_database: true, public_create_allowed: true, auth_schema_exists: false,
+  public_relations: 0, public_functions: 0, public_types: 0, other_user_schemas: 0, unexpected_extensions: 0 };
+
+test('empty resume rejects existing auth, any user object, unexpected extension or missing owner/privilege', () => {
+  const { validateEmptyAuthDatabase } = require('./postgres-proof-guards.cjs');
+  validateEmptyAuthDatabase(emptyState);
+  for (const [key,value] of Object.entries(emptyState)) {
+    const invalid = typeof value === 'boolean' ? !value : 1;
+    assert.throws(() => validateEmptyAuthDatabase({ ...emptyState, [key]: invalid }));
+    assert.throws(() => validateEmptyAuthDatabase({ ...emptyState, [key]: undefined }));
+  }
+});
+
+test('synthetic initialization guards before DDL and targets public only for the unchanged base schema', async () => {
+  const { initializeSyntheticDatabase } = require('./postgres-proof.cjs');
+  const calls = [];
+  const client = { async query(sql, params) {
+    calls.push({ sql, params });
+    return { rows: sql.includes('AS current_user_owns_database') ? [emptyState] : [] };
+  } };
+  const readSchema = filename => filename.endsWith('/auth-schema.sql') ? 'AUTH_DDL' : 'BASE_DDL';
+  await initializeSyntheticDatabase(client,'/repo','a'.repeat(40),'7694773229923891271',readSchema);
+  const queries = calls.map(call => call.sql);
+  assert.deepEqual(queries.slice(3,7), ['SET LOCAL search_path = public','BASE_DDL',
+    'SET LOCAL search_path = pg_catalog, public','AUTH_DDL']);
+  assert.equal(queries[0],'BEGIN');
+  assert.equal(queries[1],'SELECT pg_advisory_xact_lock(76551005)');
+  assert.match(queries[2], /AS current_user_owns_database/);
+  assert.equal(queries.at(-1),'COMMIT');
+  assert.deepEqual(calls.find(call => call.sql.startsWith('INSERT INTO vip_auth.proof_manifest')).params,
+    ['a'.repeat(40),'7694773229923891271']);
+  assert.ok(queries.every(sql => !/DROP|GRANT|TRUNCATE|ALTER ROLE|ALTER DATABASE/.test(sql)));
+});
+
+test('nonempty state rolls back before DDL; DDL or fixture failure rolls back without committing', async () => {
+  const { initializeSyntheticDatabase } = require('./postgres-proof.cjs');
+  for (const failure of ['guard','BASE_DDL','AUTH_DDL','INSERT INTO public.actors']) {
+    const queries = [];
+    const client = { async query(sql) {
+      queries.push(sql);
+      if (failure !== 'guard' && sql.startsWith(failure)) throw new Error('synthetic failure');
+      return { rows: sql.includes('AS current_user_owns_database') ?
+        [{ ...emptyState, public_relations: failure === 'guard' ? 1 : 0 }] : [] };
+    } };
+    await assert.rejects(initializeSyntheticDatabase(client,'/repo','a'.repeat(40),'7694773229923891271',
+      filename => filename.endsWith('/auth-schema.sql') ? 'AUTH_DDL' : 'BASE_DDL'));
+    assert.equal(queries.at(-1),'ROLLBACK');
+    assert.ok(!queries.includes('COMMIT'));
+    if (failure === 'guard') assert.ok(!queries.some(sql => sql.startsWith('SET LOCAL')));
+  }
 });
 
 test('cluster paths are fixed to the prior isolated cluster and a new database', () => {

@@ -13,8 +13,10 @@ const PROTECTED = Object.freeze(['src/index.css',
 function parseArgs(args) {
   assert.equal(args.length, 3, 'Explicit mode, token and full expected HEAD required');
   const [mode, token, head] = args;
-  assert.ok(['prepare', 'prove'].includes(mode), 'Unknown execution mode');
-  assert.equal(token, mode === 'prepare' ? 'ROBY_STAGE5_AUTH_PREPARE' : 'ROBY_STAGE5_AUTH_PROVE', 'Execution token mismatch');
+  const tokens = { prepare: 'ROBY_STAGE5_AUTH_PREPARE', prove: 'ROBY_STAGE5_AUTH_PROVE',
+    'resume-empty': 'ROBY_STAGE5_AUTH_RESUME_EMPTY' };
+  assert.ok(Object.hasOwn(tokens, mode), 'Unknown execution mode');
+  assert.equal(token, tokens[mode], 'Execution token mismatch');
   assert.match(head, /^[0-9a-f]{40}$/, 'Full expected commit required');
   return { mode, head };
 }
@@ -64,6 +66,15 @@ function validateIdentity(row, expected, database) {
 }
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+
+function validateEmptyAuthDatabase(row) {
+  assert.equal(row.current_user_owns_database, true, 'Only the owned synthetic database can be initialized');
+  assert.equal(row.public_create_allowed, true, 'Public schema creation privilege required');
+  assert.equal(row.auth_schema_exists, false, 'Existing auth schema cannot be resumed');
+  for (const key of ['public_relations', 'public_functions', 'public_types', 'other_user_schemas', 'unexpected_extensions']) {
+    assert.equal(row[key], 0, 'Database is not empty: ' + key);
+  }
+}
 function git(repo, args) {
   return execFileSync('git', ['-C', repo, ...args], { env: { ...process.env, GIT_OPTIONAL_LOCKS: '0' }, encoding: 'utf8' }).trimEnd();
 }
@@ -94,4 +105,4 @@ function preflightSource(repo, head) {
 }
 
 module.exports = { DATABASE, PROTECTED, parseArgs, clusterPaths, validateMetadata, preflightCluster, validateIdentity,
-  snapshot, preflightSource, hash };
+  snapshot, preflightSource, hash, validateEmptyAuthDatabase };

@@ -228,6 +228,54 @@ PostgreSQL-managed startup/crash recovery changes its own runtime files; this
 does not authorize Decision E removal of the cluster. Stage 4 records are not
 queried or altered by the auth continuation; historical storage remains excluded.
 
+## Empty-database preparation correction and bounded continuation
+
+Owner-provided Termux evidence subsequently establishes successful startup of
+the existing isolated cluster, system identifier 7694773229923891271, and then
+preparation failure at NEW_AUTH_SCHEMA_AND_SYNTHETIC_FIXTURE with SQLSTATE 42501.
+The read-only diagnostic confirms the auth database exists, is owned by the
+current user, permits CREATE on public, targets pg_catalog for unqualified DDL,
+has no vip_auth schema and has zero scoped relations. Protected files, index and
+HEAD remain unchanged. The historical cluster and Stage 4 database were excluded.
+
+The unchanged base schema uses unqualified CREATE SEQUENCE / CREATE TABLE.
+The runner's explicit pg_catalog-first search path therefore targets the system
+schema during initialization. This is a proof-runner defect, not a reason to
+grant extra privileges or modify the historical/base schema.
+
+Initialization now uses SET LOCAL search_path = public only for the base DDL;
+PostgreSQL still implicitly searches pg_catalog first for name resolution.
+The runner then restores pg_catalog, public before the separate auth DDL and
+synthetic fixtures. All schema/fixture work remains one transaction with rollback
+on failure. Runtime identity/search-path guards remain unchanged.
+
+A separate resume-empty mode requires ROBY_STAGE5_AUTH_RESUME_EMPTY and the full
+new package HEAD, the diagnosed isolated system identifier and the existing
+auth database. Inside the transaction it requires current ownership/public
+creation privilege, no vip_auth schema, no public relations/functions/types,
+no other user schemas and no extensions other than plpgsql. Any mismatch rejects
+before DDL; no existing object is dropped, truncated, reset or overwritten.
+This is bounded continuation of the owner's granted synthetic 5-G preparation,
+not a general recovery command. Fresh prepare still refuses an existing database.
+The new manifest records the new package HEAD, not the previous failed HEAD.
+
+After scoped synchronization and tests, execute resume-empty once, then prove
+only after NEW_AUTH_DATABASE_PREPARED=PASS. Failure requires further inspection.
+The diagnostic alone does not establish runtime proof. No cleanup, production,
+clinical, historical-storage or frontend authority is added.
+
+~~~bash
+node backend/auth/postgres-proof.cjs resume-empty ROBY_STAGE5_AUTH_RESUME_EMPTY EXPECTED_FULL_PACKAGE_HEAD
+node backend/auth/postgres-proof.cjs prove ROBY_STAGE5_AUTH_PROVE EXPECTED_FULL_PACKAGE_HEAD
+~~~
+
+Work validation for this correction: the scoped Actor/auth selection passes
+65 tests with 0 failures; this includes empty-state rejection, transaction-local
+DDL placement, manifest binding and rollback-before-DDL/after-failure tests.
+The checks use fake SQL clients; real PostgreSQL continuation remains pending
+the owner's Termux execution. The four-file correction excludes base SQL,
+application/runtime/frontend code and all protected files.
+
 ## Primary engineering references
 
 - [Node crypto](https://nodejs.org/docs/latest-v24.x/api/crypto.html): scrypt/randomBytes/timingSafeEqual.

@@ -36,31 +36,28 @@ async function patientBaseline(client) {
   };
 }
 
-async function prepare(repo, expected, head) {
-  const { Client } = require('pg');
-  const admin = new Client(connectionOptions(expected, 'postgres'));
-  executionPhase = 'ISOLATED_MAINTENANCE_CONNECTION';
-  await admin.connect();
-  let systemId;
+async function initializeSyntheticDatabase(client, repo, head, systemId, readSchema = filename => fs.readFileSync(filename, 'utf8')) {
   try {
-    executionPhase = 'ISOLATED_MAINTENANCE_IDENTITY';
-    systemId = await identity(admin, expected, 'postgres');
-    executionPhase = 'AUTH_DATABASE_EXISTENCE';
-    assert.equal((await admin.query('SELECT 1 FROM pg_database WHERE datname=$1', [guards.DATABASE])).rows.length, 0,
-      'Auth database already exists: refuse overwrite, reset or drop');
-    executionPhase = 'AUTH_DATABASE_CREATION';
-    await admin.query('CREATE DATABASE roby_auth_proof_stage5');
-  } finally { await admin.end(); }
-  const client = new Client(connectionOptions(expected, guards.DATABASE));
-  executionPhase = 'NEW_AUTH_DATABASE_CONNECTION';
-  await client.connect();
-  try {
-    executionPhase = 'NEW_AUTH_DATABASE_IDENTITY';
-    assert.equal(await identity(client, expected, guards.DATABASE), systemId);
-    executionPhase = 'NEW_AUTH_SCHEMA_AND_SYNTHETIC_FIXTURE';
+    executionPhase = 'EMPTY_AUTH_DATABASE_GUARD';
     await client.query('BEGIN');
-    await client.query(fs.readFileSync(path.join(repo,'backend/persistence/schema.sql'), 'utf8'));
-    await client.query(fs.readFileSync(path.join(repo,'backend/persistence/auth-schema.sql'), 'utf8'));
+    await client.query('SELECT pg_advisory_xact_lock(76551005)');
+    const state = (await client.query(`SELECT pg_get_userbyid(d.datdba)=current_user AS current_user_owns_database,
+      has_schema_privilege(current_user,'public','CREATE') AS public_create_allowed,
+      EXISTS(SELECT 1 FROM pg_namespace WHERE nspname='vip_auth') AS auth_schema_exists,
+      (SELECT count(*)::int FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public') AS public_relations,
+      (SELECT count(*)::int FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public') AS public_functions,
+      (SELECT count(*)::int FROM pg_type t JOIN pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public') AS public_types,
+      (SELECT count(*)::int FROM pg_namespace WHERE nspname NOT IN ('public','information_schema') AND nspname !~ '^pg_') AS other_user_schemas,
+      (SELECT count(*)::int FROM pg_extension WHERE extname <> 'plpgsql') AS unexpected_extensions
+      FROM pg_database d WHERE d.datname=current_database()`)).rows[0];
+    guards.validateEmptyAuthDatabase(state);
+    executionPhase = 'PUBLIC_BASE_SCHEMA_INITIALIZATION';
+    // pg_catalog is implicitly searched first, but unqualified DDL targets public.
+    await client.query('SET LOCAL search_path = public');
+    await client.query(readSchema(path.join(repo,'backend/persistence/schema.sql')));
+    await client.query('SET LOCAL search_path = pg_catalog, public');
+    executionPhase = 'AUTH_SCHEMA_AND_SYNTHETIC_FIXTURE';
+    await client.query(readSchema(path.join(repo,'backend/persistence/auth-schema.sql')));
     await client.query(`CREATE TABLE vip_auth.proof_manifest (
       singleton BOOLEAN PRIMARY KEY CHECK (singleton),head TEXT NOT NULL,system_identifier TEXT NOT NULL)`);
     await client.query('INSERT INTO vip_auth.proof_manifest VALUES (true,$1,$2)', [head,systemId]);
@@ -71,8 +68,39 @@ async function prepare(repo, expected, head) {
       VALUES ($1,'CPN-9001','Independent Stage 5 Synthetic Patient','1990-02-01','Tester','00000000000','Male')`, [PATIENT]);
     await client.query('COMMIT');
   } catch (error) { try { await client.query('ROLLBACK'); } catch {} throw error; }
+}
+
+async function prepare(repo, expected, head, resumeEmpty = false) {
+  const { Client } = require('pg');
+  const admin = new Client(connectionOptions(expected, 'postgres'));
+  executionPhase = 'ISOLATED_MAINTENANCE_CONNECTION';
+  await admin.connect();
+  let systemId;
+  try {
+    executionPhase = 'ISOLATED_MAINTENANCE_IDENTITY';
+    systemId = await identity(admin, expected, 'postgres');
+    executionPhase = 'AUTH_DATABASE_EXISTENCE';
+    const exists = (await admin.query('SELECT 1 FROM pg_database WHERE datname=$1', [guards.DATABASE])).rows.length;
+    if (resumeEmpty) {
+      assert.equal(systemId, '7694773229923891271', 'Resume requires the diagnosed isolated system identity');
+      assert.equal(exists, 1, 'Resume requires the existing diagnosed database');
+    } else {
+      assert.equal(exists, 0, 'Auth database already exists: refuse overwrite, reset or drop');
+      executionPhase = 'AUTH_DATABASE_CREATION';
+      await admin.query('CREATE DATABASE roby_auth_proof_stage5');
+    }
+  } finally { await admin.end(); }
+  const client = new Client(connectionOptions(expected, guards.DATABASE));
+  executionPhase = 'NEW_AUTH_DATABASE_CONNECTION';
+  await client.connect();
+  try {
+    executionPhase = 'NEW_AUTH_DATABASE_IDENTITY';
+    assert.equal(await identity(client, expected, guards.DATABASE), systemId);
+    await initializeSyntheticDatabase(client,repo,head,systemId);
+  }
   finally { await client.end(); }
   console.log('NEW_AUTH_DATABASE_PREPARED=PASS');
+  if (resumeEmpty) console.log('EXISTING_EMPTY_AUTH_DATABASE_INITIALIZED=PASS');
   console.log('STAGE4_DATABASE_AND_HISTORICAL_CLUSTER=NOT_CONNECTED');
   console.log('AUTH_RUNTIME_PROOF=NOT_EXECUTED');
 }
@@ -228,7 +256,8 @@ async function main(args) {
   const metadataHash = guards.hash(fs.readFileSync(path.join(expected.data,'postmaster.pid')));
   let succeeded = false;
   try {
-    if (mode === 'prepare') await prepare(repo,expected,head); else await prove(repo,expected,head);
+    if (mode === 'prove') await prove(repo,expected,head);
+    else await prepare(repo,expected,head,mode === 'resume-empty');
     succeeded = true;
   } finally {
     assert.equal(guards.preflightCluster(expected),pid,'Postmaster identity changed during proof');
@@ -248,4 +277,4 @@ if (require.main === module) main(process.argv.slice(2)).catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { main, connectionOptions, identity };
+module.exports = { main, connectionOptions, identity, initializeSyntheticDatabase };
