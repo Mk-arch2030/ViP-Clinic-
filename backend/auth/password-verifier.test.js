@@ -4,7 +4,8 @@ const { createVerifier, verifyPassword, normalizePassword, parseVerifier, create
 const denied = status => error => error.statusCode === status;
 
 test('password bounds and Unicode are checked before expensive work', () => {
-  for (const value of [null, 12, '', 'too short', 'a'.repeat(129), '\ud800'.repeat(15), '\udc00'.repeat(15)]) assert.throws(() => normalizePassword(value), denied(400));
+  for (const value of [null, 12, '', 'abcde', '12345', 'a'.repeat(129), '\ud800'.repeat(15), '\udc00'.repeat(15)]) assert.throws(() => normalizePassword(value), denied(400));
+  for (const value of ['abcdef', '123456', 'abc123', 'a'.repeat(128)]) assert.equal(normalizePassword(value), value);
   assert.equal(normalizePassword('  long synthetic password  '), '  long synthetic password  ');
   assert.equal(normalizePassword('cafe\u0301 synthetic password'), 'café synthetic password');
 });
@@ -54,4 +55,7 @@ test('real approved scrypt cost rejects a wrong password and preserves NFC and w
   assert.equal(await verifyPassword('cafe\u0301 synthetic password', verifier), true);
   assert.equal(await verifyPassword(' café synthetic password', verifier), false);
   assert.notEqual(await createVerifier(password), verifier);
+  const shortVerifier = await createVerifier('246810');
+  assert.equal(await verifyPassword('246811', shortVerifier), false);
+  assert.equal(await verifyPassword('246810', shortVerifier), true);
 });

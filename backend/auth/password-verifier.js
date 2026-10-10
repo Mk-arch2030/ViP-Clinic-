@@ -12,7 +12,7 @@ function normalizePassword(value) {
   }
   const normalized = value.normalize('NFC');
   const length = Array.from(normalized).length;
-  if (length < 15 || length > 128 || Buffer.byteLength(normalized, 'utf8') > 1024) throw new AuthError(400);
+  if (length < 6 || length > 128 || Buffer.byteLength(normalized, 'utf8') > 1024) throw new AuthError(400);
   return normalized;
 }
 
