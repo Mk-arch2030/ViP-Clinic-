@@ -11,6 +11,7 @@
     "lint": "tsc --noEmit",
     "test": "node --test application/tests/generate-clinic-patient-number.test.js application/tests/patient-age-contract-09.test.js application/tests/register-new-patient.test.js application/tests/retrieve-existing-patient.test.js backend/api/controllers/retrieve-existing-patient-controller.test.js backend/api/routes/patient-routes.test.js backend/persistence/patient-repository.test.js application/tests/clinic-day-persistence.test.js",
     "test:active": "node --import tsx --test application/tests/generate-clinic-patient-number.test.js application/tests/patient-age-contract-09.test.js application/tests/register-new-patient.test.js application/tests/retrieve-existing-patient.test.js backend/api/controllers/retrieve-existing-patient-controller.test.js backend/api/routes/patient-routes.test.js backend/persistence/patient-repository.test.js application/tests/clinic-day-persistence.test.js backend/api/patient-registration-composition.test.js backend/api/patient-registration-runtime.test.js src/services/clinic-authority-p37b.test.ts",
+    "test:all": "node scripts/run-all-tests.cjs",
     "test:historical": "node --import tsx --test src/services/clinic-authority-p37a.test.ts"
   },
   "dependencies": {
