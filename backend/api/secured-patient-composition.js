@@ -86,7 +86,24 @@ async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
             sql === 'ROLLBACK' ? 'ROLLBACK TO SAVEPOINT vip_patient_registration' : sql, params),
           release() {}
         };
-        return registerNewPatient({ ...body, repository: new PatientRepository(client), pool: { connect: async () => nestedClient } });
+        const repository = new PatientRepository(client);
+        let persisted;
+        // Preserve the service's legacy domain return; transport needs INSERT RETURNING identity.
+        const capture = {
+          allocateClinicPatientNumber: connection => repository.allocateClinicPatientNumber(connection),
+          async createPatient(value, connection) {
+            if (persisted) throw new AuthError(503);
+            persisted = await repository.createPatient(value, connection);
+            return persisted;
+          }
+        };
+        await registerNewPatient({ ...body, repository: capture, pool: { connect: async () => nestedClient } });
+        if (!persisted || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(persisted.patient_id)) throw new AuthError(503);
+        return {
+          patient_id: persisted.patient_id, clinic_patient_number: persisted.clinic_patient_number,
+          name: persisted.name, date_of_birth: persisted.date_of_birth,
+          profession: persisted.profession, phone: persisted.phone, gender: persisted.gender, age: persisted.age
+        };
       });
       return reply.code(201).send(patient);
     });

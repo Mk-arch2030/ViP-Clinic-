@@ -114,6 +114,13 @@ test('CSRF, strict basic payload and Nurse denial precede patient writes', async
     assert.equal(h.calls.length, 0);
     const result = await h.app.inject({ method: 'POST', url: '/patients', headers: { ...headers, 'x-csrf-token': csrf }, payload });
     assert.equal(result.statusCode, 201);
+    const inserted = h.calls.find(c => /INSERT INTO patients/.test(c.sql));
+    assert.equal(result.json().patient_id, inserted.values[0]);
+    assert.equal(result.json().clinic_patient_number, inserted.values[1]);
+    assert.deepEqual(Object.keys(result.json()).sort(),
+      ['patient_id','clinic_patient_number','name','date_of_birth','profession','phone','gender','age'].sort());
+    assert.equal(h.calls.filter(c => /nextval/.test(c.sql)).length, 1);
+    assert.equal(h.calls.filter(c => /INSERT INTO patients/.test(c.sql)).length, 1);
     assert.equal(h.calls[0].sql, 'SAVEPOINT vip_patient_registration');
     assert.equal(h.calls.at(-1).sql, 'RELEASE SAVEPOINT vip_patient_registration');
     assert.equal(h.calls.some(c => c.sql === 'COMMIT'), false);
