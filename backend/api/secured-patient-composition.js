@@ -6,6 +6,7 @@ const { registerNewPatient } = require('../../application/services/register-new-
 const { retrieveExistingPatient } = require('../../application/services/retrieve-existing-patient');
 const { calculateAge } = require('../../domain/patient');
 const { searchPatients } = require('../persistence/patient-search');
+const { registerIntakeRoutes } = require('./patient-intake');
 const COOKIE = '__Host-vip_session';
 const COOKIE_OPTIONS = '; Path=/; Secure; HttpOnly; SameSite=Strict';
 
@@ -18,10 +19,10 @@ function cookieToken(header) {
   return matches[0].slice(COOKIE.length + 1);
 }
 
-function registrationBody(body) {
+function registrationBody(body, { allowEmptyProfession = false } = {}) {
   const keys = ['name', 'dateOfBirth', 'profession', 'phone', 'gender'];
   if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(k => !keys.includes(k)) ||
-      keys.some(k => typeof body[k] !== 'string' || !body[k].length || body[k].length > 256) ||
+      keys.some(k => typeof body[k] !== 'string' || (!(allowEmptyProfession && k === 'profession') && !body[k].length) || body[k].length > 256) ||
       !['Male','Female'].includes(body.gender) || !/^\d{4}-\d{2}-\d{2}$/.test(body.dateOfBirth) ||
       Number.isNaN(Date.parse(body.dateOfBirth)) || new Date(body.dateOfBirth).toISOString().slice(0,10) !== body.dateOfBirth) throw new AuthError(400);
   try { calculateAge(body.dateOfBirth); } catch { throw new AuthError(400); }
@@ -36,7 +37,7 @@ async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
   let parsed;
   try { parsed = new URL(trustedOrigin); } catch { throw new AuthError(503); }
   if (parsed.protocol !== 'https:' || parsed.origin !== trustedOrigin || parsed.username || parsed.password) throw new AuthError(503);
-  if (['/auth/login','/auth/session','/auth/logout','/patients','/patients/:patientId','/patients/search'].some(url =>
+  if (['/auth/login','/auth/session','/auth/logout','/patients','/patients/:patientId','/patients/search','/patients/intake','/patients/:patientId/intake'].some(url =>
     app.hasRoute({ method: url === '/auth/session' || url === '/patients/search' || url.includes(':') ? 'GET' : 'POST', url }))) throw new AuthError(503);
 
   await app.register(async scope => {
@@ -55,6 +56,7 @@ async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
       if (status === 429) reply.header('Retry-After', '900');
       reply.code(status).send({ error: error instanceof AuthError ? error.message : status === 503 ? 'Service unavailable' : 'Invalid request' });
     });
+    registerIntakeRoutes(scope, { auth, cookieToken, registrationBody });
     scope.post('/auth/login', { bodyLimit: 4096 }, async (request, reply) => {
       const body = request.body;
       if (!body || typeof body !== 'object' || Array.isArray(body) ||

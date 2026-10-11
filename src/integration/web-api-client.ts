@@ -1,3 +1,4 @@
+import { parseIntakePatient, parseIntakeRegistration } from './patient-intake';
 import { parsePatient, parseRegistration, record, UUID, type BasicPatient, type Registration } from './basic-patient';
 
 export interface ServerSession {
@@ -11,6 +12,7 @@ export class ApiFailure extends Error {
 }
 export interface PatientSearch { readonly patients: readonly BasicPatient[]; readonly hasMore: boolean }
 export interface WebApi {
+  retrieveIntake?(patientId: string, signal?: AbortSignal): Promise<BasicPatient>;
   search?(mode: 'cpn' | 'name', value: string, signal?: AbortSignal): Promise<PatientSearch>;
   session(signal?: AbortSignal): Promise<ServerSession>;
   login(loginLabel: string, password: string, signal?: AbortSignal): Promise<void>;
@@ -82,14 +84,23 @@ export function createWebApi({ origin, fetcher = globalThis.fetch }: { origin: s
         return Object.freeze({ patients:Object.freeze(patients), hasMore:row.hasMore });
       });
     },
+    retrieveIntake(patientId, signal) {
+      if (!UUID.test(patientId)) return Promise.reject(new ApiFailure(400,'invalid'));
+      return parsed(request('/patients/'+encodeURIComponent(patientId)+'/intake','GET',200,undefined,undefined,signal),parseIntakePatient);
+    },
     retrieve(patientId, signal) {
       if (!UUID.test(patientId)) return Promise.reject(new ApiFailure(400,'invalid'));
       return parsed(request('/patients/'+encodeURIComponent(patientId),'GET',200,undefined,undefined,signal),parsePatient);
     },
     register(input, csrf, signal) {
       let body: Registration;
-      try { body = parseRegistration(input); } catch { return Promise.reject(new ApiFailure(400,'invalid')); }
-      return parsed(request('/patients','POST',201,body,csrf,signal),parsePatient);
+      const full = Object.hasOwn(input, 'pastHistory');
+      try { body = full ? parseIntakeRegistration(input) : parseRegistration(input); } catch { return Promise.reject(new ApiFailure(400,'invalid')); }
+      return parsed(request(full ? '/patients/intake' : '/patients','POST',201,body,csrf,signal), value => {
+        const patient = full ? parseIntakePatient(value) : parsePatient(value);
+        if (full && !patient.pastHistory) throw new Error('History not saved');
+        return patient;
+      });
     }
   } satisfies WebApi);
 }

@@ -28,7 +28,9 @@ test('protected patient panel renders current clinic theme classes and begins ch
   withOrigin(TEST_ORIGIN, () => {
     const html=renderToStaticMarkup(<ConnectedPatients language="en" onIdentity={() => { throw Error('identity emitted during render'); }} />);
     assert.ok(html.includes('Checking session')); assert.ok(html.includes('theme-surface'));
-    assert.ok(html.includes('Register patient')); assert.ok(html.includes('Search by')); assert.ok(html.includes('Patient name')); assert.ok(!html.includes('Patient UUID')); assert.ok(!html.includes('Server identity: Doctor'));
+    assert.ok(html.includes('Register First-Time Patient')); assert.ok(html.includes('Search by')); assert.ok(html.includes('Patient name')); assert.ok(!html.includes('Patient UUID')); assert.ok(!html.includes('Server identity: Doctor'));
+    assert.ok(html.includes('Known Drug &amp; Food Allergies')); assert.ok(html.includes('Lifestyle'));
+    assert.ok(html.includes('<fieldset disabled=""'));
     assert.ok(!html.includes('CPN-1001')); assert.ok(!html.includes('name="role"'));
   });
 });

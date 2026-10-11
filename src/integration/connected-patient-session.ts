@@ -47,17 +47,18 @@ export class ConnectedPatientSession {
     const failure = this.coordinator.getSnapshot().failure;
     if (failure) { this.notice = { operation:'retrieve',kind:failure }; this.publish(); }
   }
-  async retrieve(id: string) {
+  async retrieve(id: string, full = false) {
     if (!this.allowed('retrieve')) return;
-    await this.coordinator.retrieve(id);
+    await this.coordinator.retrieve(id, full);
     const failure = this.coordinator.getSnapshot().failure;
     if (failure) { this.notice = { operation: 'retrieve', kind: failure }; this.publish(); }
   }
   async register(input: Registration) {
-    if (!this.allowed('register')) return;
+    if (!this.allowed('register')) return null;
     await this.coordinator.register(input);
     const failure = this.coordinator.getSnapshot().failure;
     if (failure) { this.notice = { operation: 'register', kind: failure }; this.publish(); }
+    return failure ? null : this.coordinator.getSnapshot().patient;
   }
   dispose() { this.unsubscribe(); this.coordinator.dispose(); this.listeners.clear(); }
 }

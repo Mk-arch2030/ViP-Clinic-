@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { ShieldCheck, Search, UserPlus, FolderOpen, LogOut } from 'lucide-react';
+import { ShieldCheck, Search, FolderOpen, LogOut } from 'lucide-react';
 import { ConnectedPatientSession } from '../integration/connected-patient-session';
 import { createWebApi, TEST_ORIGIN, type FailureKind } from '../integration/web-api-client';
-import type { Registration } from '../integration/basic-patient';
+import { PatientIntake } from './PatientIntake';
 import type { Language } from '../i18n/translations';
 
 export interface ConnectedIdentity { role: 'Doctor' | 'Nurse' | null; checking: boolean; blocked: boolean }
-const blank: Registration = { name:'', dateOfBirth:'', profession:'', phone:'', gender:'Male' };
 const inputClass = 'w-full theme-input border theme-border rounded-lg py-2.5 px-3 text-sm theme-text-primary theme-focus';
 const actionClass = 'px-4 py-2.5 theme-action-primary rounded-lg text-sm font-medium theme-focus disabled:opacity-50';
 const panelClass = 'theme-surface border theme-border rounded-xl p-5 space-y-4 shadow-xs';
@@ -40,7 +39,7 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
   const [password, setPassword] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [searchMode, setSearchMode] = useState<'cpn' | 'name'>('cpn');
-  const [draft, setDraft] = useState<Registration>({ ...blank });
+  const [intakeEpoch, setIntakeEpoch] = useState(0);
   const previousActor = useRef<string | null>(null);
   const doctor = view.state === 'authenticated' && view.session?.role === 'Doctor';
   useEffect(() => {
@@ -55,9 +54,9 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
   }, [onIdentity, view]);
   useEffect(() => {
     const actor = view.session?.actorIdentityReference ?? null;
-    if (view.state === 'unauthenticated' || view.state === 'unavailable' ||
-        (actor && previousActor.current && actor !== previousActor.current)) { setPassword(''); setSearchValue(''); setDraft({ ...blank }); }
-    if (actor || view.state === 'unauthenticated' || view.state === 'unavailable') previousActor.current = actor;
+    if (view.state === 'unauthenticated' ||
+        (actor && previousActor.current && actor !== previousActor.current)) { setPassword(''); setSearchValue(''); setIntakeEpoch(value => value + 1); }
+    if (actor || view.state === 'unauthenticated') previousActor.current = actor;
   }, [view.state, view.session?.actorIdentityReference]);
   const message = (kind: FailureKind) => messages[kind][ar ? 0 : 1];
   const notice = (operation: 'retrieve' | 'register') => state.notice?.operation === operation &&
@@ -71,7 +70,7 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
       {view.registrationUnconfirmed && <p role="alert" className="theme-status-danger">{message('outcome-unknown')}</p>}
       <div className="flex flex-wrap gap-3">
         <button type="button" className={actionClass} disabled={view.busy} onClick={() => void model.refresh()}>{text('إعادة فحص الجلسة', 'Recheck session')}</button>
-        {view.session && <button type="button" className={actionClass} disabled={view.busy} onClick={() => { setPassword(''); setSearchValue(''); setDraft({ ...blank }); void model.logout(); }}><LogOut className="w-4 h-4 inline" /> {text('تسجيل الخروج', 'Sign out')}</button>}
+        {view.session && <button type="button" className={actionClass} disabled={view.busy} onClick={() => { setPassword(''); setSearchValue(''); setIntakeEpoch(value => value + 1); void model.logout(); }}><LogOut className="w-4 h-4 inline" /> {text('تسجيل الخروج', 'Sign out')}</button>}
       </div>
       {!view.session && <form onSubmit={event => { event.preventDefault(); const submitted = password; setPassword(''); void model.login(label, submitted); }}>
         <fieldset disabled={view.busy || view.logoutUnconfirmed || view.state === 'checking' || view.state === 'unavailable'} className="space-y-4">
@@ -92,29 +91,34 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
         </fieldset>
       </form>{notice('retrieve')}
       {view.searchHasMore && <p role="status">{text('ظهرت أول 25 نتيجة. اكتب اسمًا أكثر تحديدًا.','First 25 results shown. Refine the name to narrow the search.')}</p>}
-      {view.searchResults.length > 0 && <ul className="space-y-3" aria-label={text('نتائج بحث المريض','Patient search results')}>{view.searchResults.map(patient => <li key={patient.patientId} className="theme-surface-nested border theme-border rounded-lg p-3"><button type="button" className="w-full text-start theme-focus rounded-lg" disabled={!doctor || view.busy} onClick={() => void model.retrieve(patient.patientId)}><span className="font-semibold">{patient.name}</span> · <span className="font-mono theme-text-technical">{patient.clinicPatientNumber}</span><span className="block text-sm theme-text-secondary">{patient.dateOfBirth ?? text('تاريخ الميلاد غير مسجل','Date of birth not recorded')} · {patient.phone}</span></button></li>)}</ul>}
+      {view.searchResults.length > 0 && <ul className="space-y-3" aria-label={text('نتائج بحث المريض','Patient search results')}>{view.searchResults.map(patient => <li key={patient.patientId} className="theme-surface-nested border theme-border rounded-lg p-3"><button type="button" className="w-full text-start theme-focus rounded-lg" disabled={!doctor || view.busy} onClick={() => void model.retrieve(patient.patientId, true)}><span className="font-semibold">{patient.name}</span> · <span className="font-mono theme-text-technical">{patient.clinicPatientNumber}</span><span className="block text-sm theme-text-secondary">{patient.dateOfBirth ?? text('تاريخ الميلاد غير مسجل','Date of birth not recorded')} · {patient.phone}</span></button></li>)}</ul>}
     </section>
-    <section className={panelClass} aria-label={text('تسجيل مريض بالخادم', 'Register server patient')}>
-      <h2 className="flex gap-2 font-semibold"><UserPlus className="w-5 h-5" />{text('تسجيل مريض — بيانات أساسية', 'Register patient — basic details')}</h2>
-      <p className="theme-text-secondary">{text('رقم الملف يصدر بعد الحفظ. التاريخ المرضي والزيارات غير متاحين في هذه الخدمة بعد.', 'The patient number is issued after saving. History and visits are not yet available in this service.')}</p>
-      <form onSubmit={event => { event.preventDefault(); void model.register(draft); }}>
-        <fieldset disabled={!doctor || view.busy || view.mutationsBlocked || view.registrationUnconfirmed} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {(['name','dateOfBirth','profession','phone'] as const).map((key, index) => <label key={key} className="block space-y-2">
-              {ar ? ['الاسم','تاريخ الميلاد','المهنة','الهاتف'][index] : ['Name','Date of birth','Profession','Phone'][index]}
-              <input className={inputClass} type={key === 'dateOfBirth' ? 'date' : 'text'} required maxLength={256} value={draft[key]} onChange={e => setDraft(current => ({ ...current, [key]:e.target.value }))} />
-            </label>)}
-            <label className="block space-y-2">{text('النوع', 'Gender')}<select className={inputClass} value={draft.gender} onChange={e => setDraft(current => ({ ...current, gender:e.target.value as 'Male' | 'Female' }))}><option value="Male">{text('ذكر','Male')}</option><option value="Female">{text('أنثى','Female')}</option></select></label>
-          </div><button type="submit" className={actionClass}>{text('تسجيل', 'Register')}</button>
-        </fieldset>
-      </form>{notice('register')}
-    </section>
+    <PatientIntake key={intakeEpoch} patients={[]} cases={[]} actorRole={view.session?.role ?? 'Nurse'} language={language}
+      serverRegistration registrationDisabled={!doctor || view.busy || view.mutationsBlocked || view.registrationUnconfirmed}
+      registrationNotice={notice('register')}
+      onRegisterPatient={async input => {
+        const patient = await model.register({ ...input, pastHistory: {
+          chronicIllnesses: input.pastHistory?.chronicIllnesses ?? [], knownAllergies: input.pastHistory?.knownAllergies ?? [],
+          surgicalHistory: input.pastHistory?.surgicalHistory ?? [], familyHistory: input.pastHistory?.familyHistory ?? [],
+          lifestyleNotes: input.pastHistory?.lifestyleNotes ?? ''
+        } });
+        return patient && patient.dateOfBirth && patient.pastHistory ? { ...patient, dateOfBirth: patient.dateOfBirth } : null;
+      }}
+      onRecordArrival={() => { throw new Error('Server arrival unavailable'); }}
+      onSelectPatientDossier={() => { throw new Error('Server clinical dossier unavailable'); }} />
     {view.patient && <section className={panelClass} aria-label={text('بيانات المريض المحفوظة بالخادم', 'Server patient result')}>
       <h2 className="flex gap-2 font-semibold"><FolderOpen className="w-5 h-5" />{view.patient.name}</h2>
       <div className="font-mono theme-text-technical">{view.patient.clinicPatientNumber}</div>
       <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {Object.entries({ [text('تاريخ الميلاد','Date of birth')]:view.patient.dateOfBirth ?? text('غير مسجل','Not recorded'), [text('العمر المشتق','Derived age')]:view.patient.age ?? text('غير متاح','Unavailable'), [text('المهنة','Profession')]:view.patient.profession, [text('الهاتف','Phone')]:view.patient.phone, [text('النوع','Gender')]:view.patient.gender }).map(([key, value]) => <div key={key}><dt className="theme-text-muted text-xs">{key}</dt><dd className="theme-text-primary break-all">{value}</dd></div>)}
       </dl>
+      {view.patient.pastHistory === null && <p>{text('التاريخ المرضي لم يُسجّل بهذا المسار بعد.', 'Past history has not been captured by this workflow.')}</p>}
+      {view.patient.pastHistory && <dl className="space-y-2" aria-label={text('التاريخ المرضي السابق','Past history')}>
+        {Object.entries(view.patient.pastHistory).map(([key, value], index) => <div key={key}>
+          <dt className="theme-text-muted text-xs">{(ar ? ['الأمراض المزمنة','الحساسية المعروفة','التاريخ الجراحي','التاريخ العائلي','نمط الحياة'] : ['Chronic illnesses','Known allergies','Surgical history','Family history','Lifestyle notes'])[index]}</dt>
+          <dd className="theme-text-primary">{(Array.isArray(value) ? value.join(', ') : value) || text('لم تُدخل معلومات','No information entered')}</dd>
+        </div>)}
+      </dl>}
     </section>}
   </div>;
 }

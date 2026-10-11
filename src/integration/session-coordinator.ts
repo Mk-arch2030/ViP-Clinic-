@@ -74,10 +74,10 @@ export class SessionCoordinator {
       if (id === this.generation) this.set({ searchResults:result.patients,searchHasMore:result.hasMore,busy:false, failure:result.patients.length ? null : 'not-found' });
     } catch (error) { this.failed(error,id); }
   }
-  async retrieve(patientId: string) {
+  async retrieve(patientId: string, full = false) {
     if (this.view.busy || this.view.state !== 'authenticated') return;
     const { id,signal } = this.begin({ patient:null });
-    try { const patient = await this.api.retrieve(patientId,signal); if (id === this.generation) this.set({ patient,busy:false }); }
+    try { const read = full ? this.api.retrieveIntake : this.api.retrieve; if (!read) throw new ApiFailure(503,'unavailable'); const patient = await read(patientId,signal); if (id === this.generation) this.set({ patient,busy:false }); }
     catch (error) { this.failed(error,id); }
   }
   async register(input: Registration) {

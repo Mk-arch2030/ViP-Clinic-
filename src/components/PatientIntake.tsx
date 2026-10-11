@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { PatientRecord, CaseRecord, ArrivalCondition, ActorRole } from '../domain/types';
 import { translations, Language } from '../i18n/translations';
 import { calculateDetailedAge, DetailedAge } from '../domain/patientAge';
@@ -16,7 +16,11 @@ import {
   HeartPulse,
 } from 'lucide-react';
 
+type RegistrationResult = Pick<PatientRecord, 'patientId' | 'clinicPatientNumber' | 'name' | 'dateOfBirth' | 'phone'>;
 interface PatientIntakeProps {
+  serverRegistration?: boolean;
+  registrationDisabled?: boolean;
+  registrationNotice?: React.ReactNode;
   patients: PatientRecord[];
   cases: CaseRecord[];
   actorRole: ActorRole;
@@ -34,7 +38,7 @@ interface PatientIntakeProps {
       familyHistory?: string[];
       lifestyleNotes?: string;
     };
-  }) => PatientRecord;
+  }) => RegistrationResult | null | Promise<RegistrationResult | null>;
   onRecordArrival: (params: {
     patientId: string;
     caseId?: string;
@@ -46,6 +50,9 @@ interface PatientIntakeProps {
 }
 
 export const PatientIntake: React.FC<PatientIntakeProps> = ({
+  serverRegistration = false,
+  registrationDisabled = false,
+  registrationNotice,
   patients,
   cases,
   actorRole,
@@ -69,7 +76,11 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
   const [surgeries, setSurgeries] = useState('');
   const [family, setFamily] = useState('');
   const [lifestyle, setLifestyle] = useState('');
-  const [intakeSuccessPatient, setIntakeSuccessPatient] = useState<PatientRecord | null>(null);
+  const [intakeSuccessPatient, setIntakeSuccessPatient] = useState<RegistrationResult | null>(null);
+
+  const submitting = useRef(false);
+  const [pending, setPending] = useState(false);
+  const [registrationError, setRegistrationError] = useState(false);
 
   // Existing Patient Lookup state
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,8 +121,9 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
     return cases.filter((c) => c.patientId === selectedPatientId);
   }, [cases, selectedPatientId]);
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting.current || registrationDisabled) return;
     if (!name.trim() || !dateOfBirth || !phone.trim()) {
       alert('Please fill in Name, Date of Birth, and Phone.');
       return;
@@ -134,23 +146,32 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
       .map((s) => s.trim())
       .filter(Boolean);
 
-    const created = onRegisterPatient({
-      name,
-      dateOfBirth,
-      profession,
-      phone,
-      gender,
-      pastHistory: {
-        chronicIllnesses: chronicList,
-        knownAllergies: allergyList,
-        surgicalHistory: surgeryList,
-        familyHistory: familyList,
-        lifestyleNotes: lifestyle,
-      },
-    });
+    submitting.current = true; setPending(true); setRegistrationError(false);
+    try {
+      const created = await onRegisterPatient({
+        name,
+        dateOfBirth,
+        profession,
+        phone,
+        gender,
+        pastHistory: {
+          chronicIllnesses: chronicList,
+          knownAllergies: allergyList,
+          surgicalHistory: surgeryList,
+          familyHistory: familyList,
+          lifestyleNotes: lifestyle,
+        },
+      });
 
-    setIntakeSuccessPatient(created);
-    setSelectedPatientId(created.patientId);
+      if (!created) return;
+      setIntakeSuccessPatient(created);
+      setSelectedPatientId(created.patientId);
+      if (serverRegistration) {
+        setName(''); setDateOfBirth(''); setProfession(''); setPhone(''); setGender('Male');
+        setChronic(''); setAllergies(''); setSurgeries(''); setFamily(''); setLifestyle('');
+      }
+    } catch { setRegistrationError(true); }
+    finally { submitting.current = false; setPending(false); }
   };
 
   const handleArrivalSubmit = (e: React.FormEvent) => {
@@ -174,6 +195,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
       <div className="flex p-1 theme-surface border theme-border rounded-xl">
         <button
           type="button"
+          disabled={pending}
           onClick={() => {
             setMode('NEW');
             setIntakeSuccessPatient(null);
@@ -191,6 +213,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
         <button
           type="button"
+          disabled={serverRegistration || pending}
           onClick={() => {
             setMode('LOOKUP');
             setIntakeSuccessPatient(null);
@@ -207,6 +230,9 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
         </button>
       </div>
 
+      {serverRegistration && <p role="status" className="text-xs theme-text-muted">{language === 'ar' ? 'التسجيل عبر الخادم. الزيارات والملف السريري غير متاحين هنا بعد.' : 'Registration uses the server. Visits and clinical dossier are not yet available here.'}</p>}
+      {registrationNotice}
+      {registrationError && <p role="alert">{language === 'ar' ? 'تعذر تأكيد التسجيل. راجع حالة الطلب قبل تكراره.' : 'Registration could not be confirmed. Check the request outcome before retrying.'}</p>}
       {/* MODE 1: NEW PATIENT REGISTRATION */}
       {mode === 'NEW' && (
         <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs">
@@ -249,6 +275,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               <div className="flex flex-wrap justify-center gap-3 pt-2">
                 <button
                   type="button"
+                  disabled={serverRegistration}
                   onClick={() => {
                     setMode('LOOKUP');
                     setSelectedPatientId(intakeSuccessPatient.patientId);
@@ -262,6 +289,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
                 <button
                   type="button"
+                  disabled={serverRegistration}
                   onClick={() => onSelectPatientDossier(intakeSuccessPatient.patientId)}
                   className="px-5 py-2.5 theme-action-secondary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors border theme-border"
                 >
@@ -270,7 +298,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               </div>
             </div>
           ) : (
-            <form onSubmit={handleRegisterSubmit} className="space-y-6">
+            <form onSubmit={handleRegisterSubmit}>
+              <fieldset disabled={pending || registrationDisabled} className="space-y-6">
               <div className="border-b theme-border pb-4">
                 <h3 className="text-base font-bold theme-text-primary font-sans">
                   {t.intakeModeNew}
@@ -466,6 +495,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                   <span>{t.registerPatientBtn}</span>
                 </button>
               </div>
+              </fieldset>
             </form>
           )}
         </div>
