@@ -14,13 +14,11 @@ function readRegular(filename) {
   return fs.readFileSync(filename);
 }
 
-function collectEvidence(buildDirectory, tlsDirectory) {
-  assert.ok(path.isAbsolute(buildDirectory) && path.isAbsolute(tlsDirectory),
+function collectEvidence(buildDirectory, certificateFile, authorityFile) {
+  assert.ok([buildDirectory, certificateFile, authorityFile].every(path.isAbsolute),
     'Absolute evidence paths required');
   assert.equal(fs.realpathSync(buildDirectory), buildDirectory, 'Build path not canonical');
-  assert.equal(fs.realpathSync(tlsDirectory), tlsDirectory, 'TLS path not canonical');
   assert.ok(fs.lstatSync(buildDirectory).isDirectory() && !fs.lstatSync(buildDirectory).isSymbolicLink());
-  assert.ok(fs.lstatSync(tlsDirectory).isDirectory() && !fs.lstatSync(tlsDirectory).isSymbolicLink());
   const assetsDirectory = path.join(buildDirectory, 'assets');
   assert.ok(fs.lstatSync(assetsDirectory).isDirectory() && !fs.lstatSync(assetsDirectory).isSymbolicLink());
   const rootEntries = fs.readdirSync(buildDirectory).sort();
@@ -39,8 +37,8 @@ function collectEvidence(buildDirectory, tlsDirectory) {
   const referenced = [...html.matchAll(/(?:src|href)="\/(assets\/[^"]+)"/g)].map(match => match[1]).sort();
   assert.deepEqual(referenced, assets.map(name => 'assets/' + name).sort(), 'HTML asset references mismatch');
   assert.ok(assets.some(name => name.endsWith('.js')) && assets.some(name => name.endsWith('.css')));
-  const cert = new X509Certificate(readRegular(path.join(tlsDirectory, 'server.crt')));
-  const ca = new X509Certificate(readRegular(path.join(tlsDirectory, 'ca.crt')));
+  const cert = new X509Certificate(readRegular(certificateFile));
+  const ca = new X509Certificate(readRegular(authorityFile));
   assert.equal(cert.checkIP('127.0.0.1'), '127.0.0.1', 'Loopback SAN required');
   assert.ok(ca.ca && !cert.ca && cert.checkIssued(ca) && cert.verify(ca.publicKey), 'CA chain invalid');
   assert.ok(Date.parse(ca.validTo) > Date.parse(cert.validTo), 'CA must outlive server certificate');
@@ -56,8 +54,8 @@ function collectEvidence(buildDirectory, tlsDirectory) {
 
 if (require.main === module) {
   try {
-    assert.equal(process.argv.length, 4, 'Usage: node stage6-original-evidence.cjs ABS_BUILD_DIR ABS_TLS_DIR');
-    console.log(JSON.stringify(collectEvidence(process.argv[2], process.argv[3]), null, 2));
+    assert.equal(process.argv.length, 5, 'Usage: node stage6-original-evidence.cjs ABS_BUILD_DIR ABS_SERVER_CERT ABS_CA_CERT');
+    console.log(JSON.stringify(collectEvidence(process.argv[2], process.argv[3], process.argv[4]), null, 2));
   } catch (error) {
     console.error('PREFLIGHT_EVIDENCE_FAILED:', error.message);
     process.exitCode = 1;
