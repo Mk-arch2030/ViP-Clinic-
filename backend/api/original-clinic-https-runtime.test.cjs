@@ -121,6 +121,12 @@ test('runtime does not silently build without explicit TLS, and listen requires 
   await assert.rejects(buildOriginalClinicRuntime({
     auth:{ login() {}, withAuthorized() {} }, tls:{}, manifest:{}, assetsDirectory:'/not-a-build'
   }), /Explicit TLS V2/);
-  await assert.rejects(listenOriginalClinicRuntime({ listen() { throw Error('must not listen'); } }, 'wrong'),
-    /ROBY_ORIGINAL_CLINIC_HTTPS_LISTEN/);
+  let listened = false;
+  await assert.rejects(
+    listenOriginalClinicRuntime({ listen() { listened = true; throw Error('must not listen'); } }, 'wrong'),
+    error => error instanceof assert.AssertionError &&
+      error.actual === 'wrong' &&
+      error.expected === 'ROBY_ORIGINAL_CLINIC_HTTPS_LISTEN'
+  );
+  assert.equal(listened, false, 'Rejected token must not invoke listen');
 });
