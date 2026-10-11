@@ -1,8 +1,8 @@
 # ROBY CLINIC — OUTER DOCTOR GATE V1
 
-**Status:** REVIEW BRANCH — architectural contract, not implementation proof  
-**Owner / final authority:** MOHAMED.K_ROBY  
-**Baseline:** `5535f4bd639920f31989c07675e64015ab341193`  
+**Status:** REVIEW BRANCH — architectural contract, not implementation proof
+**Owner / final authority:** MOHAMED.K_ROBY
+**Baseline:** `5535f4bd639920f31989c07675e64015ab341193`
 **Rule:** Authenticate Outside. Enter Inside. Lock on Exit.
 
 ## Owner intent
