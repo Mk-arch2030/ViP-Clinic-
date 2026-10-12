@@ -9,7 +9,7 @@
   "postgresVersion": "18.2",
   "namespace": "ROBY_GOLDEN_V1_EXTENDED_V1",
   "evidenceLabel": "POSTGRES_INTEGRATION_PASS",
-  "scope": ["dry-run", "transactional first load with supported-field readback", "read-only verify", "second load with no writes", "post-session-termination verify", "clean disposable process restart and verify"],
+  "scope": ["dry-run", "transactional first load with supported-field readback", "read-only verify", "second load with no writes", "post-session-termination verify", "clean disposable process restart and verify", "custom-format backup and transactional restore into a new disposable cluster"],
   "observedStatuses": ["DRY_RUN_NO_WRITES", "LOADED_AND_ROUNDTRIP_VERIFIED", "ALREADY_LOADED_VERIFIED_NO_WRITES", "ALREADY_LOADED_VERIFIED_NO_WRITES"],
   "datasetHash": "22302291312e6a88c587535882ff2486a8aa1a22d510366da26f4c24b961dab5",
   "baselineHash": "2c29163ab399e99b70918bd179da5e9e2ce3e0df271cf5faeb290952321dba12",
@@ -25,5 +25,6 @@
   "officialDeviceSuite": {"tests": 271, "pass": 271, "fail": 0, "cancelled": 0, "skipped": 0, "todo": 0, "runAll": "PASS", "regressionExit": 0, "historicalExclusion": "src/services/clinic-authority-p37a.test.ts"},
   "laterSessionEvent": {"signal": 9, "occurredAfterSuccessfulLoadVerifyRepeat": true, "cause": "NOT_DETERMINED", "postEventDatabaseVerification": "PASS", "survivingPostgresPid": 2885},
   "cleanRestartProof": {"date": "2026-10-12", "executedCommit": "3b93fc45e60dbdbb8e5aed97d23dc1daf82da824", "mode": "smart", "beforePid": 2885, "afterPid": 13474, "beforeAndAfterStatus": "ALREADY_LOADED_VERIFIED_NO_WRITES", "supportedCountsUnchanged": true, "datasetAndSupportedRowsHashesUnchanged": true, "stateHashUnchanged": "a40b6e3cd65025e5060316cdccc88a6b449df7bb8d8b6cafa26f20bc2f5da494", "target": "ONLY_DESIGNATED_DISPOSABLE_CLUSTER", "crashRecoveryProof": "NOT_RUN"},
-  "notProven": ["live forced-failure rollback", "live concurrency", "live drift injection", "crash recovery", "backup/restore", "browser journey", "Stage 7-12 clinical runtime capabilities"]
+  "backupRestoreProof": {"date": "2026-10-12", "executedCommit": "3e0bc87965d3cd5ceb6283a12e09c8ccc350f2d3", "sourceRootName": "roby-golden-fixtures-disposable", "restoreRootName": "roby-golden-fixtures-disposable-restore1", "database": "roby_fixture_disposable_v1", "port": 55449, "separatePrivateSockets": true, "differentSystemIdentifiersVerified": true, "archiveFormat": "custom", "archiveSha256": "098af6164b6b544028b55ca92983ed2d6c5275fe33ab45b9cafd5adf90ff1de3", "restoreOptions": ["single-transaction", "exit-on-error", "no-owner", "no-privileges"], "restoredVerificationStatus": "ALREADY_LOADED_VERIFIED_NO_WRITES", "datasetAndSupportedRowsHashesUnchanged": true, "supportedAndArchivedCountsUnchanged": true, "stateHashUnchanged": "a40b6e3cd65025e5060316cdccc88a6b449df7bb8d8b6cafa26f20bc2f5da494", "comparisonMarker": "BACKUP_RESTORE_FIXTURE_INTEGRITY=PASS", "fullStage10Status": "NOT_COMPLETE"},
+  "notProven": ["live forced-failure rollback", "live concurrency", "live drift injection", "crash recovery", "doctor credential backup/restore", "browser journey", "Stage 7-12 clinical runtime capabilities", "full Stage 10 readiness"]
 }

@@ -108,7 +108,7 @@ CPNs, never backwards. Its restart uses transactional ALTER SEQUENCE, not setval
 A validated BigInt decimal is interpolated only for this PostgreSQL DDL that cannot
 accept a parameter; all record values are bound SQL parameters.
 
-## Restore verification (Stage 10 remains NOT RUN)
+## Restore verification (bounded fixture proof recorded; Stage 10 incomplete)
 
 ```bash
 node backend/fixtures/loader/cli.cjs verify \
@@ -126,4 +126,9 @@ A later real proof should run first load, verify, second load with zero addition
 forced-failure rollback and unrelated-row preservation in a fresh database. Restart
 only that disposable process and verify again. Run pg_dump/pg_restore into another
 fresh designated disposable cluster, then verify the same fixture fingerprints.
-No Stage 10 completion is claimed until that cycle is actually executed.
+An owner-executed isolated cycle is recorded in
+`backend/fixtures/evidence/termux-load-verify-v1.json`: custom backup, transactional
+restore into a distinct cluster, and matching fixture/archive fingerprints.
+This bounded dataset proof does not establish full Stage 10 readiness, crash recovery
+or doctor credential recovery. The preparation manifest retains its original
+NOT_RUN capture status; the additive evidence file records subsequent execution.
