@@ -10,7 +10,7 @@ Owner directive: preserve the original mock, extend it independently, and test t
 | BASELINE_HASH_PASS | Literal captures from both raw source snapshots equal the pinned canonical baseline; independent hash and relationship tests pass. |
 | EXTENSION_VALIDATION_PASS | 47 complete scenario specifications; disjoint identities; graph, chronology and deterministic projection checks pass. |
 | LOADER_SAFETY_PASS | Unit fake-adapter, SQL construction/catalog-model and pre-driver CLI refusal tests pass. This label is not live PostgreSQL safety proof. |
-| POSTGRES_INTEGRATION_NOT_RUN | No safe disposable PostgreSQL instance was available. No owner database was substituted. |
+| POSTGRES_INTEGRATION_PASS | Owner-executed Termux PostgreSQL 18.2: dry-run, first load/readback, read-only verify and second load without writes. Scope and source are recorded below; not live rollback/concurrency/backup/browser proof. |
 | FULL_TEST_SUITE_PASS | Official runner after PostgreSQL catalog-format regression fixes: 271 passed, zero failed/cancelled/skipped; historical exclusion disclosed below. |
 
 ## Golden Baseline: provenance and immutability
@@ -54,7 +54,7 @@ Every scenario contains its stable ID, purpose, inputs, expected records/relatio
 | 11 | 1 | SPECIFIED_NOT_IMPLEMENTED |
 | 12 | 2 | SPECIFIED_NOT_IMPLEMENTED |
 
-Total: 47. Thirty future-stage scenarios remain specified only. Having records/specifications does not implement those workflows or prove their PostgreSQL persistence.
+Total: 47. Thirty future-stage scenarios remain specified only. Having records/specifications does not implement those workflows or prove their PostgreSQL persistence. The independently pinned scenario catalog retains initial specification statuses; later execution evidence is additive in `backend/fixtures/evidence/termux-load-verify-v1.json`. Fixture idempotency was subsequently demonstrated on-device; forced-failure rollback remains unit-only.
 
 ## Loader and schema boundaries
 
@@ -82,13 +82,21 @@ New tests after PostgreSQL catalog-format regression fixes: 24 passed, 0 failed 
 
 API tests use actual extension inputs, authenticated Fastify route injection, actual backend services and Web API client, with fake SQL clients. They cover distinct same-name server IDs/CPNs, blank profession and history round-trip, fresh-client retrieval, auth/CSRF/Nurse/expired/revoked denials, and the uncertain-mutation latch. These are HTTP injection/unit evidence, not real PostgreSQL or browser proof. Core tests use an explicitly named fake adapter; SQL contract tests inspect SQL/catalog models, not a running database.
 
-The Work process is UID 0 with uid_map `0 0 1`; a safe unprivileged disposable PostgreSQL instance could not be provisioned. initdb root safeguards were not bypassed. Consequently actual first/second load, live catalog compatibility, concurrency/rollback under PostgreSQL, restart persistence and backup/restore remain NOT RUN. No owner/device-local database was accessed. No browser acceptance was performed for this dataset task.
+The Work process is UID 0 with uid_map `0 0 1`; a safe unprivileged disposable PostgreSQL instance could not be provisioned. initdb root safeguards were not bypassed. Work-local PostgreSQL execution remains NOT RUN. Subsequent owner-executed disposable-device proof is recorded below; Work did not independently connect to the device. Live concurrency/forced-failure rollback, restart persistence and backup/restore remain NOT RUN. No owner-operated Stage 6 database was targeted. No browser acceptance was performed for this dataset task.
 
 ### Owner-device preparation and search_path fix (2026-10-12)
 
 The owner synchronized the first delivery and reported 269/269 tests, typecheck and build success on Termux. The separately authorized NEW disposable cluster initialized successfully with PostgreSQL 18.2; schema and intake migration were created there. Initial dry-run refused DATABASE_IDENTITY_MISMATCH before fixture inserts. Read-only diagnostics reported database, paths, sockets, port, disabled TCP, null TCP address, system ID and ownership all MATCH, with only search_path MISMATCH: actual `pg_catalog,public`, while the guard expected `pg_catalog, public`. This was a formatting defect in our identity guard, not a mismatched target. The fix compares the exact ordered, unquoted schema names after trimming whitespace around comma-delimited names; other schemas, order changes, duplicates and quoted names still fail. A regression test accepts both observed formats and rejects unsafe alternatives. All other identity gates remain exact. Device dry-run after the fix and actual fixture loading still require execution; POSTGRES_INTEGRATION_PASS is not claimed from provisioning or this diagnostic.
 
 The owner then reported 270/270 tests and a second dry-run refusal SCHEMA_MISMATCH after identity validation. Read-only public catalog output showed the expected 24 columns, defaults, nullable fields, 21 CHECK/FK/PK/UNIQUE definitions, public-only schema and plpgsql extension. PostgreSQL deparses the known lowercase column `position` as `"position"`, both in CHECK definitions and the composite UNIQUE key. The initial parser did not account for those quotes. The fix normalizes only that exact known identifier: CHECK comparison and SQL adapter key parsing retain all other names and rules. A catalog-model regression test exercises the actual adapter with the observed quoting and rejects a different quoted uppercase identifier. This is catalog-model test evidence informed by owner-provided live output, not fixture-write proof. No schema alteration is required. Dry-run/load/reload/restore acceptance still awaits successful live execution.
+
+### Owner-executed live fixture proof (2026-10-12)
+
+At executed commit `0746593b7f482a88483f5c685b2fbf3514473d5a`, the owner supplied successful dry-run, load, verify and repeated-load output from `roby_fixture_disposable_v1`, private socket port 55449, PostgreSQL 18.2. The first load returned LOADED_AND_ROUNDTRIP_VERIFIED; read-only verify and repeated load both returned ALREADY_LOADED_VERIFIED_NO_WRITES. Counts were 7 patients, 6 intakes, 28 history items and 3 clinic days. Baseline/extension/combined/projection hashes match the committed manifest; verifiedRowsHash `75535834f970cf634b3e3b612edc34b73ca87ce43f34e31e6ee4a08667d10995` matches the expected supported-row checksum. StateHash remained `a40b6e3cd65025e5060316cdccc88a6b449df7bb8d8b6cafa26f20bc2f5da494` across load result, verify and repeated load. ClinicalPersistence remained NOT_IMPLEMENTED, with 6 cases/8 visits/8 prescriptions archived only and credentialWrites 0.
+
+Additive machine-readable evidence is `backend/fixtures/evidence/termux-load-verify-v1.json`. Attribution is owner-executed output, not an independent Work connection. This earns POSTGRES_INTEGRATION_PASS only for the bounded loader/readback/idempotency scope. It does not earn live rollback/concurrency/restart/backup/browser or future-stage completion.
+
+The owner also supplied the official device suite result: 271 tests, 271 pass, zero fail/cancelled/skipped/todo, RUN_ALL=PASS, REGRESSION_EXIT=0, same existing historical exclusion. A different Termux session later ended with signal 9 after all three fixture commands had passed while the full suite ran in another session. Cause is not established; a successful commit is not undone by a later shell termination. Whether the disposable PostgreSQL process survived that event requires read-only status/verify. No automatic reinitialization or reset is appropriate.
 
 ## Recovery preparation and next safe execution
 
@@ -106,10 +114,10 @@ Review dry-run before load. Execute second load, controlled rollback/collision/u
 
 ## Preservation, risks and change inventory
 
-Only 23 new files are introduced: 7 golden files, 3 extension files, 5 loader code files plus loader README, dataset.cjs, 4 test files, verification-manifest-v1.json and this report. No existing file is modified or removed. Complete listing is available via `git diff --name-status 3caa11b0af88219e42d1e6dcf3c96ad2bd1c781b..HEAD`.
+Only 24 new files are introduced: 7 golden files, 3 extension files, 5 loader code files plus loader README, dataset.cjs, 4 test files, verification-manifest-v1.json, the additive device evidence JSON and this report. No existing source-branch file is modified or removed. Complete listing is available via `git diff --name-status 3caa11b0af88219e42d1e6dcf3c96ad2bd1c781b..HEAD`.
 
 Original clinicStore, App, outer doctor gate, shared auth, protected visual theme and four protected owner paths are unchanged. No duplicate Server Patients navigation was added. No secrets/new real patient data, credential/TLS changes, migrations to existing databases or deployment occurred.
 
-Remaining blockers: live PostgreSQL execution and exact catalog compatibility; live API/browser dataset journey; Stage 7–12 runtime contracts; actual restart and backup/restore proof. Strict schema recognition intentionally fails closed if provisioning differs; review additive contracts instead of weakening the guard to run against another database. Historical names/phones are preserved solely as owner-directed original mock provenance; extension identifiers are independently synthetic.
+Remaining blockers: live forced-failure rollback, concurrency and injected drift/preservation scenarios; live API/browser dataset journey; Stage 7–12 runtime contracts; actual restart and backup/restore proof. Live schema compatibility, first load, readback and idempotency were demonstrated on the designated disposable device database. Strict schema recognition intentionally fails closed if provisioning differs; review additive contracts instead of weakening the guard to run against another database. Historical names/phones are preserved solely as owner-directed original mock provenance; extension identifiers are independently synthetic.
 
 Safe owner Sync is code-only: fetch the target, inspect remote history and file list, then switch/create its tracking branch and pull --ff-only. Preserve dirty local work; stop if Git reports an overwrite conflict. Never stash/reset/clean the four protected files. Stop only the owned HTTPS listener before changing a running runtime's source; leave PostgreSQL and credentials untouched. Run npm ci, npm run test:all, npm run lint and npm run build. Sync does not load fixtures or provision a database. The loader requires a separate disposable-environment decision.
