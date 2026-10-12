@@ -4,6 +4,7 @@ import { ConnectedPatientSession } from '../integration/connected-patient-sessio
 import { DoctorSessionProvider } from '../integration/doctor-session-context';
 import { createWebApi, TEST_ORIGIN } from '../integration/web-api-client';
 import type { SessionView } from '../integration/session-coordinator';
+import { browserRegistrationJournal } from '../integration/registration-uncertainty';
 
 /** No browser-stored identity or role is accepted as a clinic entrance credential. */
 export function mayEnterDoctorClinic(view: SessionView): boolean {
@@ -21,7 +22,7 @@ export function OuterDoctorGate({ children }: { children: React.ReactNode }) {
 }
 
 function ProtectedDoctorEntrance({ children }: { children: React.ReactNode }) {
-  const model = useMemo(() => new ConnectedPatientSession(createWebApi({ origin: window.location.origin })), []);
+  const model = useMemo(() => new ConnectedPatientSession(createWebApi({ origin: window.location.origin }), browserRegistrationJournal()), []);
   const snapshot = useSyncExternalStore(model.subscribe, model.getSnapshot, model.getSnapshot);
   const view = snapshot.session;
   const [loginLabel, setLoginLabel] = useState('');

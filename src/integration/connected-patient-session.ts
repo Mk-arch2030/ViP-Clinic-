@@ -1,6 +1,7 @@
 import { SessionCoordinator, type SessionView } from './session-coordinator';
 import type { FailureKind, WebApi } from './web-api-client';
 import type { Registration } from './basic-patient';
+import type { RegistrationJournal } from './registration-uncertainty';
 
 export interface PatientNotice { readonly operation: 'retrieve' | 'register'; readonly kind: FailureKind }
 export interface ConnectedView { readonly session: SessionView; readonly notice: PatientNotice | null }
@@ -13,8 +14,8 @@ export class ConnectedPatientSession {
   private actor: string | null = null;
   private value: ConnectedView;
   private unsubscribe: () => void;
-  constructor(api: WebApi) {
-    this.coordinator = new SessionCoordinator(api);
+  constructor(api: WebApi, journal?: RegistrationJournal) {
+    this.coordinator = new SessionCoordinator(api, journal);
     this.value = Object.freeze({ session: this.coordinator.getSnapshot(), notice: null });
     this.unsubscribe = this.coordinator.subscribe(() => this.publish());
   }
