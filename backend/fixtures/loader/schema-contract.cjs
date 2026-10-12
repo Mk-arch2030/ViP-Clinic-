@@ -27,7 +27,9 @@ function validateSchema(schema){
  for(const expected of unique)if(!schema.uniqueKeys.some(k=>JSON.stringify(k)===JSON.stringify(expected)))fail();
  const required={patients:1,past_history_items:5,clinic_days:3,actors:2};
  for(const [table,count]of Object.entries(required))if(schema.checks.filter(k=>k.table===table).length!==count)fail();
- const norm=s=>s.replace(/::text/g,'').replace(/[\s()]/g,'');
+ // PostgreSQL deparses the known lowercase column position as "position".
+ // Normalize this exact identifier only; other quoted identifiers stay distinct.
+ const norm=s=>s.replace(/"position"/g,'position').replace(/::text/g,'').replace(/[\s()]/g,'');
  const checks={
   patients:["CHECKgender=ANYARRAY['Male','Female']"],
   actors:["CHECKactor_role=ANYARRAY['DOCTOR','NURSE']","CHECKlifecycle_state=ANYARRAY['ACTIVE','DEACTIVATED']"],

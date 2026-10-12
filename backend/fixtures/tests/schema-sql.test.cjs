@@ -17,6 +17,34 @@ test('SQL adapter checks actual database identity before schema or row access',a
  const calls=[];const client={async query(text){calls.push(text);return {rows:[{database:'roby_intake_proof_stage6'}]};}};
  await assert.rejects(sql.inspect(client,{database:DATABASE,dataDirectory:'/tmp/data',socketDirectory:'/tmp/socket',port:55449,systemId:'8000000000000000001'}),e=>e.code==='DATABASE_IDENTITY_MISMATCH');assert.equal(calls.length,1);assert.ok(!calls[0].includes('verifier'));
 });
+test('SQL adapter catalog-model regression accepts PostgreSQL 18 quoted position CHECK and UNIQUE definitions',async()=>{
+ const model=schema();
+ const config={database:DATABASE,dataDirectory:'/tmp/data',socketDirectory:'/tmp/socket',port:55449,systemId:'8000000000000000001'};
+ const identity={database:DATABASE,data_directory:config.dataDirectory,sockets:config.socketDirectory,port:'55449',system_id:config.systemId,tcp:'',address:null,owns:true,version:'180002',search_path:'pg_catalog,public'};
+ const constraints=[
+  ...model.checks.map(c=>({schema:'public',table:c.table,type:'c',definition:c.definition.replace(/\bposition\b/g,'"position"')})),
+  ...model.foreignKeys.map(([table,column,target,key])=>({schema:'public',table,type:'f',definition:`FOREIGN KEY (${column}) REFERENCES ${target}(${key})`})),
+  ...model.uniqueKeys.map(([table,key])=>({schema:'public',table,type:['clinic_patient_number','working_date','patient_id,category,position'].includes(key)?'u':'p',definition:`UNIQUE (${key.replace(/,/g,', ').replace(/\bposition\b/g,'"position"')})`}))
+ ];
+ const client={async query(query){
+  if(query.includes('pg_control_system'))return {rows:[identity]};
+  if(query.includes('FROM pg_namespace'))return {rows:[{nspname:'public'}]};
+  if(query.includes('information_schema.columns'))return {rows:model.columns};
+  if(query.includes('FROM pg_constraint'))return {rows:constraints};
+  if(query.includes("n.nspname='public' ORDER BY c.relname"))return {rows:[{relname:'clinic_patient_number_seq',relkind:'S'}]};
+  if(query.includes('FROM pg_proc'))return {rows:[]};
+  if(query.includes('FROM pg_extension'))return {rows:[{extname:'plpgsql'}]};
+  if(query.startsWith('SELECT row_to_json'))return {rows:[]};
+  if(query.startsWith('SELECT last_value'))return {rows:[{last_value:'1',is_called:false}]};
+  throw Error('Unexpected catalog query');
+ }};
+ const result=await sql.inspect(client,config);
+ assert.ok(result.schema.uniqueKeys.some(([table,key])=>table==='past_history_items'&&key==='patient_id,category,position'));
+ const changed=structuredClone(result.schema);changed.checks.find(c=>c.definition.includes('"position"')).definition='CHECK ("POSITION" = 0)';
+ assert.throws(()=>validateSchema(changed),e=>e.code==='SCHEMA_MISMATCH');
+ const wrongKey=structuredClone(result.schema);wrongKey.uniqueKeys.find(([table,key])=>table==='past_history_items'&&key.includes('category'))[1]='patient_id,category,"POSITION"';
+ assert.throws(()=>validateSchema(wrongKey),e=>e.code==='SCHEMA_MISMATCH');
+});
 test('identity accepts PostgreSQL search_path whitespace without accepting different schemas or ordering',()=>{
  const {validateIdentity}=require('../loader/safety.cjs');
  const config={database:DATABASE,dataDirectory:'/tmp/data',socketDirectory:'/tmp/socket',port:55449,systemId:'8000000000000000001'};
