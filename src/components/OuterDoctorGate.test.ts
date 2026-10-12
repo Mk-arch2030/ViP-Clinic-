@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mayEnterDoctorClinic } from './OuterDoctorGate';
+import { ConnectedPatientSession } from '../integration/connected-patient-session';
+import { ApiFailure, type WebApi } from '../integration/web-api-client';
 import type { SessionView } from '../integration/session-coordinator';
 
 const doctor = {
@@ -25,4 +27,63 @@ test('outer gate refuses Nurse, uncertain logout and uncertain registration', ()
   assert.equal(mayEnterDoctorClinic({...authorized,logoutUnconfirmed:true}),false);
   assert.equal(mayEnterDoctorClinic({...authorized,registrationUnconfirmed:true}),false);
   assert.equal(mayEnterDoctorClinic({...authorized,session:null}),false);
+});
+
+function syntheticGateApi(overrides: Partial<WebApi> = {}): WebApi {
+  return {
+    session: async () => doctor,
+    login: async () => {},
+    logout: async () => {},
+    retrieve: async () => { throw new Error('Patient retrieval not permitted in gate test'); },
+    register: async () => { throw new Error('Patient registration not permitted in gate test'); },
+    ...overrides
+  };
+}
+
+test('shared doctor model locks the gate immediately while server logout is pending', async () => {
+  let finishLogout!: () => void;
+  let logoutCalls = 0;
+  const pending = new Promise<void>(resolve => { finishLogout = resolve; });
+  const model = new ConnectedPatientSession(syntheticGateApi({
+    logout: async () => { logoutCalls++; await pending; }
+  }));
+  try {
+    await model.refresh();
+    assert.equal(mayEnterDoctorClinic(model.getSnapshot().session), true);
+
+    const logout = model.logout();
+    const during = model.getSnapshot().session;
+    assert.equal(logoutCalls, 1);
+    assert.equal(during.session, null);
+    assert.equal(during.logoutUnconfirmed, true);
+    assert.equal(mayEnterDoctorClinic(during), false);
+
+    finishLogout();
+    await logout;
+    const after = model.getSnapshot().session;
+    assert.equal(after.state, 'unauthenticated');
+    assert.equal(after.session, null);
+    assert.equal(after.logoutUnconfirmed, false);
+    assert.equal(mayEnterDoctorClinic(after), false);
+  } finally {
+    model.dispose();
+  }
+});
+
+test('failed server logout leaves shared doctor gate locked and revocation unconfirmed', async () => {
+  const model = new ConnectedPatientSession(syntheticGateApi({
+    logout: async () => { throw new ApiFailure(0, 'unavailable'); }
+  }));
+  try {
+    await model.refresh();
+    assert.equal(mayEnterDoctorClinic(model.getSnapshot().session), true);
+    await model.logout();
+    const after = model.getSnapshot().session;
+    assert.equal(after.state, 'unavailable');
+    assert.equal(after.session, null);
+    assert.equal(after.logoutUnconfirmed, true);
+    assert.equal(mayEnterDoctorClinic(after), false);
+  } finally {
+    model.dispose();
+  }
 });

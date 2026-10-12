@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ConnectedPatients } from './ConnectedPatients';
+import { DoctorSessionProvider } from '../integration/doctor-session-context';
+import { ConnectedPatientSession } from '../integration/connected-patient-session';
+import { createWebApi } from '../integration/web-api-client';
 import { Header } from './Header';
 import { TEST_ORIGIN } from '../integration/web-api-client';
 function withOrigin(origin: string, work: () => void) {
@@ -26,11 +29,24 @@ test('server Header shows persisted-role context without mock role/mode/day cont
 });
 test('protected patient panel renders current clinic theme classes and begins checking without remembered identity', () => {
   withOrigin(TEST_ORIGIN, () => {
-    const html=renderToStaticMarkup(<ConnectedPatients language="en" onIdentity={() => { throw Error('identity emitted during render'); }} />);
+    const model = new ConnectedPatientSession(createWebApi({ origin: TEST_ORIGIN }));
+      let html: string;
+      try {
+        html = renderToStaticMarkup(<DoctorSessionProvider model={model}><ConnectedPatients language="en" onIdentity={() => { throw Error('identity emitted during render'); }} /></DoctorSessionProvider>);
+      } finally { model.dispose(); }
     assert.ok(html.includes('Checking session')); assert.ok(html.includes('theme-surface'));
     assert.ok(html.includes('Register First-Time Patient')); assert.ok(html.includes('Search by')); assert.ok(html.includes('Patient name')); assert.ok(!html.includes('Patient UUID')); assert.ok(!html.includes('Server identity: Doctor'));
     assert.ok(html.includes('Known Drug &amp; Food Allergies')); assert.ok(html.includes('Lifestyle'));
     assert.ok(html.includes('<fieldset disabled=""'));
     assert.ok(!html.includes('CPN-1001')); assert.ok(!html.includes('name="role"'));
+  });
+});
+
+test('protected patient panel refuses a missing shared doctor session provider', () => {
+  withOrigin(TEST_ORIGIN, () => {
+    assert.throws(
+      () => renderToStaticMarkup(<ConnectedPatients language="en" onIdentity={() => {}} />),
+      /Protected doctor session provider is missing/
+    );
   });
 });

@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { ShieldCheck, Search, FolderOpen, LogOut } from 'lucide-react';
-import { ConnectedPatientSession } from '../integration/connected-patient-session';
-import { createWebApi, TEST_ORIGIN, type FailureKind } from '../integration/web-api-client';
+import { useDoctorSession } from '../integration/doctor-session-context';
+import { TEST_ORIGIN, type FailureKind } from '../integration/web-api-client';
 import { PatientIntake } from './PatientIntake';
 import type { Language } from '../i18n/translations';
 
@@ -30,7 +30,7 @@ export function ConnectedPatients(props: { language: Language; onIdentity: (valu
 }
 
 function ProtectedPatients({ language, onIdentity }: { language: Language; onIdentity: (value: ConnectedIdentity) => void }) {
-  const model = useMemo(() => new ConnectedPatientSession(createWebApi({ origin:window.location.origin })), []);
+  const model = useDoctorSession();
   const state = useSyncExternalStore(model.subscribe, model.getSnapshot, model.getSnapshot);
   const view = state.session;
   const ar = language === 'ar';
@@ -42,13 +42,6 @@ function ProtectedPatients({ language, onIdentity }: { language: Language; onIde
   const [intakeEpoch, setIntakeEpoch] = useState(0);
   const previousActor = useRef<string | null>(null);
   const doctor = view.state === 'authenticated' && view.session?.role === 'Doctor';
-  useEffect(() => {
-    void model.refresh();
-    const reconcile = () => { if (document.visibilityState === 'visible') void model.refresh(); };
-    window.addEventListener('focus', reconcile); window.addEventListener('pageshow', reconcile);
-    document.addEventListener('visibilitychange', reconcile);
-    return () => { window.removeEventListener('focus', reconcile); window.removeEventListener('pageshow', reconcile); document.removeEventListener('visibilitychange', reconcile); model.dispose(); };
-  }, [model]);
   useEffect(() => {
     onIdentity({ role:view.session?.role ?? null, checking:view.state === 'checking', blocked:view.busy || view.registrationUnconfirmed || view.logoutUnconfirmed });
   }, [onIdentity, view]);

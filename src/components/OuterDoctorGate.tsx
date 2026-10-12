@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { LockKeyhole, ShieldCheck, Stethoscope, Users, AlertTriangle, LogOut } from 'lucide-react';
 import { ConnectedPatientSession } from '../integration/connected-patient-session';
+import { DoctorSessionProvider } from '../integration/doctor-session-context';
 import { createWebApi, TEST_ORIGIN } from '../integration/web-api-client';
 import type { SessionView } from '../integration/session-coordinator';
 
@@ -45,7 +46,7 @@ function ProtectedDoctorEntrance({ children }: { children: React.ReactNode }) {
     if (view.state !== 'authenticated') setPassword('');
   }, [view.state]);
   if (mayEnterDoctorClinic(view)) {
-    return <div data-roby-gate="inside">
+    return <DoctorSessionProvider model={model}><div data-roby-gate="inside">
       <div className="no-print theme-surface border-b theme-border px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div className="flex items-center gap-2 theme-text-primary text-sm font-semibold">
           <ShieldCheck className="w-5 h-5" />
@@ -58,7 +59,7 @@ function ProtectedDoctorEntrance({ children }: { children: React.ReactNode }) {
         </button>
       </div>
       {children}
-    </div>;
+    </div></DoctorSessionProvider>;
   }
   const waiting = view.state === 'checking';
   const unavailable = view.state === 'unavailable';
