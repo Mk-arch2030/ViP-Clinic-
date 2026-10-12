@@ -1,0 +1,57 @@
+{
+  "canonicalSha256": "2c29163ab399e99b70918bd179da5e9e2ce3e0df271cf5faeb290952321dba12",
+  "capture": "AST literal extraction; no storage, clock or generated IDs evaluated. Object keys sorted; array order, strings and nulls unchanged.",
+  "classification": {
+    "confirmedHistoricalMock": [
+      "INITIAL_PATIENTS",
+      "INITIAL_CASES",
+      "INITIAL_VISITS",
+      "INITIAL_CLINIC_DAY",
+      "literal loadState return"
+    ],
+    "generatedHistoricalDemonstrationState": [
+      "registerPatient: crypto.randomUUID and clock; arrival/authorization/exit/day lifecycle clocks; NOT captured as original seed"
+    ],
+    "laterSyntheticTestData": [
+      "application/tests/*",
+      "backend/auth/test-harness.cjs",
+      "backend/web-proof/stage6-device-package.cjs FIXTURE",
+      "src/components/OriginalClinic.test.tsx"
+    ],
+    "unknownProvenance": [
+      "Browser localStorage data outside literal empty-storage initial state; excluded"
+    ]
+  },
+  "counts": {
+    "cases": 3,
+    "clinicDays": 1,
+    "patients": 3,
+    "prescriptions": 4,
+    "visits": 4
+  },
+  "currentSource": {
+    "lastChange": "96fa03a17333ff23721799693151c5162199c2ab",
+    "path": "src/services/clinicStore.ts",
+    "rawSha256": "396664a8a6c90f8ff13d727d2bd09965d90b2c2ec18ef70ffb9f304b70897bf4",
+    "revision": "3caa11b0af88219e42d1e6dcf3c96ad2bd1c781b"
+  },
+  "initialSource": {
+    "path": "src/services/clinicStore.ts",
+    "rawSha256": "6638a6262cdf5b33d5c22a71ffae2c94acb4c56cd2ddbd25582ccedb1590a04f",
+    "revision": "c473be0b588078e40bd5c0554b8a24113277d7d5"
+  },
+  "kind": "GOLDEN_BASELINE",
+  "knownGaps": [
+    {
+      "clinicDayId": "CD-2026-09-20",
+      "id": "GOLDEN-GAP-001",
+      "kind": "UNSEEDED_HISTORICAL_DAY_REFERENCE",
+      "policy": "PRESERVE_REFERENCE_DO_NOT_INVENT_DAY",
+      "references": [
+        "C-003.openedClinicDayId",
+        "V-004.clinicDayId"
+      ]
+    }
+  ],
+  "version": 1
+}
