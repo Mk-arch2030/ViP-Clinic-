@@ -19,7 +19,7 @@ interface HeaderProps {
   serverMode?: boolean;
   serverRole?: ActorRole | null;
   serverChecking?: boolean;
-  currentDay: ClinicDayRecord;
+  currentDay: ClinicDayRecord | null;
   actorRole: ActorRole;
   operatingMode: OperatingMode;
   onSetActorRole: (role: ActorRole) => void;
@@ -174,7 +174,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Clinic Day Context Bar — demonstration context only */}
-      {!serverMode && (
+      {!serverMode && currentDay && (
         <div className="mt-3 pt-3 border-t theme-border flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-4 theme-text-secondary">
             <div className="flex items-center gap-1.5 font-mono">

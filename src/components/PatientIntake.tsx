@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { PatientRecord, CaseRecord, ArrivalCondition, ActorRole } from '../domain/types';
+import type { Registration } from '../integration/basic-patient';
+import type { ClinicPatient } from '../integration/clinic-boundary';
 import { translations, Language } from '../i18n/translations';
 import { calculateDetailedAge, DetailedAge } from '../domain/patientAge';
 import {
@@ -16,29 +18,21 @@ import {
   HeartPulse,
 } from 'lucide-react';
 
-type RegistrationResult = Pick<PatientRecord, 'patientId' | 'clinicPatientNumber' | 'name' | 'dateOfBirth' | 'phone'>;
+type RegistrationResult = Pick<ClinicPatient, 'patientId' | 'clinicPatientNumber' | 'name' | 'dateOfBirth' | 'phone'>;
 interface PatientIntakeProps {
   serverRegistration?: boolean;
+  clinicalDisabled?: boolean;
+  searchPending?: boolean;
+  searchHasMore?: boolean;
+  onSearchPatients?: (query: string) => Promise<void>;
+  onRetrievePatient?: (id: string) => Promise<ClinicPatient | null>;
   registrationDisabled?: boolean;
   registrationNotice?: React.ReactNode;
-  patients: PatientRecord[];
+  patients: ClinicPatient[];
   cases: CaseRecord[];
   actorRole: ActorRole;
   language: Language;
-  onRegisterPatient: (params: {
-    name: string;
-    dateOfBirth: string;
-    profession: string;
-    phone: string;
-    gender: 'Male' | 'Female';
-    pastHistory?: {
-      chronicIllnesses?: string[];
-      knownAllergies?: string[];
-      surgicalHistory?: string[];
-      familyHistory?: string[];
-      lifestyleNotes?: string;
-    };
-  }) => RegistrationResult | null | Promise<RegistrationResult | null>;
+  onRegisterPatient: (params: Registration) => RegistrationResult | null | Promise<RegistrationResult | null>;
   onRecordArrival: (params: {
     patientId: string;
     caseId?: string;
@@ -51,6 +45,11 @@ interface PatientIntakeProps {
 
 export const PatientIntake: React.FC<PatientIntakeProps> = ({
   serverRegistration = false,
+  clinicalDisabled = serverRegistration,
+  searchPending = false,
+  searchHasMore = false,
+  onSearchPatients,
+  onRetrievePatient,
   registrationDisabled = false,
   registrationNotice,
   patients,
@@ -104,13 +103,14 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
   const searchResults = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return [];
+    if (onSearchPatients) return patients;
     return patients.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.clinicPatientNumber.toLowerCase().includes(q) ||
         p.phone.includes(q)
     );
-  }, [patients, searchQuery]);
+  }, [patients, searchQuery, onSearchPatients]);
 
   const selectedPatient = useMemo(() => {
     return patients.find((p) => p.patientId === selectedPatientId) || null;
@@ -176,7 +176,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
   const handleArrivalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPatientId) return;
+    if (clinicalDisabled || !selectedPatientId) return;
 
     onRecordArrival({
       patientId: selectedPatientId,
@@ -213,7 +213,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
         <button
           type="button"
-          disabled={serverRegistration || pending}
+          disabled={pending || searchPending}
           onClick={() => {
             setMode('LOOKUP');
             setIntakeSuccessPatient(null);
@@ -230,7 +230,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
         </button>
       </div>
 
-      {serverRegistration && <p role="status" className="text-xs theme-text-muted">{language === 'ar' ? 'التسجيل عبر الخادم. الزيارات والملف السريري غير متاحين هنا بعد.' : 'Registration uses the server. Visits and clinical dossier are not yet available here.'}</p>}
+      {serverRegistration && <p role="status" className="text-xs theme-text-muted">{language === 'ar' ? 'التسجيل والبحث عبر الخادم. تسجيل الزيارات غير متاح بعد.' : 'Registration and lookup use the server. Recording visits is not available yet.'}</p>}
       {registrationNotice}
       {registrationError && <p role="alert">{language === 'ar' ? 'تعذر تأكيد التسجيل. راجع حالة الطلب قبل تكراره.' : 'Registration could not be confirmed. Check the request outcome before retrying.'}</p>}
       {/* MODE 1: NEW PATIENT REGISTRATION */}
@@ -275,7 +275,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               <div className="flex flex-wrap justify-center gap-3 pt-2">
                 <button
                   type="button"
-                  disabled={serverRegistration}
+                  disabled={clinicalDisabled}
                   onClick={() => {
                     setMode('LOOKUP');
                     setSelectedPatientId(intakeSuccessPatient.patientId);
@@ -289,7 +289,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
                 <button
                   type="button"
-                  disabled={serverRegistration}
+                  disabled={registrationDisabled}
                   onClick={() => onSelectPatientDossier(intakeSuccessPatient.patientId)}
                   className="px-5 py-2.5 theme-action-secondary hover:brightness-110 text-white rounded-lg text-xs font-semibold transition-colors border theme-border"
                 >
@@ -505,7 +505,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
       {mode === 'LOOKUP' && (
         <div className="space-y-6">
           {/* Search Box */}
-          <div className="theme-surface border theme-border rounded-xl p-5 shadow-xs">
+          <form onSubmit={event => { event.preventDefault(); void onSearchPatients?.(searchQuery); }} className="theme-surface border theme-border rounded-xl p-5 shadow-xs">
             <label className="block text-xs font-medium theme-text-secondary mb-2">
               {language === 'ar' ? 'البحث عن ملف المريض' : 'Search Patient Registry'}
             </label>
@@ -513,13 +513,16 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
               <Search className="w-4 h-4 theme-text-muted absolute left-3 rtl:left-auto rtl:right-3 top-3 pointer-events-none" />
               <input
                 type="text"
+                disabled={searchPending}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t.searchPatientPlaceholder}
+                placeholder={onSearchPatients ? (language === 'ar' ? 'اسم المريض أو CPN — البحث بالهاتف غير متاح بعد' : 'Patient name or CPN — phone search is not available yet') : t.searchPatientPlaceholder}
                 className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
               />
             </div>
 
+            {onSearchPatients && <button type="submit" disabled={searchPending} className="mt-3 theme-action-primary rounded-lg px-4 py-2 text-xs">{language === 'ar' ? 'بحث' : 'Search'}</button>}
+            {searchHasMore && <p role="status" className="text-xs theme-text-muted">{language === 'ar' ? 'أول 25 نتيجة؛ حدّد الاسم أكثر.' : 'First 25 matches; refine the name.'}</p>}
             {/* Quick Result Suggestions */}
             {searchQuery.trim() && (
               <div className="mt-3 divide-y divide-[color:var(--theme-border)] theme-surface-nested rounded-lg border theme-border max-h-56 overflow-y-auto">
@@ -532,7 +535,9 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     <button
                       key={p.patientId}
                       type="button"
-                      onClick={() => {
+                      disabled={searchPending}
+                      onClick={async () => {
+                        if (onRetrievePatient && !(await onRetrievePatient(p.patientId))) return;
                         setSelectedPatientId(p.patientId);
                         setSearchQuery('');
                         setArrivalSuccess(false);
@@ -553,11 +558,12 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                 )}
               </div>
             )}
-          </div>
+          </form>
 
           {/* Selected Patient Arrival Context Card */}
           {selectedPatient && (
             <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs space-y-6">
+              {clinicalDisabled && <button type="button" disabled={searchPending} onClick={() => onSelectPatientDossier(selectedPatient.patientId)} className="theme-action-secondary rounded-lg px-4 py-2 text-xs">{t.inspectDossier}</button>}
               {arrivalSuccess ? (
                 <div className="text-center py-6 space-y-4">
                   <div className="w-12 h-12 rounded-full theme-surface-nested border theme-border flex items-center justify-center theme-status-success mx-auto">
@@ -592,7 +598,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleArrivalSubmit} className="space-y-6">
+                <form onSubmit={handleArrivalSubmit}>
+                  <fieldset disabled={clinicalDisabled} className="space-y-6">
                   {/* Patient Banner */}
                   <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 theme-surface-nested rounded-lg border theme-border text-xs">
                     <div>
@@ -747,6 +754,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       <span>{t.recordArrivalBtn}</span>
                     </button>
                   </div>
+                  </fieldset>
                 </form>
               )}
             </div>

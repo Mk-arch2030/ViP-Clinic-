@@ -123,7 +123,7 @@ test('P37B-05 Doctor prescription authorization still works', () => {
 });
 
 test('P37B-06 Save acknowledgement and role-specific payload', () => {
-  const app = readFileSync('src/App.tsx', 'utf8');
+  const app = readFileSync('src/ClinicApplication.tsx', 'utf8');
   const ui = readFileSync(
     'src/components/DoctorConsultation.tsx',
     'utf8',

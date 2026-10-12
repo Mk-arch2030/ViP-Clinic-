@@ -1,3 +1,4 @@
+import type { ClinicPatient } from '../integration/clinic-boundary';
 import React, { useState } from 'react';
 import { VisitRecord, PatientRecord, CaseRecord, ActorRole } from '../domain/types';
 import { translations, Language } from '../i18n/translations';
@@ -15,8 +16,9 @@ import {
 } from 'lucide-react';
 
 interface DailyCensusProps {
+  unavailable?: boolean;
   visits: VisitRecord[];
-  patients: PatientRecord[];
+  patients: ClinicPatient[];
   cases: CaseRecord[];
   actorRole: ActorRole;
   language: Language;
@@ -27,6 +29,7 @@ interface DailyCensusProps {
 }
 
 export const DailyCensus: React.FC<DailyCensusProps> = ({
+  unavailable = false,
   visits,
   patients,
   cases,
@@ -74,7 +77,7 @@ export const DailyCensus: React.FC<DailyCensusProps> = ({
               {t.censusSummary}
             </h2>
             <span className="font-mono text-xs text-[color:var(--theme-text-technical)] bg-[color:var(--theme-action-primary)]/10 px-2 py-0.5 rounded border border-[color:var(--theme-action-primary)]/30">
-              {visits.length} {t.recordedVisits}
+              {unavailable ? "—" : visits.length} {t.recordedVisits}
             </span>
           </div>
           <p className="text-xs theme-text-secondary mt-1 max-w-xl">
@@ -110,7 +113,7 @@ export const DailyCensus: React.FC<DailyCensusProps> = ({
             <Users className="w-4 h-4 theme-text-muted" />
           </div>
           <div className="mt-2 text-2xl font-bold font-mono theme-text-primary">
-            {visits.length}
+            {unavailable ? "—" : visits.length}
           </div>
         </button>
 
@@ -128,7 +131,7 @@ export const DailyCensus: React.FC<DailyCensusProps> = ({
             <Clock className="w-4 h-4 text-[color:var(--theme-status-warning)]" />
           </div>
           <div className="mt-2 text-2xl font-bold font-mono text-[color:var(--theme-status-warning)]">
-            {awaitingDoctorCount}
+            {unavailable ? "—" : awaitingDoctorCount}
           </div>
         </button>
 
@@ -146,7 +149,7 @@ export const DailyCensus: React.FC<DailyCensusProps> = ({
             <Stethoscope className="w-4 h-4 text-[color:var(--theme-status-active)]" />
           </div>
           <div className="mt-2 text-2xl font-bold font-mono text-[color:var(--theme-status-active)]">
-            {withDoctorCount}
+            {unavailable ? "—" : withDoctorCount}
           </div>
         </button>
 
@@ -164,7 +167,7 @@ export const DailyCensus: React.FC<DailyCensusProps> = ({
             <CheckCircle2 className="w-4 h-4 theme-text-muted" />
           </div>
           <div className="mt-2 text-2xl font-bold font-mono theme-text-primary">
-            {exitedCount}
+            {unavailable ? "—" : exitedCount}
           </div>
         </button>
       </div>
@@ -174,7 +177,7 @@ export const DailyCensus: React.FC<DailyCensusProps> = ({
         {filteredVisits.length === 0 ? (
           <div className="theme-surface border theme-border rounded-xl p-10 text-center">
             <AlertCircle className="w-8 h-8 theme-text-muted mx-auto mb-2" />
-            <p className="text-sm theme-text-muted">{t.noVisitsFound}</p>
+            <p className="text-sm theme-text-muted">{unavailable ? (language === 'ar' ? 'بيانات الزيارات غير متاحة من الخادم بعد.' : 'Visit data is not available from the server yet.') : t.noVisitsFound}</p>
           </div>
         ) : (
           filteredVisits.map((visit) => {

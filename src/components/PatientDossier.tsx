@@ -1,3 +1,4 @@
+import type { ClinicPatient } from '../integration/clinic-boundary';
 import React, { useState, useMemo } from 'react';
 import {
   PatientRecord,
@@ -26,7 +27,8 @@ import {
 } from 'lucide-react';
 
 interface PatientDossierProps {
-  patient: PatientRecord;
+  clinicalUnavailable?: boolean;
+  patient: ClinicPatient;
   cases: CaseRecord[];
   visits: VisitRecord[];
   actorRole: ActorRole;
@@ -38,6 +40,7 @@ interface PatientDossierProps {
 }
 
 export const PatientDossier: React.FC<PatientDossierProps> = ({
+  clinicalUnavailable = false,
   patient,
   cases,
   visits,
@@ -49,13 +52,13 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
   onPrintPrescription,
 }) => {
   const t = translations[language];
-  const [activeTab, setActiveTab] = useState<'CASES' | 'PAST_HISTORY' | 'TIMELINE'>('CASES');
+  const [activeTab, setActiveTab] = useState<'CASES' | 'PAST_HISTORY' | 'TIMELINE'>(clinicalUnavailable ? 'PAST_HISTORY' : 'CASES');
   const [selectedCaseId, setSelectedCaseId] = useState<string>(
     cases.length > 0 ? cases[cases.length - 1].id : ''
   );
 
   const detailedAge = useMemo(
-    () => calculateDetailedAge(patient.dateOfBirth),
+    () => patient.dateOfBirth ? calculateDetailedAge(patient.dateOfBirth) : null,
     [patient.dateOfBirth]
   );
 
@@ -114,7 +117,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 <div className="flex items-center gap-1.5">
                   <span className="theme-text-secondary">{t.derivedAge}:</span>
                   <strong className="font-mono text-[color:var(--theme-status-active)] font-semibold">
-                    {detailedAge.years} {t.derivedAgeYears}, {detailedAge.months} {t.derivedAgeMonths} ({detailedAge.days} {t.derivedAgeDays})
+                    {detailedAge?.years ?? (language === 'ar' ? 'غير مسجل' : 'Not recorded')} {t.derivedAgeYears}, {detailedAge?.months ?? "—"} {t.derivedAgeMonths} ({detailedAge?.days ?? "—"} {t.derivedAgeDays})
                   </strong>
                 </div>
 
@@ -135,17 +138,17 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           <div className="flex items-center gap-3 theme-surface-input p-3 rounded-lg border theme-border text-xs">
             <div className="text-center px-3 border-r theme-border rtl:border-r-0 rtl:border-l">
               <span className="theme-text-muted block">Total Cases</span>
-              <strong className="text-base font-mono theme-text-primary">{cases.length}</strong>
+              <strong className="text-base font-mono theme-text-primary">{clinicalUnavailable ? "—" : cases.length}</strong>
             </div>
             <div className="text-center px-3">
               <span className="theme-text-muted block">Cumulative Visits</span>
-              <strong className="text-base font-mono text-[color:var(--theme-status-active)]">{visits.length}</strong>
+              <strong className="text-base font-mono text-[color:var(--theme-status-active)]">{clinicalUnavailable ? "—" : visits.length}</strong>
             </div>
           </div>
         </div>
 
         {/* Known Allergies Highlight */}
-        {patient.pastHistory.knownAllergies.length > 0 && (
+        {patient.pastHistory && patient.pastHistory.knownAllergies.length > 0 && (
           <div className="mt-4 px-3.5 py-2 bg-[color:var(--theme-status-warning)]/10 border border-[color:var(--theme-status-warning)]/30 rounded-lg text-xs text-[color:var(--theme-status-warning)] flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-[color:var(--theme-status-warning)] shrink-0" />
             <span className="font-semibold">{t.knownAllergies}:</span>
@@ -166,7 +169,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           }`}
         >
           <FolderOpen className="w-4 h-4" />
-          <span>{t.clinicalCasesTab} ({cases.length})</span>
+          <span>{t.clinicalCasesTab} ({clinicalUnavailable ? "—" : cases.length})</span>
         </button>
 
         <button
@@ -192,12 +195,13 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
           }`}
         >
           <History className="w-4 h-4" />
-          <span>{t.longitudinalTimelineTab} ({visits.length})</span>
+          <span>{t.longitudinalTimelineTab} ({clinicalUnavailable ? "—" : visits.length})</span>
         </button>
       </div>
 
       {/* TAB 1: CLINICAL CASES & ENCOUNTERS */}
-      {activeTab === 'CASES' && (
+      {clinicalUnavailable && activeTab !== 'PAST_HISTORY' && <p role="status" className="theme-surface border theme-border rounded-xl p-6">{language === 'ar' ? 'الحالات والزيارات والسجل السريري لم تتصل بالخادم بعد.' : 'Cases, visits and clinical history are not connected to the server yet.'}</p>}
+      {activeTab === 'CASES' && !clinicalUnavailable && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Cases Column */}
           <div className="space-y-3">
@@ -205,7 +209,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider theme-text-secondary">
                 {language === 'ar' ? 'مسارات الحالات السريرية' : 'Clinical Cases'}
               </h3>
-              <span className="text-xs theme-text-muted font-mono">{cases.length}</span>
+              <span className="text-xs theme-text-muted font-mono">{clinicalUnavailable ? "—" : cases.length}</span>
             </div>
 
             <div className="space-y-2">
@@ -435,7 +439,8 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
       )}
 
       {/* TAB 2: PAST MEDICAL HISTORY */}
-      {activeTab === 'PAST_HISTORY' && (
+      {activeTab === 'PAST_HISTORY' && !patient.pastHistory && <p role="status" className="theme-surface border theme-border rounded-xl p-6">{language === 'ar' ? 'التاريخ المرضي السابق لم يُسجل؛ لا يعني ذلك عدم وجود أمراض أو حساسية.' : 'Past history was not captured; this does not mean no illnesses or allergies.'}</p>}
+      {activeTab === 'PAST_HISTORY' && patient.pastHistory && (
         <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs space-y-6">
           <div>
             <h3 className="text-base font-bold theme-text-primary font-sans">
@@ -452,7 +457,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 {t.chronicIllnesses}
               </span>
               {patient.pastHistory.chronicIllnesses.length === 0 ? (
-                <span className="text-xs theme-text-muted">None reported</span>
+                <span className="text-xs theme-text-muted">{clinicalUnavailable ? (language === 'ar' ? 'لم تُدخل معلومات' : 'No information entered') : 'None reported'}</span>
               ) : (
                 <ul className="text-xs theme-text-secondary space-y-1 list-disc list-inside">
                   {patient.pastHistory.chronicIllnesses.map((item, idx) => (
@@ -467,7 +472,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 {t.knownAllergies}
               </span>
               {patient.pastHistory.knownAllergies.length === 0 ? (
-                <span className="text-xs theme-text-muted">No known allergies</span>
+                <span className="text-xs theme-text-muted">{clinicalUnavailable ? (language === 'ar' ? 'لم تُدخل معلومات' : 'No information entered') : 'No known allergies'}</span>
               ) : (
                 <ul className="text-xs text-[color:var(--theme-status-warning)] space-y-1 list-disc list-inside">
                   {patient.pastHistory.knownAllergies.map((item, idx) => (
@@ -482,7 +487,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 {t.surgicalHistory}
               </span>
               {patient.pastHistory.surgicalHistory.length === 0 ? (
-                <span className="text-xs theme-text-muted">None</span>
+                <span className="text-xs theme-text-muted">{clinicalUnavailable ? (language === 'ar' ? 'لم تُدخل معلومات' : 'No information entered') : 'None'}</span>
               ) : (
                 <ul className="text-xs theme-text-secondary space-y-1 list-disc list-inside">
                   {patient.pastHistory.surgicalHistory.map((item, idx) => (
@@ -497,7 +502,7 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
                 {t.familyHistory}
               </span>
               {patient.pastHistory.familyHistory.length === 0 ? (
-                <span className="text-xs theme-text-muted">Non-contributory</span>
+                <span className="text-xs theme-text-muted">{clinicalUnavailable ? (language === 'ar' ? 'لم تُدخل معلومات' : 'No information entered') : 'Non-contributory'}</span>
               ) : (
                 <ul className="text-xs theme-text-secondary space-y-1 list-disc list-inside">
                   {patient.pastHistory.familyHistory.map((item, idx) => (
@@ -513,14 +518,14 @@ export const PatientDossier: React.FC<PatientDossierProps> = ({
               {t.lifestyleNotes}
             </span>
             <p className="text-xs theme-text-secondary font-sans">
-              {patient.pastHistory.lifestyleNotes || 'No specific habits recorded.'}
+              {patient.pastHistory.lifestyleNotes || (clinicalUnavailable ? (language === 'ar' ? 'لم تُدخل معلومات' : 'No information entered') : 'No specific habits recorded.')}
             </p>
           </div>
         </div>
       )}
 
       {/* TAB 3: LONGITUDINAL TIMELINE */}
-      {activeTab === 'TIMELINE' && (
+      {activeTab === 'TIMELINE' && !clinicalUnavailable && (
         <div className="theme-surface border theme-border rounded-xl p-6 shadow-xs space-y-6">
           <div>
             <h3 className="text-base font-bold theme-text-primary font-sans">
