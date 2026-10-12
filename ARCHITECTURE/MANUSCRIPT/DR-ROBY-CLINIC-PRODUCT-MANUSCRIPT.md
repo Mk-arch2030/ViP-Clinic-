@@ -43,8 +43,7 @@ working date.
 A Clinic Day begins with the clinic's working day and contains the cases
 and visits recorded during that day.
 
-Each patient arrival is recorded within a Visit. A Visit belongs to a Case,
-and the same Case may contain multiple Visits across multiple Clinic Days.
+Each recorded Visit preserves the patient's arrival as part of that encounter. Physical arrival alone does not create a Visit. After physical arrival, the Doctor or an appropriately delegated Nurse deliberately begins recording the Visit. Registration, lookup, opening an unsaved form, creating a Case and administrative Case reopening do not create a Visit. A Visit belongs to one Case and one applicable Clinic Day; the same Case may contain multiple Visits across multiple Clinic Days.
 
 The Clinic Day should allow the clinic to understand the overall state
 of the day's cases while each case retains its own independent journey.
@@ -262,26 +261,21 @@ higher protection occurs.
 
 Closing the Clinic Day does not automatically complete an open Case.
 
-## 13. WORKFLOW VISION
-The product-level Case Workflow is DEFINED.
+## 13. CASE LIFECYCLE AND ENCOUNTER WORKFLOW VISION
 
-The defined product-level workflow includes:
-- the five Case states;
-- the conceptual transitions between those states;
-- the distinction between Visit Exit and Case Completion;
-- the distinction between Case Completion and Clinic Day Closure;
-- the established Doctor / Nurse authority boundary defined by CONTRACT-03.
+The Case represents one complaint or clinical problem's longitudinal clinical course. Its lifecycle is open or completed. The Doctor alone decides continuation, completion and explicit reopening. Patient identity and CPN remain stable; multiple Cases may belong to one Patient.
 
-The following remain explicitly NOT_DEFINED and are not authorized by this reconciliation:
-- exact transition conditions;
-- timing rules;
-- concurrency behavior;
-- technical state-machine design;
-- technical persistence representation;
-- technical authorization implementation;
-- technical permission matrices.
+A Case can remain open without a current Visit or arrival. It may continue for the same complaint across Clinic Days without an elapsed-time cutoff. Visit Exit and Clinic Day closure do not complete it. Completion is an explicit Doctor clinical decision.
 
-No technical implementation is authorized by this reconciliation.
+Completed is closed by default. For the same clinical complaint, an authenticated authorized Doctor may explicitly reopen it within 90 calendar days of the actual completion-event local date in Africa/Cairo. Closure date is Day0, Day90 is inclusive through that local date, Day91 is outside. The Doctor may instead choose a new Case. A different complaint requires a new Case. Administrative reopening may occur before arrival and creates no Visit, arrival fact, Clinic Day encounter or Visit-count increment.
+
+Every completion and reopening preserves independently identifiable Case, Doctor, event type, actual timestamp, clinic calendar date and applicable completion episode. Reopening never erases a prior completion seal. Repeated cycles remain independently reconstructable.
+
+The familiar five labels remain part of the clinic's historical workflow and interface identity: Arrived — Awaiting Registration; Awaiting Doctor; With Doctor; Exited — Follow-up Pending; Completed. They must not be used to fabricate operational facts. Arrival, registration, Doctor encounter and Exit describe recorded encounter progression; Completed communicates Case completion. When no current encounter exists, show the truthful Case lifecycle separately and do not invent an encounter status. Later contracts must explicitly reconcile legacy state ownership and displays with this distinction, rather than adding a sixth workflow state.
+
+Past History remains distinct from Clinical History, which derives from preserved Visits. Earlier Visits, diagnoses, authorized prescriptions and closed Clinic Days remain preserved. Doctor authority, optional operational Nurse delegation and Doctor-only operation remain mandatory.
+
+Exact transition guards, physical representation, recording minimum fields, concurrency, idempotency, permissions and implementation structures require their applicable contracts and bounded engineering authority. This Manuscript change alone authorizes no implementation, migration, deployment or clinical release.
 
 ## 14. FACTORY EXPERIENCE
 
