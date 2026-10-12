@@ -11,7 +11,7 @@ Owner directive: preserve the original mock, extend it independently, and test t
 | EXTENSION_VALIDATION_PASS | 47 complete scenario specifications; disjoint identities; graph, chronology and deterministic projection checks pass. |
 | LOADER_SAFETY_PASS | Unit fake-adapter, SQL construction/catalog-model and pre-driver CLI refusal tests pass. This label is not live PostgreSQL safety proof. |
 | POSTGRES_INTEGRATION_NOT_RUN | No safe disposable PostgreSQL instance was available. No owner database was substituted. |
-| FULL_TEST_SUITE_PASS | Official runner: 269 passed, zero failed/cancelled/skipped; historical exclusion disclosed below. |
+| FULL_TEST_SUITE_PASS | Official runner after search_path regression fix: 270 passed, zero failed/cancelled/skipped; historical exclusion disclosed below. |
 
 ## Golden Baseline: provenance and immutability
 
@@ -78,11 +78,15 @@ npm run build
 git diff --cached --check
 ```
 
-New tests: 22 passed, 0 failed (7 baseline/graph/manifest, 8 loader safety/core, 4 schema/SQL/CLI, 3 API fixture tests). Official suite: 269 passed, 0 failed/cancelled/skipped/todo, RUN_ALL=PASS, REGRESSION_EXIT=0. Existing official runner exclusion remains `src/services/clinic-authority-p37a.test.ts` (EXCLUDED_HISTORICAL); no exclusion was introduced by this task. `npm run lint` runs tsc --noEmit: PASS. Vite production build: PASS; existing native-config warning concerning __dirname remains.
+New tests after search_path regression fix: 23 passed, 0 failed (7 baseline/graph/manifest, 8 loader safety/core, 5 schema/SQL/CLI, 3 API fixture tests). Official suite: 270 passed, 0 failed/cancelled/skipped/todo, RUN_ALL=PASS, REGRESSION_EXIT=0. Existing official runner exclusion remains `src/services/clinic-authority-p37a.test.ts` (EXCLUDED_HISTORICAL); no exclusion was introduced by this task. `npm run lint` runs tsc --noEmit: PASS. Vite production build: PASS; existing native-config warning concerning __dirname remains.
 
 API tests use actual extension inputs, authenticated Fastify route injection, actual backend services and Web API client, with fake SQL clients. They cover distinct same-name server IDs/CPNs, blank profession and history round-trip, fresh-client retrieval, auth/CSRF/Nurse/expired/revoked denials, and the uncertain-mutation latch. These are HTTP injection/unit evidence, not real PostgreSQL or browser proof. Core tests use an explicitly named fake adapter; SQL contract tests inspect SQL/catalog models, not a running database.
 
 The Work process is UID 0 with uid_map `0 0 1`; a safe unprivileged disposable PostgreSQL instance could not be provisioned. initdb root safeguards were not bypassed. Consequently actual first/second load, live catalog compatibility, concurrency/rollback under PostgreSQL, restart persistence and backup/restore remain NOT RUN. No owner/device-local database was accessed. No browser acceptance was performed for this dataset task.
+
+### Owner-device preparation and search_path fix (2026-10-12)
+
+The owner synchronized the first delivery and reported 269/269 tests, typecheck and build success on Termux. The separately authorized NEW disposable cluster initialized successfully with PostgreSQL 18.2; schema and intake migration were created there. Initial dry-run refused DATABASE_IDENTITY_MISMATCH before fixture inserts. Read-only diagnostics reported database, paths, sockets, port, disabled TCP, null TCP address, system ID and ownership all MATCH, with only search_path MISMATCH: actual `pg_catalog,public`, while the guard expected `pg_catalog, public`. This was a formatting defect in our identity guard, not a mismatched target. The fix compares the exact ordered, unquoted schema names after trimming whitespace around comma-delimited names; other schemas, order changes, duplicates and quoted names still fail. A regression test accepts both observed formats and rejects unsafe alternatives. All other identity gates remain exact. Device dry-run after the fix and actual fixture loading still require execution; POSTGRES_INTEGRATION_PASS is not claimed from provisioning or this diagnostic.
 
 ## Recovery preparation and next safe execution
 

@@ -22,7 +22,10 @@ function validateConfig(config,token,env=process.env){
  return config;
 }
 function validateIdentity(row,config){
- for(const [key,value]of Object.entries({database:config.database,data_directory:config.dataDirectory,sockets:config.socketDirectory,port:String(config.port),system_id:config.systemId,tcp:'',address:null,owns:true,search_path:'pg_catalog, public'}))requireTrue(row?.[key]===value,'DATABASE_IDENTITY_MISMATCH');
+ for(const [key,value]of Object.entries({database:config.database,data_directory:config.dataDirectory,sockets:config.socketDirectory,port:String(config.port),system_id:config.systemId,tcp:'',address:null,owns:true}))requireTrue(row?.[key]===value,'DATABASE_IDENTITY_MISMATCH');
+ // PostgreSQL retains GUC whitespace. Compare the exact two unquoted schema
+ // names in order, allowing only whitespace around comma-delimited names.
+ requireTrue(typeof row?.search_path==='string'&&row.search_path.split(',').map(name=>name.trim()).join(',')==='pg_catalog,public','DATABASE_IDENTITY_MISMATCH');
  requireTrue(Number(row.version)>=180000&&Number(row.version)<190000,'POSTGRESQL_18_REQUIRED');
 }
 module.exports={TOKEN,DATABASE,NAMESPACE,FixtureError,requireTrue,validateConfig,validateIdentity};

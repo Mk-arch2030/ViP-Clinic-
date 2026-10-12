@@ -17,6 +17,13 @@ test('SQL adapter checks actual database identity before schema or row access',a
  const calls=[];const client={async query(text){calls.push(text);return {rows:[{database:'roby_intake_proof_stage6'}]};}};
  await assert.rejects(sql.inspect(client,{database:DATABASE,dataDirectory:'/tmp/data',socketDirectory:'/tmp/socket',port:55449,systemId:'8000000000000000001'}),e=>e.code==='DATABASE_IDENTITY_MISMATCH');assert.equal(calls.length,1);assert.ok(!calls[0].includes('verifier'));
 });
+test('identity accepts PostgreSQL search_path whitespace without accepting different schemas or ordering',()=>{
+ const {validateIdentity}=require('../loader/safety.cjs');
+ const config={database:DATABASE,dataDirectory:'/tmp/data',socketDirectory:'/tmp/socket',port:55449,systemId:'8000000000000000001'};
+ const row={database:DATABASE,data_directory:config.dataDirectory,sockets:config.socketDirectory,port:'55449',system_id:config.systemId,tcp:'',address:null,owns:true,version:'180002'};
+ for(const search_path of ['pg_catalog,public','pg_catalog, public'])assert.doesNotThrow(()=>validateIdentity({...row,search_path},config));
+ for(const search_path of ['public,pg_catalog','pg_catalog,public,evil','pg_catalog,public,public','pg_catalog,"public"','"$user",public','pg_catalog,publicevil','pg_ catalog,public',null])assert.throws(()=>validateIdentity({...row,search_path},config),e=>e.code==='DATABASE_IDENTITY_MISMATCH');
+});
 test('SQL adapter uses parameterized values and bounded transactional sequence restart, not nontransactional setval',async()=>{
  const calls=[];const p=projection(loadDataset());p.history[0].content="SYNTHETIC '); DROP TABLE patients; --";
  const client={async query(sql,params){calls.push({sql,params});if(sql.startsWith('SELECT last_value'))return {rows:[{last_value:'1',is_called:false}]};if(sql.startsWith('SELECT clinic_patient_number'))return {rows:p.patients.map(p=>({clinic_patient_number:p.clinicPatientNumber}))};return {rows:[]};}};
