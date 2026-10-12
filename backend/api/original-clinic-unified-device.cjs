@@ -125,7 +125,7 @@ async function execute({ action, head, serverKeyFile }) {
     const {createAuthService}=require('../auth/auth-service');
     const {createVerifier}=require('../auth/password-verifier');
     const auth=createAuthService({store:new AuthRepository(pool),dummyVerifier:await createVerifier(randomBytes(32).toString('base64url'))});
-    app=await runtime.buildOriginalClinicRuntime({pool,auth,tls,assetsDirectory:paths.build,manifest:assets,expectedDatabase:existing});
+    app=await runtime.buildOriginalClinicRuntime({pool,auth,tls,assetsDirectory:paths.build,manifest:assets,expectedDatabase:existing,authDiagnostics:true});
     assert.deepEqual(sourceCheck(head),sources);assert.deepEqual(guards.snapshot(REPO),before);
     const address=await runtime.listenOriginalClinicRuntime(app,'ROBY_ORIGINAL_CLINIC_HTTPS_LISTEN');
     let closing;

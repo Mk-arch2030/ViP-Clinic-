@@ -121,7 +121,7 @@ async function verifyIsolatedDatabase(pool, expected) {
   }
 }
 
-async function buildOriginalClinicRuntime({ pool, auth, tls, assetsDirectory, manifest, expectedDatabase } = {}) {
+async function buildOriginalClinicRuntime({ pool, auth, tls, assetsDirectory, manifest, expectedDatabase, authDiagnostics = false } = {}) {
   // Explicit caller owns pool. No automatic listener, schema changes, or credential provisioning.
   assert.ok(auth && typeof auth.login === 'function' && typeof auth.withAuthorized === 'function');
   const https = verifyTls(tls);
@@ -138,6 +138,13 @@ async function buildOriginalClinicRuntime({ pool, auth, tls, assetsDirectory, ma
       reply.header('Cache-Control', 'no-store');
       reply.header('Content-Security-Policy',
         "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'");
+    });
+    // Expired HttpOnly cookies must be removed by the server, without weakening login.
+    app.addHook('onSend', require('./expired-session-cookie.cjs').clearRejectedSession);
+    if (authDiagnostics) app.addHook('onResponse', async (request, reply) => {
+      const route = request.routeOptions.url;
+      if (['/auth/login','/auth/session','/auth/logout'].includes(route))
+        console.log('AUTH_ROUTE=' + route + ' AUTH_STATUS=' + reply.statusCode);
     });
     const { composeSecuredPatients } = require('./secured-patient-composition');
     await composeSecuredPatients(app, { auth, trustedOrigin:ORIGIN });

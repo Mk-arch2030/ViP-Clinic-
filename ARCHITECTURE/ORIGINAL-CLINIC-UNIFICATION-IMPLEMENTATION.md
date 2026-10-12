@@ -209,3 +209,37 @@ src/components/ConnectedPatients.test.tsx.
 Nine added, ten modified, two removed. No capability has been removed from
 clinicStore or the original clinical components. Protected-mode unsupported clinical
 writes remain unavailable until their own contracts, routes, schemas and proofs exist.
+
+## Device acceptance incident — 2026-10-12
+
+Owner synchronized 080f284, ran 245/245 tests successfully, built the unified device
+assets, passed the existing-DB preflight and started HTTPS on 127.0.0.1:3443.
+Browser login then showed a generic rejection. The HTTP rejection status was not
+provided, so the exact on-device cause is not established.
+
+Inspection found an existing cookie-expiry trap: the original HTTPS runtime lacked
+the invalid-session cookie clearing already present in the Stage 6 test runtime.
+The auth service correctly rejects a login that supplies an expired prior session,
+even with a correct password. The fix clears only the HttpOnly cookie after a 401
+from /auth/session or /auth/logout, using Path=/, Secure, HttpOnly, SameSite=Strict
+and Max-Age=0. It does not bypass prior-session checks or clear cookies on failed
+password login. Credential/verifier/session validation rules remain unchanged.
+The focused tests reproduce expired-cookie rejection, bootstrap recovery, subsequent
+valid login, valid-session preservation and failed-password denial: 2/2 pass.
+
+The unified device adapter now enables diagnostics containing ONLY auth route and
+HTTP status. No body, headers, login input, password, cookie, CSRF or token is logged.
+If login still fails, these statuses identify whether bootstrap, password login or
+subsequent session retrieval failed. Throttling counters are never reset by this fix.
+
+The owner's lint also failed before typechecking because TypeScript 7 required an
+unavailable Android ARM64 native platform package. TypeScript is now pinned to the
+portable JavaScript compiler version 5.9.3. No typecheck skip or Android binary
+substitution is introduced.
+
+Final local verification after both repairs: official test:all 247/247 PASS, zero
+failures; lint PASS; build PASS; protected paths, outer gate/provider, auth service
+and password verifier unchanged. Device re-login and Android lint await the owner's
+next run. An initial cookie-hook test stalled because its Fastify hook was synchronous;
+the hook was corrected to async, the stalled run was stopped, and the complete suite
+was rerun successfully. That interrupted run is not counted as a passing run.
