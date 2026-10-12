@@ -52,17 +52,17 @@ test('asset verifier rejects modified or unexpected build files', t => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'roby-gate-assets-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   fs.mkdirSync(path.join(dir, 'assets'));
-  const source = path.join(os.homedir(), 'vip-shared-session-step105-build-review');
-  for (const name of Object.keys(MANIFEST)) {
-    fs.copyFileSync(path.join(source, name), path.join(dir, name));
-  }
-  assert.equal(verifyExactBuildInventory(dir, MANIFEST).size, 3);
-
-  const js = path.join(dir, 'assets/index-CqPJO-CD.js');
+  // Hermetic bytes exercise the real verifier; no owner device build is required.
+  const content = { 'index.html': '<html><div id="root"></div></html>', 'assets/test.js': 'export default 1;', 'assets/test.css': 'body{}' };
+  const manifest = Object.fromEntries(Object.entries(content).map(([name, value]) => {
+    fs.writeFileSync(path.join(dir, name), value);
+    return [name, require('node:crypto').createHash('sha256').update(value).digest('hex')];
+  }));
+  assert.equal(verifyExactBuildInventory(dir, manifest).size, 3);
+  const js = path.join(dir, 'assets/test.js');
   fs.appendFileSync(js, '\n// unauthorized change\n');
-  assert.throws(() => verifyExactBuildInventory(dir, MANIFEST), /Asset bytes differ/);
-
-  fs.copyFileSync(path.join(source, 'assets/index-CqPJO-CD.js'), js);
+  assert.throws(() => verifyExactBuildInventory(dir, manifest), /Asset bytes differ/);
+  fs.writeFileSync(js, content['assets/test.js']);
   fs.writeFileSync(path.join(dir, 'assets/extra.js'), 'unexpected');
-  assert.throws(() => verifyExactBuildInventory(dir, MANIFEST), /Unexpected|extra|manifest|file/i);
+  assert.throws(() => verifyExactBuildInventory(dir, manifest), /Unexpected|extra|manifest|file/i);
 });
