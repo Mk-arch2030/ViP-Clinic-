@@ -31,7 +31,7 @@ function registrationBody(body, { allowEmptyProfession = false } = {}) {
 
 // Deliberately separate from the existing POST-only/dev opt-in composition.
 // No global installation, listener, pool creation or frontend role input.
-async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
+async function composeSecuredPatients(app, { auth, trustedOrigin, enableCaseCreate = false } = {}) {
   if (!auth?.login || !auth?.current || !auth?.logout || !auth?.withAuthorized ||
       typeof trustedOrigin !== 'string') throw new AuthError(503);
   let parsed;
@@ -57,6 +57,7 @@ async function composeSecuredPatients(app, { auth, trustedOrigin } = {}) {
       reply.code(status).send({ error: error instanceof AuthError ? error.message : status === 503 ? 'Service unavailable' : 'Invalid request' });
     });
     registerIntakeRoutes(scope, { auth, cookieToken, registrationBody });
+    if (enableCaseCreate === true) require('./case-create-routes').registerCaseCreateRoutes(scope, { auth, cookieToken });
     scope.post('/auth/login', { bodyLimit: 4096 }, async (request, reply) => {
       const body = request.body;
       if (!body || typeof body !== 'object' || Array.isArray(body) ||
