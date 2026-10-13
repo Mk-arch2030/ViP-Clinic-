@@ -1,0 +1,9 @@
+const {
+  registerNewPatientController,
+} = require('../controllers/register-new-patient-controller');
+
+async function registerNewPatientRoute(app) {
+  app.post('/patients', registerNewPatientController);
+}
+
+module.exports = { registerNewPatientRoute };
