@@ -58,6 +58,34 @@ A mnemonic for this reflection — **not a replacement constitution**:
 
 The owner's collaborative triangle is **the owner (idea and decision), the assistant (planning and critical review), and Termux (local execution and evidence)**. Other AI systems can contribute to the wider workflow without joining the core decision-and-proof authority.
 
+
+## Founding Commit — 1 October 2026: The Core Team used Gemini
+
+**Recorded as a second founder's memory on 2026-10-13.** This section supplements the origin story without rewriting the earlier historical milestone.
+
+The owner emphasizes a distinction in provenance: the **ROBY CORE TEAM deliberately used Gemini as a building tool**. According to MOHAMED.K_ROBY, Gemini contributed the initial Vite-based foundation of the **ViP Clinic / Dr.Roby Clinic** web application under the owner's direction. The owner's **Main Metadata Nucleus** and clinic vision were **not authored or owned by Gemini**; Gemini was an instrument used to express and accelerate that owner-directed work. This is the owner's account of authorship and creative direction, not a Git-verifiable claim of exclusive intellectual-property ownership.
+
+### Git anchor — independently inspected
+
+- Repository: `Mk-arch2030/ViP-Clinic-`
+- Founding commit: `c473be0b588078e40bd5c0554b8a24113277d7d5`
+- GitHub record date: **2026-10-01**, at **17:34:39 +03:00**
+- Subject: `feat: initialize Dr.Roby Clinic web application`
+- Message: *Set up the project structure with Vite, React 19, and Tailwind CSS. Configured core application entry points, typography, print styles for clinical prescriptions, and initial development tooling.*
+- Source: https://github.com/Mk-arch2030/ViP-Clinic-/commit/c473be0b588078e40bd5c0554b8a24113277d7d5
+
+At that historical commit, direct inspection of `src/main.tsx` found the React root mounting `App` and importing `index.css`. The contemporaneous `package.json` included Vite, React, Tailwind, and build/lint/test scripts; its test script listed patient-number, patient registration/retrieval, API controller/routes, and persistence repository tests. **Presence of scripts does not demonstrate that they passed on the founding date.**
+
+### Provenance boundaries
+
+- **Owner testimony:** The Main Metadata Nucleus is the owner's distinctive foundational work, and the Core Team chose to use Gemini for the initial Vite implementation.
+- **Git evidence:** The commit, date, message, and inspected file contents are verifiable repository history.
+- **Not established by Git alone:** Which AI wrote each line, exclusive global uniqueness of the nucleus, copyright/title, production-readiness, or a successful EXE execution.
+- **Governance:** Using another AI to produce an artifact does **not** make that AI a member of the Core Team's decision authority or transfer the owner's design authority.
+- **No authorization effect:** This historical supplement does not modify contracts, Stage 7, release gates, or clinical acceptance.
+
+> **The tool helped build the first foundation; the owner supplied the nucleus and held the direction.**
+
 ## Preservation and authorization
 
 - **Historical record only.** No implementation, release, clinical-use, merge, or migration permission is granted by this document.
