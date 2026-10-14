@@ -44,6 +44,33 @@ test('API opt-in, origin, media type, session, CSRF and bounded results',async()
  assert.equal((await closed.inject({method:'POST',url:'/clinical/cases',payload:request()})).statusCode,404);await closed.close();
 });
 
+test('receipt API denies unauthorized recovery without disclosing or mutating a committed result',async()=>{
+ const h=harness(),c=await context(h),nurse=await context(h,'SYN/NURSE'),app=Fastify();
+ await composeSecuredPatients(app,{auth:h.auth,trustedOrigin:'https://vip.synthetic.invalid',enableCaseCreate:true});
+ try {
+  const headers={origin:'https://vip.synthetic.invalid','content-type':'application/json',cookie:'__Host-vip_session='+c.token,'x-csrf-token':c.csrf};
+  const body=request();
+  const created=await app.inject({method:'POST',url:'/clinical/cases',headers,payload:body});
+  assert.equal(created.statusCode,200);
+  const before=structuredClone(h.store.state.cases),receipts=structuredClone(h.store.state.receipts);
+  for(const [patch,expected] of [
+   [{cookie:''},401],
+   [{cookie:'__Host-vip_session='+nurse.token,'x-csrf-token':nurse.csrf},403],
+   [{'x-csrf-token':'bad'},403],
+   [{origin:'https://evil.invalid'},403],
+   [{'sec-fetch-site':'cross-site'},403]
+  ]) {
+   const denied=await app.inject({method:'POST',url:'/clinical/cases/receipt',headers:{...headers,...patch},payload:{operationId:body.operationId}});
+   assert.equal(denied.statusCode,expected);
+   assert.equal(denied.body.includes(created.json().result.caseId),false);
+   assert.equal(denied.json().result,undefined);
+  }
+  assert.deepEqual(h.store.state.cases,before);assert.deepEqual(h.store.state.receipts,receipts);
+  const recovered=await app.inject({method:'POST',url:'/clinical/cases/receipt',headers,payload:{operationId:body.operationId}});
+  assert.equal(recovered.statusCode,200);assert.deepEqual(recovered.json(),created.json());
+ }finally{await app.close();}
+});
+
 test('PostgreSQL proof runner refuses absent or invalid explicit authorization before database access',()=>{
  const {preflight}=require('./postgres-case-create-proof.cjs');
  for(const args of [[],['WRONG','0'.repeat(40)],['ROBY_C2_NEW_DISPOSABLE','short']]) assert.throws(()=>preflight(args));

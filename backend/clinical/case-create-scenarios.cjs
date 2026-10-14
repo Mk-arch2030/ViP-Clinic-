@@ -10,14 +10,18 @@ async function context(h, label) { const {token}=await login(h,label); return { 
 const scenarios = [
  ['atomic create, identical replay and receipt recovery preserve one result', async h => {
    const s=createCaseService(h.auth), c=await context(h), b=request();
+   const before=await h.caseCount();
    const r=await s.create(c,b); assert.equal(r.status,'COMMITTED'); assert.equal(r.result.lifecycle,'OPEN');
    assert.equal(r.result.lifecycleVersion,0); assert.equal(r.result.patientId,PATIENT);
    assert.deepEqual(await s.create(c,{...b}),r); assert.deepEqual(await s.recover(c,{operationId:b.operationId}),r);
-   assert.equal(await h.count(b.operationId),1);
+   assert.equal(await h.count(b.operationId),1); assert.equal(await h.caseCount(),before+1);
  }],
  ['changed intent conflicts and receipt lookup is actor-bound', async h => {
    const s=createCaseService(h.auth), c=await context(h), b=request(); await s.create(c,b);
+   const before=await h.caseCount();
    await assert.rejects(s.create(c,{...b,problemSummary:'Different meaning'}),fail(409));
+   await assert.rejects(s.create(c,{...b,patientId:randomUUID()}),fail(409));
+   assert.equal(await h.caseCount(),before);
    assert.equal(await h.count(b.operationId),1);
    const other=await context(h,'SYN/SECOND');
    assert.deepEqual(await s.recover(other,{operationId:b.operationId}),{status:'UNKNOWN'});
@@ -49,11 +53,14 @@ const scenarios = [
  }],
  ['concurrent identical and conflicting requests preserve exactly one effect', async h => {
    const s=createCaseService(h.auth), c=await context(h), b=request();
+   const before=await h.caseCount();
    const results=await Promise.all(Array.from({length:8},()=>s.create(c,b)));
    for (const r of results) assert.deepEqual(r,results[0]); assert.equal(await h.count(b.operationId),1);
+   assert.equal(await h.caseCount(),before+1);
    const other=request(); const race=await Promise.allSettled([s.create(c,other),s.create(c,{...other,problemSummary:'Other'})]);
    assert.equal(race.filter(r=>r.status==='fulfilled').length,1);
    assert.equal(race.find(r=>r.status==='rejected').reason.statusCode,409); assert.equal(await h.count(other.operationId),1);
+   assert.equal(await h.caseCount(),before+2);
  }],
  ['receipt insertion failure rolls back Case; same intent can then succeed', async h => {
    const s=createCaseService(h.auth), c=await context(h), b=request(); const before=await h.caseCount();
@@ -64,10 +71,13 @@ const scenarios = [
  }],
  ['lost acknowledgement after durable COMMIT recovers original result without retry duplication', async h => {
    const s=createCaseService(h.auth), c=await context(h), b=request();
+   const before=await h.caseCount();
    h.loseAck(); await assert.rejects(s.create(c,b),fail(503));
    assert.equal(await h.count(b.operationId),1);
+   assert.equal(await h.caseCount(),before+1);
    const recovered=await s.recover(c,{operationId:b.operationId}); assert.equal(recovered.status,'COMMITTED');
    assert.deepEqual(await s.create(c,b),recovered); assert.equal(await h.count(b.operationId),1);
+   assert.equal(await h.caseCount(),before+1);
  }],
  ['unknown receipt does not create a resource or certify rollback', async h => {
    const s=createCaseService(h.auth), c=await context(h), before=await h.caseCount();
