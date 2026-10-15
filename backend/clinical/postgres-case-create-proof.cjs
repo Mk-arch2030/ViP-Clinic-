@@ -7,7 +7,7 @@ const os=require('node:os');
 const {execFileSync}=require('node:child_process');
 const {randomBytes}=require('node:crypto');
 const guards=require('../auth/postgres-proof-guards.cjs');
-const {scenarios,PATIENT,context,request,SECOND_DOCTOR}=require('./case-create-scenarios.cjs');
+const {scenarios,PATIENT,SECOND_DOCTOR}=require('./case-create-scenarios.cjs');
 const {DOCTOR,NURSE,password}=require('../auth/test-service-contract.cjs');
 let phase='SOURCE_AND_CLUSTER_PREFLIGHT';
 function preflight(args) {
@@ -92,18 +92,14 @@ async function run(args) {
  let now=Date.now();
  const auth=createAuthService({store:new AuthRepository(wrappedPool),dummyVerifier:dummy,clock:()=>now});
  const h={auth,advance:ms=>{now+=ms;},failReceipt:()=>{receiptFailure=true;},loseAck:()=>{ackLoss=true;},
+ clinicalSnapshot:async()=>({cases:(await pool.query('SELECT * FROM vip_clinical.cases ORDER BY case_id')).rows,receipts:(await pool.query('SELECT * FROM vip_clinical.operation_receipts ORDER BY actor_id,operation_id')).rows}),
  count:async id=>(await pool.query('SELECT count(*)::int AS n FROM vip_clinical.operation_receipts WHERE operation_id=$1',[id])).rows[0].n,
  caseCount:async()=>(await pool.query('SELECT count(*)::int AS n FROM vip_clinical.cases')).rows[0].n};
  let passed=0;
  for(const [name,scenario] of scenarios){phase='CASE_CREATE_SCENARIO';console.log('PG_SCENARIO_BEGIN='+name);await scenario(h);passed++;console.log('PG_SCENARIO_PASS='+name);}
  // Actual API -> auth -> shared PostgreSQL transaction, not a browser claim.
  phase='API_REAL_PG';
- const Fastify=require('fastify'),app=Fastify();
- await require('../api/secured-patient-composition').composeSecuredPatients(app,{auth,trustedOrigin:'https://vip.synthetic.invalid',enableCaseCreate:true});
- try {const ctx=await context(h),body=request(),headers={origin:'https://vip.synthetic.invalid','content-type':'application/json',cookie:'__Host-vip_session='+ctx.token,'x-csrf-token':ctx.csrf};
- const created=await app.inject({method:'POST',url:'/clinical/cases',headers,payload:body});assert.equal(created.statusCode,200);
- const recovered=await app.inject({method:'POST',url:'/clinical/cases/receipt',headers,payload:{operationId:body.operationId}});assert.deepEqual(recovered.json(),created.json());
- }finally{await app.close();}
+ await require('./case-create-api-proof.cjs').proveCaseCreateApi(h);
  console.log('API_TO_REAL_PG=PASS');
  assert.deepEqual(await preserved(),before);console.log('NO_VISIT_DAY_CPN_HISTORY_EFFECT=PASS');
  phase='CONSTRAINTS_AND_ROLLBACK';
