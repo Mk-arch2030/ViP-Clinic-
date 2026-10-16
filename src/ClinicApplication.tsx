@@ -28,7 +28,7 @@ import {
 
 type MainTab = 'CENSUS' | 'INTAKE' | 'DOSSIER' | 'CONSULTATION' | 'DIRECTORY';
 
-export function ClinicApplication({ boundary }: { boundary: ClinicBoundary }) {
+export function ClinicApplication({ boundary, casePanel }: { boundary: ClinicBoundary; casePanel?: (patient: ClinicPatient | null, language: Language) => React.ReactNode }) {
   const protectedMode = boundary.protectedMode;
   const [storeState, setStoreState] = useState<ClinicData>(() =>
     boundary.getState()
@@ -51,7 +51,7 @@ export function ClinicApplication({ boundary }: { boundary: ClinicBoundary }) {
     'outcome-unknown': ['نتيجة التسجيل غير مؤكدة؛ لا تكرره قبل مراجعة النتيجة.', 'Registration outcome uncertain; reconcile it before another attempt.'],
   };
   const clinicalUnavailable = protectedMode;
-  const unsupportedNotice = language === 'ar' ? 'الحالات والزيارات والاستشارة والوصفات واليوم السريري لم تتصل بالخادم بعد؛ الكتابة عليها غير متاحة.' : 'Cases, visits, consultations, prescriptions and clinic days are not connected to the server yet; writes are unavailable.';
+  const unsupportedNotice = casePanel ? (language === 'ar' ? 'الزيارات والاستشارة والوصفات واليوم السريري غير متاحة للكتابة؛ إنشاء الحالة مستقل عنها.' : 'Visits, consultations, prescriptions and Clinic Day writes remain unavailable; Case creation is independent.') : language === 'ar' ? 'الحالات والزيارات والاستشارة والوصفات واليوم السريري لم تتصل بالخادم بعد؛ الكتابة عليها غير متاحة.' : 'Cases, visits, consultations, prescriptions and clinic days are not connected to the server yet; writes are unavailable.';
 
   // Active selection pointers
   const [activePatientId, setActivePatientId] = useState<string>(
@@ -452,6 +452,7 @@ export function ClinicApplication({ boundary }: { boundary: ClinicBoundary }) {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {protectedMode && casePanel?.(selectedPatient, language)}
         {failure && <p role="alert" className="theme-status-danger mb-4">{failureMessages[failure]?.[language === 'ar' ? 0 : 1] ?? (language === 'ar' ? 'تعذر إتمام الطلب.' : 'Request did not complete.')}</p>}
         {protectedMode && <p role="status" className="theme-text-muted text-xs mb-4">{unsupportedNotice}</p>}
         {activeTab === 'CENSUS' && (

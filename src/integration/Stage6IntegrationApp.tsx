@@ -6,6 +6,7 @@ import { browserRegistrationJournal } from './registration-uncertainty';
 import './integration.css';
 
 const messages: Record<FailureKind,string> = {
+  conflict:'هوية العملية مرتبطة بطلب مختلف؛ راجع الإيصال.',
   unauthorized:'تعذر الدخول أو انتهت الجلسة. تحقق من بيانات الدخول.',
   forbidden:'العملية غير مسموحة. أعد فحص الجلسة قبل أي تغيير.',
   'not-found':'المريض غير موجود.', invalid:'تحقق من بيانات الطلب.',

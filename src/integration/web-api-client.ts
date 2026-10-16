@@ -4,7 +4,7 @@ import { parsePatient, parseRegistration, record, UUID, type BasicPatient, type 
 export interface ServerSession {
   readonly actorIdentityReference: string; readonly role: 'Doctor' | 'Nurse'; readonly lifecycle: 'ACTIVE'; readonly csrf: string;
 }
-export type FailureKind = 'unauthorized' | 'forbidden' | 'not-found' | 'invalid' | 'throttled' | 'unavailable' | 'busy' | 'outcome-unknown';
+export type FailureKind = 'unauthorized' | 'forbidden' | 'not-found' | 'invalid' | 'throttled' | 'unavailable' | 'busy' | 'outcome-unknown' | 'conflict';
 export class ApiFailure extends Error {
   constructor(public readonly status: number, public readonly kind: FailureKind, public readonly retryAfter?: number) {
     super(kind); this.name = 'ApiFailure';
