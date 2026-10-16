@@ -31,4 +31,3 @@ S1–S10 are ordered scenarios in backend/clinical/case-create-scenarios.cjs. A 
 | Historical clinical preservation | Manuscript §12/13; CONTRACT-04; V2 history | No Visit/Rx/Day update path; A full Case/receipt snapshots | A snapshot equality; P preserved graph subset | Memory/API; PG reported | V bounded snapshot / R / NOT PROVEN broader history | E1 / E4 | Nonempty Visit/Rx/closed-Day and full longitudinal content not established |
 
 E1 covers existing tests at source 32db6e1bce4b644212f1307bab0afff4074a9d17; 91966c6 adds only its historical report. E4 reports execution at 91966c6. Both parents and diffs were inspected. Receipt lookup is original-outcome retrieval, not a current clinical dossier API. Completion, reopening, Visit recording, prescription and clinical deployment are OUT OF SCOPE. Browser is NOT RUN.
-

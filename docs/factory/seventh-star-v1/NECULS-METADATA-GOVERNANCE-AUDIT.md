@@ -24,4 +24,3 @@ Searched tracked paths and repository text for Neculs, metadata and nucleus at t
 Scope came from Owner CASE_CREATE authorization and V2 model; original UI, Visit, completion/reopen and prescriptions remained outside it. Server authorization comes from Actor policy rather than metadata permissions. Atomicity/replay test expectations derive from V2/CASE_CREATE contracts. Evidence classification follows Factory Standard V1, separating inspected source, Work test records and reported device SQL. Release restrictions are explicit Owner gates; neither metadata nor green tests can release the clinic.
 
 This is procedural contract-led governance with implemented runtime controls. It is not demonstrated automated Neculs enforcement. Any external Neculs artifact should be supplied by exact path/version for a later review; no need to invent it to label the present milestone successful.
-

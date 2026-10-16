@@ -51,4 +51,3 @@ This mission ran git ls-remote --heads origin refs/heads/work/stage7-astra-integ
 ## E7 — historical evidence, scope-limited
 
 ARCHITECTURE/STAGE7-FOUNDATION-TERMUX-ACCEPTANCE-2026-10-13.md at25fc7ab records316-test acceptance; older Golden271 and CASE_CREATE328 are historical scopes. CLOSED/PROVEN labels do not establish current runtime. Earlier ARCHITECTURE/STAGE7-CASE-CREATE-ACCEPTANCE-MISSION-V1.md says PG pending at its authoring time; later E4 is additive reported acceptance, not an edit to that historical report.
-

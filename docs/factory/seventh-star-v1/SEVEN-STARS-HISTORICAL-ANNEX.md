@@ -31,4 +31,3 @@ Transport history includes unavailable authenticated native Git in Work, exact b
 MOHAMED.K_ROBY is the declared founder/final authority. Astra is the engineering/documentation attribution used in Git; SHAQO is the reviewing role named in directives; Termux is an environment, not an author or legal entity. Other historical collaborators must be credited from actual records rather than guessed. No exclusive authorship or legal ownership inference is drawn from commit author strings.
 
 The visual timeline's Date:2024 label is Owner-described, not visually inspected here. It must not be applied to all milestones. Search did not identify an authoritative timeline image; exact image identity/original metadata and explanation of what2024 denotes remain open. Reported2026 work and repository commit dates do not justify silently editing an older visual. Preserve original and add a separately approved clarification if necessary.
-
