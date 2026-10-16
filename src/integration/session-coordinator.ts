@@ -1,5 +1,6 @@
 import { ApiFailure, type ServerSession, type WebApi, type FailureKind } from './web-api-client';
 import type { BasicPatient, Registration } from './basic-patient';
+import type { RegistrationJournal } from './registration-uncertainty';
 export interface SessionView {
   readonly state: 'checking' | 'unauthenticated' | 'authenticated' | 'unavailable';
   readonly session: ServerSession | null; readonly patient: BasicPatient | null;
@@ -15,7 +16,9 @@ export class SessionCoordinator {
   private listeners = new Set<() => void>();
   private generation = 0;
   private pending?: AbortController;
-  constructor(private readonly api: WebApi) {}
+  constructor(private readonly api: WebApi, private readonly journal?: RegistrationJournal) {
+    if (journal?.pending()) this.view = Object.freeze({ ...initial, registrationUnconfirmed:true, failure:'outcome-unknown' });
+  }
   getSnapshot = (): SessionView => this.view;
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
   private set(patch: Partial<SessionView>) { this.view = Object.freeze({ ...this.view,...patch }); this.listeners.forEach(listener => listener()); }
@@ -85,8 +88,23 @@ export class SessionCoordinator {
     const { csrf } = this.view.session;
     const { id,signal } = this.begin({ patient:null });
     this.mutationPending = true;
-    try { const patient = await this.api.register(input,csrf,signal); if (id === this.generation) this.set({ patient,busy:false }); }
-    catch (error) { this.failed(error,id,true); }
+    let operationId: string | undefined;
+    try {
+      if (this.journal) operationId = await this.journal.reserve();
+      // Disposal while waiting for the lock cannot dispatch a late registration.
+      if (id !== this.generation) return;
+      const patient = await this.api.register(input,csrf,signal);
+      if (id !== this.generation) return;
+      if (operationId) await this.journal!.confirm(operationId);
+      if (id === this.generation) this.set({ patient,busy:false });
+    } catch (error) {
+      const rejected = error instanceof ApiFailure && [400,401,403,404,413,415,429].includes(error.status);
+      if (id === this.generation && operationId && rejected) {
+        try { await this.journal!.confirm(operationId); }
+        catch { this.failed(new ApiFailure(0,'unavailable'),id,true); return; }
+      }
+      this.failed(error,id,true);
+    }
     finally { if (id === this.generation) this.mutationPending = false; }
   }
   async logout() {

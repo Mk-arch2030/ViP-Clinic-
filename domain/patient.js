@@ -1,3 +1,18 @@
+// A date-only reference is a calendar date, not midnight UTC read in host time.
+function ageReferenceParts(value) {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split('-').map(Number);
+    const check = new Date(value + 'T00:00:00.000Z');
+    if (year < 1 || Number.isNaN(check.getTime()) || check.toISOString().slice(0, 10) !== value) {
+      throw new Error('Invalid age reference date');
+    }
+    return { year, month, day };
+  }
+  const reference = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(reference.getTime())) throw new Error('Invalid age reference date');
+  return { year: reference.getFullYear(), month: reference.getMonth() + 1, day: reference.getDate() };
+}
+
 function calculateAge(dateOfBirth, referenceDate = new Date()) {
   if (!dateOfBirth) {
     throw new Error('Date of Birth is required');
@@ -91,17 +106,7 @@ function calculateDetailedAge(dateOfBirth, referenceDate = new Date()) {
     [birthYear, birthMonth, birthDay] = parts;
   }
 
-  const reference = referenceDate instanceof Date
-    ? referenceDate
-    : new Date(referenceDate);
-
-  if (Number.isNaN(reference.getTime())) {
-    throw new Error('Invalid age reference date');
-  }
-
-  const referenceYear = reference.getFullYear();
-  const referenceMonth = reference.getMonth() + 1;
-  const referenceDay = reference.getDate();
+  const { year: referenceYear, month: referenceMonth, day: referenceDay } = ageReferenceParts(referenceDate);
 
   const isLeapYear = (year) =>
     year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);

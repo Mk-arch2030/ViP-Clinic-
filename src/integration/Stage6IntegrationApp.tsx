@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState, useSyncExternalStore } fro
 import { createWebApi, type FailureKind } from './web-api-client';
 import { SessionCoordinator } from './session-coordinator';
 import type { Registration } from './basic-patient';
+import { browserRegistrationJournal } from './registration-uncertainty';
 import './integration.css';
 
 const messages: Record<FailureKind,string> = {
@@ -13,7 +14,7 @@ const messages: Record<FailureKind,string> = {
 };
 const blank: Registration = { name:'',dateOfBirth:'',profession:'',phone:'',gender:'Male' };
 export function Stage6IntegrationApp() {
-  const coordinator = useMemo(() => new SessionCoordinator(createWebApi({ origin:window.location.origin })),[]);
+  const coordinator = useMemo(() => new SessionCoordinator(createWebApi({ origin:window.location.origin }), browserRegistrationJournal()),[]);
   const view = useSyncExternalStore(coordinator.subscribe,coordinator.getSnapshot,coordinator.getSnapshot);
   const [label,setLabel] = useState('');
   const [password,setPassword] = useState('');

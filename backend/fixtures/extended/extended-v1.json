@@ -1,0 +1,2918 @@
+{
+  "cases": [
+    {
+      "activeVisitId": "SYN-V-002",
+      "id": "SYN-C-001",
+      "openedClinicDayId": "SYN-CD-2026-09-24",
+      "openedDate": "2026-09-24",
+      "patientId": "e7000000-0000-4700-8700-000000000001",
+      "state": "Exited — Follow-up Pending",
+      "title": "SYNTHETIC follow-up case"
+    },
+    {
+      "activeVisitId": "SYN-V-003",
+      "id": "SYN-C-002",
+      "openedClinicDayId": "SYN-CD-2026-09-25",
+      "openedDate": "2026-09-25",
+      "patientId": "e7000000-0000-4700-8700-000000000001",
+      "state": "Awaiting Doctor",
+      "title": "SYNTHETIC separate case"
+    },
+    {
+      "activeVisitId": "SYN-V-004",
+      "id": "SYN-C-003",
+      "openedClinicDayId": "SYN-CD-2026-09-24",
+      "openedDate": "2026-09-24",
+      "patientId": "e7000000-0000-4700-8700-000000000002",
+      "state": "Completed",
+      "title": "SYNTHETIC completed case"
+    }
+  ],
+  "clinicDays": [
+    {
+      "closedAt": "2026-09-24T17:00:00Z",
+      "closedBy": "Doctor",
+      "counter": 2,
+      "id": "SYN-CD-2026-09-24",
+      "lifecycle": "CONCLUDED",
+      "openedAt": "2026-09-24T08:00:00Z",
+      "status": "CLOSED",
+      "workingDate": "2026-09-24"
+    },
+    {
+      "counter": 2,
+      "id": "SYN-CD-2026-09-25",
+      "lifecycle": "WORKING",
+      "openedAt": "2026-09-25T08:00:00Z",
+      "status": "OPEN",
+      "workingDate": "2026-09-25"
+    }
+  ],
+  "kind": "EXTENDED_SYNTHETIC",
+  "patients": [
+    {
+      "clinicPatientNumber": "CPN-90001",
+      "dateOfBirth": "1990-02-01",
+      "gender": "Male",
+      "name": "SYNTHETIC SAME NAME",
+      "pastHistory": {
+        "chronicIllnesses": [
+          "SYNTHETIC condition A",
+          "SYNTHETIC condition B"
+        ],
+        "familyHistory": [
+          "SYNTHETIC family history"
+        ],
+        "knownAllergies": [
+          "SYNTHETIC allergy A"
+        ],
+        "lifestyleNotes": "SYNTHETIC lifestyle — عربي",
+        "surgicalHistory": [
+          "SYNTHETIC surgery 2020"
+        ]
+      },
+      "patientId": "e7000000-0000-4700-8700-000000000001",
+      "phone": "SYN-NON-DIALABLE-1",
+      "profession": "",
+      "registeredAt": "2026-09-24T08:00:00Z"
+    },
+    {
+      "clinicPatientNumber": "CPN-90002",
+      "dateOfBirth": "1990-02-02",
+      "gender": "Female",
+      "name": "SYNTHETIC SAME NAME",
+      "pastHistory": {
+        "chronicIllnesses": [],
+        "familyHistory": [],
+        "knownAllergies": [],
+        "lifestyleNotes": "",
+        "surgicalHistory": []
+      },
+      "patientId": "e7000000-0000-4700-8700-000000000002",
+      "phone": "SYN-NON-DIALABLE-2",
+      "profession": "SYNTHETIC occupation",
+      "registeredAt": "2026-09-24T08:00:00Z"
+    },
+    {
+      "clinicPatientNumber": "CPN-90003",
+      "dateOfBirth": null,
+      "gender": "Male",
+      "name": "SYNTHETIC PATIENT 3",
+      "pastHistory": null,
+      "patientId": "e7000000-0000-4700-8700-000000000003",
+      "phone": "SYN-NON-DIALABLE-3",
+      "profession": "SYNTHETIC occupation",
+      "registeredAt": "2026-09-24T08:00:00Z"
+    },
+    {
+      "clinicPatientNumber": "CPN-90004",
+      "dateOfBirth": "1990-02-04",
+      "gender": "Female",
+      "name": "SYNTHETIC PATIENT 4",
+      "pastHistory": {
+        "chronicIllnesses": [
+          "SYNTHETIC condition A",
+          "SYNTHETIC condition B"
+        ],
+        "familyHistory": [
+          "SYNTHETIC family history"
+        ],
+        "knownAllergies": [
+          "SYNTHETIC allergy A"
+        ],
+        "lifestyleNotes": "SYNTHETIC lifestyle — عربي",
+        "surgicalHistory": [
+          "SYNTHETIC surgery 2020"
+        ]
+      },
+      "patientId": "e7000000-0000-4700-8700-000000000004",
+      "phone": "SYN-NON-DIALABLE-4",
+      "profession": "SYNTHETIC occupation",
+      "registeredAt": "2026-09-24T08:00:00Z"
+    }
+  ],
+  "scenarios": [
+    {
+      "expectedApiBehavior": {
+        "method": "POST",
+        "path": "/patients/intake",
+        "status": 201
+      },
+      "expectedPersistedRecords": {
+        "cpn": "SERVER_ASSIGNED_UNIQUE",
+        "history": {
+          "chronicIllnesses": [
+            "SYNTHETIC condition A",
+            "SYNTHETIC condition B"
+          ],
+          "familyHistory": [
+            "SYNTHETIC family history"
+          ],
+          "knownAllergies": [
+            "SYNTHETIC allergy A"
+          ],
+          "lifestyleNotes": "SYNTHETIC lifestyle — عربي",
+          "surgicalHistory": [
+            "SYNTHETIC surgery 2020"
+          ]
+        },
+        "newPatients": 1,
+        "uuid": "SERVER_ASSIGNED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-001",
+      "minimumRoadmapStage": 6,
+      "purpose": "New patient registration",
+      "requiredBackendCapability": "PATIENT_REGISTER",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PATIENT_REGISTER",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "registration": {
+          "dateOfBirth": "1990-02-01",
+          "gender": "Male",
+          "name": "SYNTHETIC NEW REGISTRATION",
+          "pastHistory": {
+            "chronicIllnesses": [
+              "SYNTHETIC condition A",
+              "SYNTHETIC condition B"
+            ],
+            "familyHistory": [
+              "SYNTHETIC family history"
+            ],
+            "knownAllergies": [
+              "SYNTHETIC allergy A"
+            ],
+            "lifestyleNotes": "SYNTHETIC lifestyle — عربي",
+            "surgicalHistory": [
+              "SYNTHETIC surgery 2020"
+            ]
+          },
+          "phone": "SYN-NON-DIALABLE-1",
+          "profession": ""
+        }
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "cpn": "CPN-90001",
+        "identityMustNotChange": true,
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-002",
+      "minimumRoadmapStage": 6,
+      "purpose": "Returning patient lookup",
+      "requiredBackendCapability": "PATIENT_RETRIEVE",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PATIENT_RETRIEVE",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "distinctResults": 2,
+        "method": "GET",
+        "path": "/patients/search?mode=name&value=SYNTHETIC%20SAME%20NAME",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "patients": [
+          {
+            "cpn": "CPN-90001",
+            "name": "SYNTHETIC SAME NAME",
+            "patientId": "e7000000-0000-4700-8700-000000000001"
+          },
+          {
+            "cpn": "CPN-90002",
+            "name": "SYNTHETIC SAME NAME",
+            "patientId": "e7000000-0000-4700-8700-000000000002"
+          }
+        ]
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-003",
+      "minimumRoadmapStage": 6,
+      "purpose": "Same-name distinct UUIDs",
+      "requiredBackendCapability": "PATIENT_SEARCH",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PATIENT_SEARCH",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "patientRefs": [
+          "e7000000-0000-4700-8700-000000000001",
+          "e7000000-0000-4700-8700-000000000002"
+        ]
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "cpn": "CPN-90001",
+        "identityMustNotChange": true,
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-004",
+      "minimumRoadmapStage": 6,
+      "purpose": "Stable CPN repeat retrieval",
+      "requiredBackendCapability": "PATIENT_RETRIEVE",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PATIENT_RETRIEVE",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "POST",
+        "path": "/patients/intake",
+        "status": 400
+      },
+      "expectedPersistedRecords": {
+        "newHistoryItems": 0,
+        "newPatients": 0
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-005",
+      "minimumRoadmapStage": 6,
+      "purpose": "Invalid registration",
+      "requiredBackendCapability": "PATIENT_REGISTER",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PATIENT_REGISTER",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "registration": {
+          "dateOfBirth": "invalid",
+          "gender": "Male",
+          "name": "",
+          "pastHistory": {
+            "chronicIllnesses": [
+              "SYNTHETIC condition A",
+              "SYNTHETIC condition B"
+            ],
+            "familyHistory": [
+              "SYNTHETIC family history"
+            ],
+            "knownAllergies": [
+              "SYNTHETIC allergy A"
+            ],
+            "lifestyleNotes": "SYNTHETIC lifestyle — عربي",
+            "surgicalHistory": [
+              "SYNTHETIC surgery 2020"
+            ]
+          },
+          "phone": "SYN-NON-DIALABLE-1",
+          "profession": ""
+        }
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "automaticRetry": false,
+        "mutationBlocked": true,
+        "reconciliationRequired": true
+      },
+      "expectedPersistedRecords": {
+        "maximumNewPatients": 1
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-006",
+      "minimumRoadmapStage": 6,
+      "purpose": "Unknown POST no retry",
+      "requiredBackendCapability": "MUTATION_RECONCILIATION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "MUTATION_RECONCILIATION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "registration": {
+          "dateOfBirth": "1990-02-01",
+          "gender": "Male",
+          "name": "SYNTHETIC LOST RESPONSE",
+          "pastHistory": {
+            "chronicIllnesses": [
+              "SYNTHETIC condition A",
+              "SYNTHETIC condition B"
+            ],
+            "familyHistory": [
+              "SYNTHETIC family history"
+            ],
+            "knownAllergies": [
+              "SYNTHETIC allergy A"
+            ],
+            "lifestyleNotes": "SYNTHETIC lifestyle — عربي",
+            "surgicalHistory": [
+              "SYNTHETIC surgery 2020"
+            ]
+          },
+          "phone": "SYN-NON-DIALABLE-1",
+          "profession": ""
+        },
+        "transport": "COMMIT_THEN_LOSE_RESPONSE"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "pastHistory": {
+          "chronicIllnesses": [
+            "SYNTHETIC condition A",
+            "SYNTHETIC condition B"
+          ]
+        },
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-007",
+      "minimumRoadmapStage": 6,
+      "purpose": "Chronic history",
+      "requiredBackendCapability": "PAST_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PAST_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "pastHistory": {
+          "knownAllergies": [
+            "SYNTHETIC allergy A"
+          ]
+        },
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-008",
+      "minimumRoadmapStage": 6,
+      "purpose": "Allergy history",
+      "requiredBackendCapability": "PAST_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PAST_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "pastHistory": {
+          "surgicalHistory": [
+            "SYNTHETIC surgery 2020"
+          ]
+        },
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-009",
+      "minimumRoadmapStage": 6,
+      "purpose": "Surgery history",
+      "requiredBackendCapability": "PAST_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PAST_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "pastHistory": {
+          "familyHistory": [
+            "SYNTHETIC family history"
+          ]
+        },
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-010",
+      "minimumRoadmapStage": 6,
+      "purpose": "Family history",
+      "requiredBackendCapability": "PAST_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PAST_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 200
+      },
+      "expectedPersistedRecords": {
+        "pastHistory": {
+          "lifestyleNotes": "SYNTHETIC lifestyle — عربي"
+        },
+        "patientId": "e7000000-0000-4700-8700-000000000001"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-011",
+      "minimumRoadmapStage": 6,
+      "purpose": "Lifestyle history",
+      "requiredBackendCapability": "PAST_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PAST_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CLINICAL_HISTORY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-012",
+      "minimumRoadmapStage": 7,
+      "purpose": "Historical timeline ordering",
+      "requiredBackendCapability": "CLINICAL_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CLINICAL_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CASE_VISIT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-013",
+      "minimumRoadmapStage": 7,
+      "purpose": "New case initial visit",
+      "requiredBackendCapability": "CASE_VISIT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CASE_VISIT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CASE_VISIT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-014",
+      "minimumRoadmapStage": 7,
+      "purpose": "Follow-up same case",
+      "requiredBackendCapability": "CASE_VISIT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CASE_VISIT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CASE_VISIT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-015",
+      "minimumRoadmapStage": 7,
+      "purpose": "Multiple visits one case",
+      "requiredBackendCapability": "CASE_VISIT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CASE_VISIT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CASE_VISIT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-016",
+      "minimumRoadmapStage": 7,
+      "purpose": "Multiple cases one patient",
+      "requiredBackendCapability": "CASE_VISIT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CASE_VISIT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CASE_VISIT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-017",
+      "minimumRoadmapStage": 7,
+      "purpose": "Open and completed cases",
+      "requiredBackendCapability": "CASE_VISIT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CASE_VISIT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "ARRIVAL_EXIT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-018",
+      "minimumRoadmapStage": 8,
+      "purpose": "Arrival and exit",
+      "requiredBackendCapability": "ARRIVAL_EXIT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "ARRIVAL_EXIT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CLINICAL_HISTORY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-019",
+      "minimumRoadmapStage": 7,
+      "purpose": "No cross-patient associations",
+      "requiredBackendCapability": "CLINICAL_HISTORY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CLINICAL_HISTORY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CONSULTATION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-020",
+      "minimumRoadmapStage": 8,
+      "purpose": "Consultation notes",
+      "requiredBackendCapability": "CONSULTATION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CONSULTATION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CONSULTATION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-021",
+      "minimumRoadmapStage": 8,
+      "purpose": "Vitals",
+      "requiredBackendCapability": "CONSULTATION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CONSULTATION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CONSULTATION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-022",
+      "minimumRoadmapStage": 8,
+      "purpose": "Investigations",
+      "requiredBackendCapability": "CONSULTATION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CONSULTATION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CONSULTATION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-023",
+      "minimumRoadmapStage": 8,
+      "purpose": "Preliminary/final diagnosis",
+      "requiredBackendCapability": "CONSULTATION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CONSULTATION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CONSULTATION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-024",
+      "minimumRoadmapStage": 8,
+      "purpose": "Treatment plan",
+      "requiredBackendCapability": "CONSULTATION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CONSULTATION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "PRESCRIPTION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-025",
+      "minimumRoadmapStage": 8,
+      "purpose": "Prescription draft",
+      "requiredBackendCapability": "PRESCRIPTION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PRESCRIPTION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "PRESCRIPTION",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-026",
+      "minimumRoadmapStage": 8,
+      "purpose": "Doctor authorization",
+      "requiredBackendCapability": "PRESCRIPTION",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PRESCRIPTION",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "FOLLOW_UP",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-027",
+      "minimumRoadmapStage": 8,
+      "purpose": "Follow-up decisions",
+      "requiredBackendCapability": "FOLLOW_UP",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "FOLLOW_UP",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "VISIT_COMPLETE",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-028",
+      "minimumRoadmapStage": 8,
+      "purpose": "Visit completion",
+      "requiredBackendCapability": "VISIT_COMPLETE",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "VISIT_COMPLETE",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "DAILY_CENSUS",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-029",
+      "minimumRoadmapStage": 8,
+      "purpose": "Daily census",
+      "requiredBackendCapability": "DAILY_CENSUS",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "DAILY_CENSUS",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CLINIC_DAY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-030",
+      "minimumRoadmapStage": 8,
+      "purpose": "Clinic day opening",
+      "requiredBackendCapability": "CLINIC_DAY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CLINIC_DAY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "CLINIC_DAY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-031",
+      "minimumRoadmapStage": 8,
+      "purpose": "Clinic day closure",
+      "requiredBackendCapability": "CLINIC_DAY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CLINIC_DAY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "VISIT_STATE",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-032",
+      "minimumRoadmapStage": 8,
+      "purpose": "Visit status changes",
+      "requiredBackendCapability": "VISIT_STATE",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "VISIT_STATE",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 401
+      },
+      "expectedPersistedRecords": {
+        "changedClinicalRecords": 0,
+        "newPatients": 0
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-033",
+      "minimumRoadmapStage": 6,
+      "purpose": "Unauthenticated denial",
+      "requiredBackendCapability": "AUTH",
+      "syntheticInputs": {
+        "authState": "MISSING",
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "AUTH",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 401
+      },
+      "expectedPersistedRecords": {
+        "changedClinicalRecords": 0,
+        "newPatients": 0
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-034",
+      "minimumRoadmapStage": 6,
+      "purpose": "Expired session denial",
+      "requiredBackendCapability": "AUTH",
+      "syntheticInputs": {
+        "authState": "EXPIRED",
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "AUTH",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "GET",
+        "path": "/patients/e7000000-0000-4700-8700-000000000001/intake",
+        "status": 401
+      },
+      "expectedPersistedRecords": {
+        "changedClinicalRecords": 0,
+        "newPatients": 0
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-035",
+      "minimumRoadmapStage": 6,
+      "purpose": "Revoked session denial",
+      "requiredBackendCapability": "AUTH",
+      "syntheticInputs": {
+        "authState": "REVOKED",
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "AUTH",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "method": "POST",
+        "path": "/patients/intake",
+        "status": 403
+      },
+      "expectedPersistedRecords": {
+        "changedClinicalRecords": 0,
+        "newPatients": 0
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-036",
+      "minimumRoadmapStage": 6,
+      "purpose": "CSRF denial",
+      "requiredBackendCapability": "CSRF",
+      "syntheticInputs": {
+        "authState": "INVALID_CSRF",
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CSRF",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "EXISTING_CAPABILITY_NEW_DATA_INTEGRATION_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "intendedUnauthorizedStatus": 403,
+        "requiredCapability": "CLINICAL_AUTH",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-037",
+      "minimumRoadmapStage": 8,
+      "purpose": "Nurse clinical denial",
+      "requiredBackendCapability": "CLINICAL_AUTH",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "CLINICAL_AUTH",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "RESTART",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-038",
+      "minimumRoadmapStage": 9,
+      "purpose": "Process restart retrieval",
+      "requiredBackendCapability": "RESTART",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "RESTART",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "BACKUP_RESTORE",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-039",
+      "minimumRoadmapStage": 10,
+      "purpose": "Backup restore integrity",
+      "requiredBackendCapability": "BACKUP_RESTORE",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "BACKUP_RESTORE",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "action": "load_twice",
+        "transport": "CLI_ONLY"
+      },
+      "expectedPersistedRecords": {
+        "drift": "ERROR_NO_OVERWRITE",
+        "firstLoad": {
+          "clinicDays": 3,
+          "patients": 7
+        },
+        "secondLoadAdditionalRecords": 0
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-040",
+      "minimumRoadmapStage": 6,
+      "purpose": "Idempotent fixture reload",
+      "requiredBackendCapability": "FIXTURE_LOADER",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "fixtureNamespace": "ROBY_GOLDEN_V1_EXTENDED_V1",
+        "operation": "FIXTURE_LOADER",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "LOADER_UNIT_IMPLEMENTED_POSTGRES_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "action": "injected_partial_failure",
+        "transport": "CLI_ONLY"
+      },
+      "expectedPersistedRecords": {
+        "partialFailureAdditionalRecords": 0,
+        "sequence": "TRANSACTIONAL_RESTART_ROLLED_BACK",
+        "unrelatedRows": "UNCHANGED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-041",
+      "minimumRoadmapStage": 6,
+      "purpose": "Partial failure rollback",
+      "requiredBackendCapability": "FIXTURE_LOADER",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "fixtureNamespace": "ROBY_GOLDEN_V1_EXTENDED_V1",
+        "operation": "FIXTURE_LOADER",
+        "patientRef": "e7000000-0000-4700-8700-000000000001"
+      },
+      "testImplementationStatus": "LOADER_UNIT_IMPLEMENTED_POSTGRES_NOT_RUN"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "WEB_JOURNEY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-042",
+      "minimumRoadmapStage": 9,
+      "purpose": "Integrated journey",
+      "requiredBackendCapability": "WEB_JOURNEY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "WEB_JOURNEY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "PILOT",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-043",
+      "minimumRoadmapStage": 11,
+      "purpose": "Controlled synthetic pilot",
+      "requiredBackendCapability": "PILOT",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "PILOT",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "DELIVERY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-044",
+      "minimumRoadmapStage": 12,
+      "purpose": "Repeatable delivery",
+      "requiredBackendCapability": "DELIVERY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "DELIVERY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "BACKUP_RESTORE",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-045",
+      "minimumRoadmapStage": 10,
+      "purpose": "Post-restore checksum",
+      "requiredBackendCapability": "BACKUP_RESTORE",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "BACKUP_RESTORE",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "RECOVERY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-046",
+      "minimumRoadmapStage": 10,
+      "purpose": "Recovery interruption",
+      "requiredBackendCapability": "RECOVERY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "RECOVERY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    },
+    {
+      "expectedApiBehavior": {
+        "requiredCapability": "DELIVERY",
+        "status": "SPECIFIED_NOT_IMPLEMENTED",
+        "writesMustRemainDisabled": true
+      },
+      "expectedPersistedRecords": {
+        "referenceOnly": {
+          "caseIds": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "patientIds": [
+            "e7000000-0000-4700-8700-000000000001",
+            "e7000000-0000-4700-8700-000000000002"
+          ],
+          "visitIds": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        },
+        "status": "NOT_IMPLEMENTED"
+      },
+      "expectedRelationships": {
+        "caseVisits": {
+          "SYN-C-001": [
+            "SYN-V-001",
+            "SYN-V-002"
+          ]
+        },
+        "rule": "UUID ownership; no name/phone merging; Visit.caseId matches Case.patientId; source history never overwritten"
+      },
+      "id": "EXT-047",
+      "minimumRoadmapStage": 12,
+      "purpose": "Fresh environment provisioning",
+      "requiredBackendCapability": "DELIVERY",
+      "syntheticInputs": {
+        "dataset": "EXTENDED_SYNTHETIC_V1",
+        "operation": "DELIVERY",
+        "patientRef": "e7000000-0000-4700-8700-000000000001",
+        "referenceRecords": {
+          "cases": [
+            "SYN-C-001",
+            "SYN-C-002",
+            "SYN-C-003"
+          ],
+          "clinicDays": [
+            "SYN-CD-2026-09-24",
+            "SYN-CD-2026-09-25"
+          ],
+          "visits": [
+            "SYN-V-001",
+            "SYN-V-002",
+            "SYN-V-003",
+            "SYN-V-004"
+          ]
+        }
+      },
+      "testImplementationStatus": "SPECIFIED_NOT_IMPLEMENTED"
+    }
+  ],
+  "version": 1,
+  "visits": [
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "SYN-C-001",
+      "caseStateSnapshot": "Exited — Follow-up Pending",
+      "clinicDayId": "SYN-CD-2026-09-24",
+      "currentComplaint": "SYNTHETIC complaint 1",
+      "date": "2026-09-24",
+      "examinationNotes": "SYNTHETIC examination 1",
+      "finalDiagnosis": "SYNTHETIC final 1",
+      "followUp": {
+        "clinicalInstructions": "SYNTHETIC follow-up",
+        "intervalDays": 7,
+        "required": true
+      },
+      "id": "SYN-V-001",
+      "investigations": [
+        {
+          "category": "Laboratory",
+          "id": "SYN-INV-1",
+          "name": "SYNTHETIC investigation",
+          "notes": "NOT FOR CLINICAL USE",
+          "urgent": false
+        }
+      ],
+      "operationalContext": "SYNTHETIC TEST ONLY",
+      "operationalStatus": "EXITED",
+      "patientId": "e7000000-0000-4700-8700-000000000001",
+      "preliminaryDiagnosis": "SYNTHETIC preliminary 1",
+      "prescription": {
+        "authorizedAt": "2026-09-24T10:00:00Z",
+        "authorizedBy": "SYNTHETIC DOCTOR — NO CREDENTIAL",
+        "clinicalCounseling": "SYNTHETIC",
+        "id": "SYN-RX-1",
+        "isAuthorized": true,
+        "items": [
+          {
+            "dose": "TEST",
+            "duration": "TEST",
+            "form": "TEST",
+            "frequency": "TEST",
+            "id": "SYN-RX-ITEM-1",
+            "instructions": "SYNTHETIC TEST ONLY",
+            "name": "SYNTHETIC MEDICATION — NOT FOR USE",
+            "route": "TEST",
+            "strength": "TEST"
+          }
+        ],
+        "patientInstructions": "SYNTHETIC"
+      },
+      "protectionState": "PROTECTED",
+      "time": "09:01",
+      "treatmentAdvice": "SYNTHETIC treatment — not clinical advice",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 80,
+        "bloodPressureSystolic": 120,
+        "heartRate": 75,
+        "oxygenSaturation": 98,
+        "respiratoryRate": 16,
+        "temperatureCelsius": 36.7
+      }
+    },
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "SYN-C-001",
+      "caseStateSnapshot": "Exited — Follow-up Pending",
+      "clinicDayId": "SYN-CD-2026-09-25",
+      "currentComplaint": "SYNTHETIC complaint 2",
+      "date": "2026-09-25",
+      "examinationNotes": "SYNTHETIC examination 2",
+      "finalDiagnosis": "SYNTHETIC final 2",
+      "followUp": {
+        "clinicalInstructions": "SYNTHETIC follow-up",
+        "intervalDays": 7,
+        "required": true
+      },
+      "id": "SYN-V-002",
+      "investigations": [
+        {
+          "category": "Laboratory",
+          "id": "SYN-INV-2",
+          "name": "SYNTHETIC investigation",
+          "notes": "NOT FOR CLINICAL USE",
+          "urgent": false
+        }
+      ],
+      "operationalContext": "SYNTHETIC TEST ONLY",
+      "operationalStatus": "EXITED",
+      "patientId": "e7000000-0000-4700-8700-000000000001",
+      "preliminaryDiagnosis": "SYNTHETIC preliminary 2",
+      "prescription": {
+        "authorizedAt": "2026-09-25T10:00:00Z",
+        "authorizedBy": "SYNTHETIC DOCTOR — NO CREDENTIAL",
+        "clinicalCounseling": "SYNTHETIC",
+        "id": "SYN-RX-2",
+        "isAuthorized": true,
+        "items": [
+          {
+            "dose": "TEST",
+            "duration": "TEST",
+            "form": "TEST",
+            "frequency": "TEST",
+            "id": "SYN-RX-ITEM-2",
+            "instructions": "SYNTHETIC TEST ONLY",
+            "name": "SYNTHETIC MEDICATION — NOT FOR USE",
+            "route": "TEST",
+            "strength": "TEST"
+          }
+        ],
+        "patientInstructions": "SYNTHETIC"
+      },
+      "protectionState": "PROTECTED",
+      "time": "09:02",
+      "treatmentAdvice": "SYNTHETIC treatment — not clinical advice",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 80,
+        "bloodPressureSystolic": 120,
+        "heartRate": 75,
+        "oxygenSaturation": 98,
+        "respiratoryRate": 16,
+        "temperatureCelsius": 36.7
+      }
+    },
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "SYN-C-002",
+      "caseStateSnapshot": "Awaiting Doctor",
+      "clinicDayId": "SYN-CD-2026-09-25",
+      "currentComplaint": "SYNTHETIC complaint 3",
+      "date": "2026-09-25",
+      "examinationNotes": "SYNTHETIC examination 3",
+      "finalDiagnosis": "",
+      "followUp": {
+        "clinicalInstructions": "SYNTHETIC follow-up",
+        "intervalDays": 7,
+        "required": true
+      },
+      "id": "SYN-V-003",
+      "investigations": [
+        {
+          "category": "Laboratory",
+          "id": "SYN-INV-3",
+          "name": "SYNTHETIC investigation",
+          "notes": "NOT FOR CLINICAL USE",
+          "urgent": false
+        }
+      ],
+      "operationalContext": "SYNTHETIC TEST ONLY",
+      "operationalStatus": "AWAITING_DOCTOR",
+      "patientId": "e7000000-0000-4700-8700-000000000001",
+      "preliminaryDiagnosis": "SYNTHETIC preliminary 3",
+      "prescription": {
+        "authorizedAt": null,
+        "authorizedBy": null,
+        "clinicalCounseling": "SYNTHETIC",
+        "id": "SYN-RX-3",
+        "isAuthorized": false,
+        "items": [
+          {
+            "dose": "TEST",
+            "duration": "TEST",
+            "form": "TEST",
+            "frequency": "TEST",
+            "id": "SYN-RX-ITEM-3",
+            "instructions": "SYNTHETIC TEST ONLY",
+            "name": "SYNTHETIC MEDICATION — NOT FOR USE",
+            "route": "TEST",
+            "strength": "TEST"
+          }
+        ],
+        "patientInstructions": "SYNTHETIC"
+      },
+      "protectionState": "OPEN",
+      "time": "09:03",
+      "treatmentAdvice": "SYNTHETIC treatment — not clinical advice",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 80,
+        "bloodPressureSystolic": 120,
+        "heartRate": 75,
+        "oxygenSaturation": 98,
+        "respiratoryRate": 16,
+        "temperatureCelsius": 36.7
+      }
+    },
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "SYN-C-003",
+      "caseStateSnapshot": "Completed",
+      "clinicDayId": "SYN-CD-2026-09-24",
+      "currentComplaint": "SYNTHETIC complaint 4",
+      "date": "2026-09-24",
+      "examinationNotes": "SYNTHETIC examination 4",
+      "finalDiagnosis": "SYNTHETIC final 4",
+      "followUp": {
+        "clinicalInstructions": "SYNTHETIC follow-up",
+        "required": false
+      },
+      "id": "SYN-V-004",
+      "investigations": [
+        {
+          "category": "Laboratory",
+          "id": "SYN-INV-4",
+          "name": "SYNTHETIC investigation",
+          "notes": "NOT FOR CLINICAL USE",
+          "urgent": false
+        }
+      ],
+      "operationalContext": "SYNTHETIC TEST ONLY",
+      "operationalStatus": "COMPLETED",
+      "patientId": "e7000000-0000-4700-8700-000000000002",
+      "preliminaryDiagnosis": "SYNTHETIC preliminary 4",
+      "prescription": {
+        "authorizedAt": "2026-09-24T10:00:00Z",
+        "authorizedBy": "SYNTHETIC DOCTOR — NO CREDENTIAL",
+        "clinicalCounseling": "SYNTHETIC",
+        "id": "SYN-RX-4",
+        "isAuthorized": true,
+        "items": [
+          {
+            "dose": "TEST",
+            "duration": "TEST",
+            "form": "TEST",
+            "frequency": "TEST",
+            "id": "SYN-RX-ITEM-4",
+            "instructions": "SYNTHETIC TEST ONLY",
+            "name": "SYNTHETIC MEDICATION — NOT FOR USE",
+            "route": "TEST",
+            "strength": "TEST"
+          }
+        ],
+        "patientInstructions": "SYNTHETIC"
+      },
+      "protectionState": "PROTECTED",
+      "time": "10:00",
+      "treatmentAdvice": "SYNTHETIC treatment — not clinical advice",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 80,
+        "bloodPressureSystolic": 120,
+        "heartRate": 75,
+        "oxygenSaturation": 98,
+        "respiratoryRate": 16,
+        "temperatureCelsius": 36.7
+      }
+    }
+  ]
+}

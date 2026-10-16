@@ -1,0 +1,67 @@
+{
+  "actualBackupRestore": "NOT_RUN",
+  "archivedOnlyCounts": {
+    "cases": 6,
+    "prescriptions": 8,
+    "visits": 8
+  },
+  "baselineHash": "2c29163ab399e99b70918bd179da5e9e2ce3e0df271cf5faeb290952321dba12",
+  "clinicalTimelineReferences": [
+    {
+      "caseId": "C-001",
+      "orderedVisits": [
+        "V-001"
+      ],
+      "patientId": "a1b2c3d4-0001-7000-8000-000000000001"
+    },
+    {
+      "caseId": "C-002",
+      "orderedVisits": [
+        "V-002"
+      ],
+      "patientId": "a1b2c3d4-0002-7000-8000-000000000002"
+    },
+    {
+      "caseId": "C-003",
+      "orderedVisits": [
+        "V-004",
+        "V-003"
+      ],
+      "patientId": "a1b2c3d4-0003-7000-8000-000000000003"
+    },
+    {
+      "caseId": "SYN-C-001",
+      "orderedVisits": [
+        "SYN-V-001",
+        "SYN-V-002"
+      ],
+      "patientId": "e7000000-0000-4700-8700-000000000001"
+    },
+    {
+      "caseId": "SYN-C-002",
+      "orderedVisits": [
+        "SYN-V-003"
+      ],
+      "patientId": "e7000000-0000-4700-8700-000000000001"
+    },
+    {
+      "caseId": "SYN-C-003",
+      "orderedVisits": [
+        "SYN-V-004"
+      ],
+      "patientId": "e7000000-0000-4700-8700-000000000002"
+    }
+  ],
+  "datasetHash": "22302291312e6a88c587535882ff2486a8aa1a22d510366da26f4c24b961dab5",
+  "extensionHash": "050b0692fb1afe0b6e95dc5b1e8c7ce0f75efdca648828d0c31bfdeae1d317f5",
+  "kind": "EXPECTED_POST_RESTORE_MANIFEST_NOT_EXECUTION_PROOF",
+  "projectionHash": "0b0fa5f500e83c36597da83586ba9f467a09f6e2eda4f89fe301e2437b6af307",
+  "supportedCounts": {
+    "clinicDays": 3,
+    "historyItems": 28,
+    "intakes": 6,
+    "patients": 7
+  },
+  "verifiedRowsHash": "75535834f970cf634b3e3b612edc34b73ca87ce43f34e31e6ee4a08667d10995",
+  "version": 1
+}

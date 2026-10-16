@@ -1,0 +1,400 @@
+{
+  "actorRole": "Doctor",
+  "cases": [
+    {
+      "activeVisitId": "V-001",
+      "id": "C-001",
+      "openedClinicDayId": "CD-2026-09-22",
+      "openedDate": "2026-09-22",
+      "patientId": "a1b2c3d4-0001-7000-8000-000000000001",
+      "state": "Awaiting Doctor",
+      "title": "Acute Tension-Type Headache & Cervical Strain"
+    },
+    {
+      "activeVisitId": "V-002",
+      "id": "C-002",
+      "openedClinicDayId": "CD-2026-09-22",
+      "openedDate": "2026-09-22",
+      "patientId": "a1b2c3d4-0002-7000-8000-000000000002",
+      "state": "With Doctor",
+      "title": "Acute Asthma Exacerbation with Upper Respiratory Triggers"
+    },
+    {
+      "activeVisitId": "V-003",
+      "id": "C-003",
+      "openedClinicDayId": "CD-2026-09-20",
+      "openedDate": "2026-09-20",
+      "patientId": "a1b2c3d4-0003-7000-8000-000000000003",
+      "state": "Exited — Follow-up Pending",
+      "title": "T2DM Glycemic Control & Peripheral Neuropathy Assessment"
+    }
+  ],
+  "clinicDays": [
+    {
+      "counter": 3,
+      "id": "CD-2026-09-22",
+      "lifecycle": "WORKING",
+      "openedAt": "2026-09-22T08:00:00Z",
+      "status": "OPEN",
+      "workingDate": "2026-09-22"
+    }
+  ],
+  "currentClinicDayId": "CD-2026-09-22",
+  "nextCpnNumber": 1004,
+  "operatingMode": "DOCTOR_NURSE",
+  "patients": [
+    {
+      "clinicPatientNumber": "CPN-1001",
+      "dateOfBirth": "1988-04-12",
+      "gender": "Male",
+      "name": "Ahmed Hassan",
+      "pastHistory": {
+        "chronicIllnesses": [
+          "None"
+        ],
+        "familyHistory": [
+          "Father: Type 2 Diabetes"
+        ],
+        "knownAllergies": [
+          "Seasonal rhinitis / pollen"
+        ],
+        "lifestyleNotes": "Non-smoker, desk work 8 hours daily",
+        "surgicalHistory": [
+          "Appendectomy (2014)"
+        ]
+      },
+      "patientId": "a1b2c3d4-0001-7000-8000-000000000001",
+      "phone": "+20 100 234 5678",
+      "profession": "Civil Engineer",
+      "registeredAt": "2026-09-22T08:15:00Z"
+    },
+    {
+      "clinicPatientNumber": "CPN-1002",
+      "dateOfBirth": "1994-09-25",
+      "gender": "Female",
+      "name": "Mona Ali",
+      "pastHistory": {
+        "chronicIllnesses": [
+          "Bronchial Asthma"
+        ],
+        "familyHistory": [
+          "Mother: Hypertension"
+        ],
+        "knownAllergies": [
+          "Penicillin (causes urticaria/rash)"
+        ],
+        "lifestyleNotes": "Active school day, uses inhaler intermittently",
+        "surgicalHistory": [
+          "None"
+        ]
+      },
+      "patientId": "a1b2c3d4-0002-7000-8000-000000000002",
+      "phone": "+20 111 876 5432",
+      "profession": "School Teacher",
+      "registeredAt": "2026-09-22T08:45:00Z"
+    },
+    {
+      "clinicPatientNumber": "CPN-1003",
+      "dateOfBirth": "1972-11-03",
+      "gender": "Male",
+      "name": "Omar Mahmoud",
+      "pastHistory": {
+        "chronicIllnesses": [
+          "Type 2 Diabetes Mellitus",
+          "Essential Hypertension"
+        ],
+        "familyHistory": [
+          "Both parents: Ischemic heart disease, diabetes"
+        ],
+        "knownAllergies": [
+          "Sulfa drugs"
+        ],
+        "lifestyleNotes": "Sedentary, former smoker (quit 2021)",
+        "surgicalHistory": [
+          "Knee arthroscopy (2019)"
+        ]
+      },
+      "patientId": "a1b2c3d4-0003-7000-8000-000000000003",
+      "phone": "+20 122 345 6789",
+      "profession": "Senior Accountant",
+      "registeredAt": "2026-09-20T09:00:00Z"
+    }
+  ],
+  "visits": [
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "C-001",
+      "caseStateSnapshot": "Awaiting Doctor",
+      "clinicDayId": "CD-2026-09-22",
+      "currentComplaint": "Bilateral pressing headache radiating to occiput for 2 days; exacerbated by computer screen work.",
+      "date": "2026-09-22",
+      "examinationNotes": "Neck muscle spasm noted. Fundoscopy normal. No focal neurological deficits.",
+      "finalDiagnosis": "",
+      "followUp": {
+        "clinicalInstructions": "Return if headache worsens or does not resolve in 5 days.",
+        "intervalDays": 7,
+        "required": true
+      },
+      "id": "V-001",
+      "investigations": [],
+      "operationalContext": "Arrival recorded — waiting for Doctor",
+      "operationalStatus": "AWAITING_DOCTOR",
+      "patientId": "a1b2c3d4-0001-7000-8000-000000000001",
+      "preliminaryDiagnosis": "Episodic Tension-Type Headache with Cervicogenic Component",
+      "prescription": {
+        "authorizedAt": null,
+        "authorizedBy": null,
+        "clinicalCounseling": "Ensure adequate hydration and regular breaks from screen work.",
+        "id": "RX-V001",
+        "isAuthorized": false,
+        "items": [
+          {
+            "dose": "1-2 tablets",
+            "duration": "3 days",
+            "form": "Tablet",
+            "frequency": "Every 8 hours as needed (PRN)",
+            "id": "RX-M1",
+            "instructions": "Take with plenty of water after food. Do not exceed 4g/day.",
+            "name": "Paracetamol",
+            "prn": true,
+            "quantity": "1 box (20 tablets)",
+            "route": "Oral",
+            "strength": "500mg"
+          }
+        ],
+        "patientInstructions": "Rest in a quiet, dark room if headache escalates."
+      },
+      "protectionState": "OPEN",
+      "time": "09:10",
+      "treatmentAdvice": "Ergonomic screen adjustments, hydration, neck stretching exercises.",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 80,
+        "bloodPressureSystolic": 125,
+        "heartRate": 74,
+        "oxygenSaturation": 99,
+        "respiratoryRate": 16,
+        "temperatureCelsius": 36.8
+      }
+    },
+    {
+      "arrivalCondition": "Moderately Unwell",
+      "caseId": "C-002",
+      "caseStateSnapshot": "With Doctor",
+      "clinicDayId": "CD-2026-09-22",
+      "currentComplaint": "Dry persistent cough for 4 days, chest tightness and nocturnal wheezing waking her up.",
+      "date": "2026-09-22",
+      "examinationNotes": "Bilateral expiratory wheezes on auscultation. Prolonged expiratory phase. No intercostal retraction.",
+      "finalDiagnosis": "Acute Asthma Bronchospasm triggered by viral upper respiratory tract infection",
+      "followUp": {
+        "clinicalInstructions": "Re-evaluate peak expiratory flow and resolution of wheeze.",
+        "intervalDays": 5,
+        "required": true
+      },
+      "id": "V-002",
+      "investigations": [
+        {
+          "category": "Laboratory",
+          "id": "INV-001",
+          "name": "Complete Blood Count (CBC) with Differential",
+          "notes": "Check for eosinophilia and infective leukocytosis",
+          "urgent": false
+        },
+        {
+          "category": "Radiology",
+          "id": "INV-002",
+          "name": "Chest X-Ray PA View",
+          "notes": "Evaluate for focal infiltrates or hyperinflation",
+          "urgent": false
+        }
+      ],
+      "operationalContext": "Doctor encounter in progress",
+      "operationalStatus": "WITH_DOCTOR",
+      "patientId": "a1b2c3d4-0002-7000-8000-000000000002",
+      "preliminaryDiagnosis": "Mild-to-Moderate Acute Asthma Exacerbation",
+      "prescription": {
+        "authorizedAt": "2026-09-22T09:50:00Z",
+        "authorizedBy": "Dr. Roby, MD (Attending Physician)",
+        "clinicalCounseling": "Strict demonstration of proper metered-dose inhaler inhalation technique provided.",
+        "id": "RX-V002",
+        "isAuthorized": true,
+        "items": [
+          {
+            "dose": "2 puffs",
+            "duration": "14 days",
+            "form": "Inhaler",
+            "frequency": "Every 6 hours as needed",
+            "id": "RX-M2",
+            "instructions": "Use spacer if available. Rinse mouth after use.",
+            "name": "Salbutamol Inhaler",
+            "prn": true,
+            "quantity": "1 canister (200 doses)",
+            "route": "Inhalation",
+            "strength": "100mcg/puff"
+          },
+          {
+            "dose": "1 inhalation",
+            "duration": "30 days",
+            "form": "Turbuhaler",
+            "frequency": "Twice daily (morning and night)",
+            "id": "RX-M3",
+            "instructions": "Maintain daily adherence. Rinse mouth thoroughly.",
+            "name": "Budesonide / Formoterol",
+            "prn": false,
+            "quantity": "1 inhaler",
+            "route": "Inhalation",
+            "strength": "160/4.5mcg"
+          }
+        ],
+        "patientInstructions": "Seek urgent medical attention if chest tightness fails to respond to 4 puffs of Salbutamol within 15 minutes."
+      },
+      "protectionState": "OPEN",
+      "time": "09:35",
+      "treatmentAdvice": "Avoid dust and strong perfumes. Steam inhalation twice daily.",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 75,
+        "bloodPressureSystolic": 118,
+        "heartRate": 88,
+        "oxygenSaturation": 96,
+        "respiratoryRate": 22,
+        "temperatureCelsius": 37.1
+      }
+    },
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "C-003",
+      "caseStateSnapshot": "Exited — Follow-up Pending",
+      "clinicDayId": "CD-2026-09-20",
+      "currentComplaint": "Initial workup for suboptimal glycemic readings and bilateral burning sensations in toes.",
+      "date": "2026-09-20",
+      "examinationNotes": "Monofilament test reveals diminished sensation on distal 1st and 5th metatarsal heads.",
+      "finalDiagnosis": "Uncontrolled T2DM with Early Symmetrical Distal Sensory Neuropathy",
+      "followUp": {
+        "clinicalInstructions": "Return on 2026-09-22 with laboratory blood results and glucose log.",
+        "intervalDays": 2,
+        "required": true
+      },
+      "id": "V-004",
+      "investigations": [
+        {
+          "category": "Laboratory",
+          "id": "INV-003",
+          "name": "HbA1c & Fasting Lipid Profile",
+          "notes": "Glycemic control baseline",
+          "urgent": false
+        }
+      ],
+      "operationalContext": "Initial encounter for diabetic review and foot symptoms",
+      "operationalStatus": "COMPLETED",
+      "patientId": "a1b2c3d4-0003-7000-8000-000000000003",
+      "preliminaryDiagnosis": "Type 2 Diabetes with Diabetic Peripheral Neuropathy",
+      "prescription": {
+        "authorizedAt": "2026-09-20T09:40:00Z",
+        "authorizedBy": "Dr. Roby, MD (Attending Physician)",
+        "clinicalCounseling": "Comprehensive dietary review for low glycemic load carbohydrates conducted.",
+        "id": "RX-V004",
+        "isAuthorized": true,
+        "items": [
+          {
+            "dose": "1 tablet",
+            "duration": "30 days",
+            "form": "Tablet",
+            "frequency": "Twice daily with meals",
+            "id": "RX-M4",
+            "instructions": "Take during or immediately after meals to reduce GI distress.",
+            "name": "Metformin HCl",
+            "prn": false,
+            "quantity": "1 box (60 tablets)",
+            "route": "Oral",
+            "strength": "850mg"
+          },
+          {
+            "dose": "1 capsule",
+            "duration": "30 days",
+            "form": "Capsule",
+            "frequency": "Once daily on an empty stomach",
+            "id": "RX-M5",
+            "instructions": "Take 30 minutes before breakfast.",
+            "name": "Alpha-Lipoic Acid",
+            "prn": false,
+            "quantity": "1 box (30 capsules)",
+            "route": "Oral",
+            "strength": "600mg"
+          }
+        ],
+        "patientInstructions": "Record fasting and 2-hour postprandial glucose in logbook."
+      },
+      "protectionState": "PROTECTED",
+      "time": "09:15",
+      "treatmentAdvice": "Diabetic foot care education, inspect feet daily, wear protective footwear.",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 86,
+        "bloodPressureSystolic": 138,
+        "heartRate": 80,
+        "oxygenSaturation": 98,
+        "respiratoryRate": 18,
+        "temperatureCelsius": 36.7
+      }
+    },
+    {
+      "arrivalCondition": "Normal",
+      "caseId": "C-003",
+      "caseStateSnapshot": "Exited — Follow-up Pending",
+      "clinicDayId": "CD-2026-09-22",
+      "currentComplaint": "Follow-up review with laboratory reports: Fasting glucose 142 mg/dL, HbA1c 7.4%. Tingling slightly improved.",
+      "date": "2026-09-22",
+      "examinationNotes": "Repeat neurological check shows stable sensation. Peripheral pulses palpable and symmetric.",
+      "exitRecordedAt": "2026-09-22T10:25:00Z",
+      "exitRecordedBy": "Nurse",
+      "finalDiagnosis": "Type 2 Diabetes Mellitus with satisfactory treatment response",
+      "followUp": {
+        "clinicalInstructions": "Repeat HbA1c in 3 months and check renal function tests.",
+        "intervalDays": 30,
+        "required": true
+      },
+      "id": "V-003",
+      "investigations": [],
+      "operationalContext": "Recorded Visit — follow-up continuity; previous Visits remain preserved",
+      "operationalStatus": "EXITED",
+      "patientId": "a1b2c3d4-0003-7000-8000-000000000003",
+      "preliminaryDiagnosis": "T2DM under medical optimization; resolving neuropathic burning.",
+      "prescription": {
+        "authorizedAt": "2026-09-22T10:20:00Z",
+        "authorizedBy": "Dr. Roby, MD (Attending Physician)",
+        "clinicalCounseling": "Patient encouraged by improvement. Re-emphasized smoking cessation maintenance.",
+        "id": "RX-V003",
+        "isAuthorized": true,
+        "items": [
+          {
+            "dose": "1 tablet",
+            "duration": "60 days",
+            "form": "Tablet",
+            "frequency": "Once daily with evening dinner",
+            "id": "RX-M6",
+            "instructions": "Swallow whole with a full glass of water. Do not crush or chew.",
+            "name": "Metformin HCl (Extended Release)",
+            "prn": false,
+            "quantity": "2 boxes (60 tablets)",
+            "route": "Oral",
+            "strength": "1000mg"
+          }
+        ],
+        "patientInstructions": "Continue home glucometer check twice weekly."
+      },
+      "protectionState": "PROTECTED",
+      "time": "10:05",
+      "treatmentAdvice": "Continue Mediterranean diet regimen. Aim for 30 minutes brisk walking daily.",
+      "visitType": "Visit & Consultation",
+      "vitals": {
+        "bloodPressureDiastolic": 82,
+        "bloodPressureSystolic": 130,
+        "heartRate": 76,
+        "oxygenSaturation": 99,
+        "respiratoryRate": 16,
+        "temperatureCelsius": 36.6
+      }
+    }
+  ]
+}
