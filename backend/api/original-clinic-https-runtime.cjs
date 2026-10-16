@@ -121,7 +121,7 @@ async function verifyIsolatedDatabase(pool, expected) {
   }
 }
 
-async function buildOriginalClinicRuntime({ pool, auth, tls, assetsDirectory, manifest, expectedDatabase, authDiagnostics = false } = {}) {
+async function buildOriginalClinicRuntime({ pool, auth, tls, assetsDirectory, manifest, expectedDatabase, authDiagnostics = false, enableCaseCreate = false } = {}) {
   // Explicit caller owns pool. No automatic listener, schema changes, or credential provisioning.
   assert.ok(auth && typeof auth.login === 'function' && typeof auth.withAuthorized === 'function');
   const https = verifyTls(tls);
@@ -147,7 +147,7 @@ async function buildOriginalClinicRuntime({ pool, auth, tls, assetsDirectory, ma
         console.log('AUTH_ROUTE=' + route + ' AUTH_STATUS=' + reply.statusCode);
     });
     const { composeSecuredPatients } = require('./secured-patient-composition');
-    await composeSecuredPatients(app, { auth, trustedOrigin:ORIGIN });
+    await composeSecuredPatients(app, { auth, trustedOrigin:ORIGIN, enableCaseCreate });
     for (const [url, asset] of routes) {
       app.get(url, async (_request, reply) => reply.type(asset.type).send(asset.bytes));
     }
