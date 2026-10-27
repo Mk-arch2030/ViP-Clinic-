@@ -11,7 +11,14 @@ The aim is a small, focused, useful, provable, repeatable, and sellable product 
 ## Current position
 
 This status incorporates owner-reported Termux execution evidence received on
-**2026-10-10 (Africa/Cairo)**. The latest isolated authentication proof ran at
+**2026-10-27 (Africa/Cairo)**. The latest bounded Stage 8 browser acceptance
+was reported against local HTTPS at `https://127.0.0.1:3443` using ChromeDriver
+149 and W3C WebDriver, with `337 PASS / 0 FAIL`. The source accepted for that
+run is `3a7ba333dd34757da1c03f3f58b1b493b54d7256`, now synchronized on `main`.
+The E2E result is recorded in the [Stage 8 E2E Acceptance Closure](./ARCHITECTURE/STAGE8-E2E-ACCEPTANCE-CLOSURE-2026-10-27.md).
+The browser/device result remains owner-reported; the documentation commit
+does not claim independent operation of the owner's Termux device or private
+screenshots/logs. The latest isolated authentication proof ran at
 [`c59fe2b48d2b2adb882a95dcf05bdb8fd8e0c59c`](https://github.com/Mk-arch2030/ViP-Clinic-/commit/c59fe2b48d2b2adb882a95dcf05bdb8fd8e0c59c);
 the earlier Stage 4 composition proof ran at `9d207d4a1a0fbffd0bc38035279a7ae3f3b43925`.
 Subsequent documentation commits preserve that evidence; they are not new runtime executions.
@@ -26,11 +33,12 @@ Subsequent documentation commits preserve that evidence; they are not new runtim
 | Earlier PostgreSQL GET proof | Decisions A–D established bounded GET-only Fastify injection against a separate synthetic PostgreSQL cluster, including 200/404 and compared patient-data/sequence preservation. |
 | Current PostgreSQL composition proof | Stage 4 passed for the tested isolated paths: current opt-in composition, GET 200/404, POST present but not invoked, compared patient/sequence/schema state preserved, no listener, protected local state preserved, exit 0. See the [Stage 4 Milestone](./ARCHITECTURE/RETRIEVE-EXISTING-PATIENT-COMPOSITION-POSTGRESQL-PROOF-MILESTONE-V1.md). |
 | Authentication | Stage 5-B–F backend lifecycle, password verifier, persisted identity/session policy and separate secured Fastify composition are implemented. Stage 5-G passed 19 real PostgreSQL service cases plus concurrency, credential replacement, HTTP injection denial/GET/POST, rollback and logout checks. This is bounded isolated proof, not browser/production assurance. See the [Stage 5-G Milestone](./ARCHITECTURE/STAGE-5G-ISOLATED-POSTGRESQL-AUTHENTICATION-PROOF-MILESTONE-V1.md). |
-| Integration and release | The current frontend-to-API/database journey, production GET enablement, deployment, and clinical readiness are not established by these proofs. |
+| Browser E2E acceptance | Owner-reported bounded Stage 8 E2E acceptance passed on 2026-10-27 over local HTTPS with ChromeDriver 149/W3C WebDriver; separate regression returned `337 PASS / 0 FAIL`. This closes the recorded acceptance slice, not production deployment or clinical release. See the [Stage 8 E2E Acceptance Closure](./ARCHITECTURE/STAGE8-E2E-ACCEPTANCE-CLOSURE-2026-10-27.md). |
+| Integration and release | The Stage 8 acceptance adapter is merged to `main`; production GET enablement, deployment, backup/recovery, and clinical readiness remain separately gated. |
 
 The owner also reported the package guard tests passing 12/12 and active regression passing 52/52 before real execution. These are separate runs. Results above are recorded execution evidence, not tests rerun while updating this README. No product completion percentage is inferred from them.
 
-**Stage 5's backend authentication foundation and bounded isolated proof are passed and documented. We are at the Stage 6 entry gate: bounded Web authentication/session/CSRF integration and the current Patient UI/API adapter. Browser integration requires its applicable owner decision and execution proof; the browser-state frontend continues in parallel.**
+**Stage 5's backend authentication foundation, Stage 6 Web integration, and the bounded Stage 8 browser acceptance slice are documented. The next product gate is not a generic browser foundation; it is the contracted Case → Visit → clinical history journey with durable read-back and preservation proof.**
 
 ## Product foundation and continuity
 
@@ -140,9 +148,9 @@ The sequence below is a planning index. Each implementation increment needs its 
 | 3 | Patient API foundation | POST foundation and explicit opt-in GET preserved; default GET OFF. |
 | **4** | **Real-PostgreSQL composition proof** | **Bounded proof passed:** reviewed Termux output at 9d207d4, GET 200/404, compared state preserved, POST not invoked, no listener, exit 0. |
 | **5** | **Authentication and server authorization** | **Bounded backend proof passed:** Stage 5-B–F delivered; Stage 5-G real PostgreSQL proof at c59fe2b, including lifecycle/session/role enforcement and tested failure/concurrency paths. No browser/production claim. |
-| **6** | **Web authentication and current patient UI/API adapter** | **Next gate:** decide the bounded same-origin transport/session/CSRF and UI adapter scope, then prove frontend → secured API → isolated database, denial/error handling, server identity and preserved demo-data boundaries. |
-| 7 | Case, Visit, and history persistence/API | Deliver small contracted vertical slices with transactional, continuity, and failure proof. |
-| 8 | Clinical and operational workflow | Prove clinical record, prescription/follow-up, Case completion, day protection, delegation, and notifications within their contracts. |
+| **6** | **Web authentication and current patient UI/API adapter** | **Bounded acceptance recorded:** Stage 6 web/session/CSRF and Patient adapter work is carried into the Stage 8 local HTTPS acceptance path. The latest browser/device result is owner-reported; production assurance is not implied. |
+| **7** | **Case, Visit, and history persistence/API** | **CASE_CREATE slice exists and the bounded Stage 8 acceptance is recorded. Next exit gate:** complete Case → Visit → clinical history persistence/read-back with preservation, role denial, replay/concurrency, and failure proof. |
+| **8** | **Clinical and operational workflow** | **Stage 8 acceptance adapter is on `main`; bounded E2E acceptance is recorded. Remaining scope:** clinical record, prescription/follow-up, Case completion, day protection, delegation, and notifications within their contracts. |
 | 9 | Integrated Web journey | Prove the full authorized workflow, durable reopening, server role enforcement, and contracted failure/concurrency behavior. |
 | 10 | Operational readiness and deployment | Prove backup/restore and recovery; review environment/secrets/transport and obtain specific deployment authorization. |
 | 11 | Controlled clinic pilot | Separate owner decision, bounded real-use scope, acceptance evidence, and rollback plan. |
@@ -167,7 +175,8 @@ Current recorded boundaries:
 DEFAULT_GET = OFF
 REAL_POSTGRESQL_COMPOSITION_PROOF = PASS_FOR_TESTED_ISOLATED_PATHS
 REAL_POSTGRESQL_AUTH_PROOF = PASS_FOR_TESTED_ISOLATED_PATHS
-BROWSER_AUTH_INTEGRATION = NOT_ESTABLISHED
+BROWSER_AUTH_INTEGRATION = OWNER_REPORTED_PASS_FOR_BOUNDED_STAGE8_E2E
+STAGE8_E2E_ACCEPTANCE = OWNER_REPORTED_PASS
 PRODUCTION_GET_ENABLEMENT = NOT_GRANTED
 PRODUCTION_DEPLOYMENT = NOT_GRANTED
 CLINICAL_AUTHORITY = NOT_GRANTED
