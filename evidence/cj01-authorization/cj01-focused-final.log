@@ -1,0 +1,38 @@
+✔ fake-store contract: wrong password, unknown label and disabled Actor deny with the same generic failure (4.930086ms)
+✔ fake-store contract: missing, malformed and forged session identifiers fail before dispatch (1.277123ms)
+✔ fake-store contract: active identity comes from persisted Actor, not a login label or supplied role (2.962421ms)
+✔ fake-store contract: deactivation blocks existing sessions and new login, preserving Actor identity (1.405323ms)
+✔ fake-store contract: Nurse deactivation also removes current session authority (1.0053ms)
+✔ fake-store contract: idle and absolute expiry are enforced; activity cannot extend absolute time (7.906528ms)
+✔ fake-store contract: logout requires current CSRF and makes the old identifier unusable (1.319736ms)
+✔ fake-store contract: successful reauthentication rotates; failed login leaves the valid session intact (1.223423ms)
+✔ fake-store contract: a prior session belonging to another Actor cannot be adopted (0.779766ms)
+✔ fake-store contract: credential version change and disabling credentials invalidate existing sessions (1.419824ms)
+✔ fake-store contract: Nurse FULL cannot access patient routes or unknown clinical operations (1.53203ms)
+✔ fake-store contract: FULL and LIMITED remain within the four contracted capabilities and current mode (1.40406ms)
+✔ fake-store contract: authorization uses current persisted role after a session has been issued (0.482365ms)
+✔ fake-store contract: concurrent successful logins never retain more than three live sessions (19.971404ms)
+✔ fake-store contract: concurrent logout and protected work are serialized; revoked sessions cannot dispatch later (0.918842ms)
+✔ fake-store contract: conflicting deactivation and protected work commit in order, never after committed deactivation (0.68177ms)
+✔ fake-store contract: transactional dispatch failure rolls back and returns a generic unavailable boundary (1.321288ms)
+✔ fake-store contract: attempt reservation bounds parallel wrong-password work and resets only after expiry (0.575543ms)
+✔ fake-store contract: missing lifecycle, unknown roles and missing Actor fail closed (0.332153ms)
+✔ credential verification race rechecks lifecycle before issuing a session (0.655672ms)
+✔ outages fail closed without exposing store diagnostics (0.180768ms)
+✔ credential replacement during verification cannot issue a stale-version session (0.292494ms)
+✔ missing policy and removed delegation cannot grant Nurse participation (0.579839ms)
+✔ source budget limits distinct login labels and capacity remains bounded (20.550137ms)
+✔ Doctor VISIT_START requires an authorized clinic mode (2.05123ms)
+✔ FULL: explicit VISIT_START required, CASE_CREATE still forbidden (0.418931ms)
+✔ LIMITED: explicit VISIT_START required, CASE_CREATE still forbidden (0.298553ms)
+✔ invalid, removed, mismatched or inactive delegation cannot authorize Visit recording (0.434023ms)
+✔ legacy FULL retains its four original permissions (0.279704ms)
+✔ authenticated transaction rechecks explicit grant and session/CSRF on every call (memory store) (8.442112ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 193.284054

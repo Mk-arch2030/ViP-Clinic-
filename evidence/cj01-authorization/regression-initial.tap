@@ -1,0 +1,2095 @@
+TAP version 13
+# CLINIC_DAY_PERSISTENCE_TEST = PASS
+# FAIL = 0
+# Subtest: CLINIC DAY TEST-01 — Open/Create persists with id, workingDate, OPEN, WORKING, counter=0
+ok 1 - CLINIC DAY TEST-01 — Open/Create persists with id, workingDate, OPEN, WORKING, counter=0
+  ---
+  duration_ms: 1.289121
+  type: 'test'
+  ...
+# Subtest: CLINIC DAY TEST-02 — Retrieve Current Day queries open working day
+ok 2 - CLINIC DAY TEST-02 — Retrieve Current Day queries open working day
+  ---
+  duration_ms: 0.287195
+  type: 'test'
+  ...
+# Subtest: CLINIC DAY TEST-03 — Counter increment preserves atomic counter update
+ok 3 - CLINIC DAY TEST-03 — Counter increment preserves atomic counter update
+  ---
+  duration_ms: 0.365672
+  type: 'test'
+  ...
+# Subtest: CLINIC DAY TEST-04 — Doctor Closure transitions OPEN->CLOSED, WORKING->CONCLUDED with closedBy=Doctor
+ok 4 - CLINIC DAY TEST-04 — Doctor Closure transitions OPEN->CLOSED, WORKING->CONCLUDED with closedBy=Doctor
+  ---
+  duration_ms: 0.401445
+  type: 'test'
+  ...
+# Subtest: CLINIC DAY TEST-05 — Nurse cannot open or close Clinic Day (Service authority guard)
+ok 5 - CLINIC DAY TEST-05 — Nurse cannot open or close Clinic Day (Service authority guard)
+  ---
+  duration_ms: 0.801388
+  type: 'test'
+  ...
+# Subtest: CLINIC DAY TEST-06 — Duplicate working date is rejected by database constraint
+ok 6 - CLINIC DAY TEST-06 — Duplicate working date is rejected by database constraint
+  ---
+  duration_ms: 0.212235
+  type: 'test'
+  ...
+# Subtest: CLINIC DAY TEST-07 — Transaction rollback upon persistence failure leaves 0 persisted rows
+ok 7 - CLINIC DAY TEST-07 — Transaction rollback upon persistence failure leaves 0 persisted rows
+  ---
+  duration_ms: 1.344193
+  type: 'test'
+  ...
+# GENERATE_CLINIC_PATIENT_NUMBER_INDEPENDENT_TEST = PASS
+# FAIL = 0
+# Subtest: GENERATE CPN establishes a Clinic Patient Number during first registration
+ok 8 - GENERATE CPN establishes a Clinic Patient Number during first registration
+  ---
+  duration_ms: 2.675505
+  type: 'test'
+  ...
+# Subtest: GENERATE CPN allocation unit produces distinct clinic patient references
+ok 9 - GENERATE CPN allocation unit produces distinct clinic patient references
+  ---
+  duration_ms: 0.535053
+  type: 'test'
+  ...
+# ===== CONTRACT-09 AGE BEHAVIORAL TESTS CREATED =====
+# TEST_COUNT=13
+# PRODUCTION_IMPLEMENTATION_MODIFIED=NO
+# FAIL=0
+# Subtest: CONTRACT-09 TEST-01 — Exact Birthday
+ok 10 - CONTRACT-09 TEST-01 — Exact Birthday
+  ---
+  duration_ms: 5.770693
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-02 — Before Birthday
+ok 11 - CONTRACT-09 TEST-02 — Before Birthday
+  ---
+  duration_ms: 0.478219
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-03 — After Birthday
+ok 12 - CONTRACT-09 TEST-03 — After Birthday
+  ---
+  duration_ms: 0.240657
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-04 — Month Boundary
+ok 13 - CONTRACT-09 TEST-04 — Month Boundary
+  ---
+  duration_ms: 0.205084
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-05 — Day Boundary
+ok 14 - CONTRACT-09 TEST-05 — Day Boundary
+  ---
+  duration_ms: 0.238734
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-06 — Leap-Year / February Boundary
+ok 15 - CONTRACT-09 TEST-06 — Leap-Year / February Boundary
+  ---
+  duration_ms: 2.028266
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-07 — Infant / Early Age
+ok 16 - CONTRACT-09 TEST-07 — Infant / Early Age
+  ---
+  duration_ms: 0.228869
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-08 — Child Age
+ok 17 - CONTRACT-09 TEST-08 — Child Age
+  ---
+  duration_ms: 0.243862
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-09 — Adult Age
+ok 18 - CONTRACT-09 TEST-09 — Adult Age
+  ---
+  duration_ms: 0.270541
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-10 — Fixed Calculation Date
+ok 19 - CONTRACT-09 TEST-10 — Fixed Calculation Date
+  ---
+  duration_ms: 0.422837
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-11 — Submitted Age Must Not Become Authority
+ok 20 - CONTRACT-09 TEST-11 — Submitted Age Must Not Become Authority
+  ---
+  duration_ms: 0.333153
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-12 — No Age Persistence Authority
+ok 21 - CONTRACT-09 TEST-12 — No Age Persistence Authority
+  ---
+  duration_ms: 4.125534
+  type: 'test'
+  ...
+# Subtest: CONTRACT-09 TEST-13 — Same Inputs, Same Result
+ok 22 - CONTRACT-09 TEST-13 — Same Inputs, Same Result
+  ---
+  duration_ms: 0.231654
+  type: 'test'
+  ...
+# REGISTER_NEW_PATIENT_TRANSACTION_TEST = PASS
+# FAIL = 0
+# Subtest: REGISTER NEW PATIENT performs bounded transactional registration
+ok 23 - REGISTER NEW PATIENT performs bounded transactional registration
+  ---
+  duration_ms: 3.313451
+  type: 'test'
+  ...
+# Subtest: REGISTER NEW PATIENT rolls back when persistence fails
+ok 24 - REGISTER NEW PATIENT rolls back when persistence fails
+  ---
+  duration_ms: 0.952041
+  type: 'test'
+  ...
+# RETRIEVE_EXISTING_PATIENT_SERVICE_TEST = PASS
+# FAIL = 0
+# Subtest: Retrieve Existing Patient delegates technical Patient identity retrieval to the authorized repository
+ok 25 - Retrieve Existing Patient delegates technical Patient identity retrieval to the authorized repository
+  ---
+  duration_ms: 2.608887
+  type: 'test'
+  ...
+# Subtest: Retrieve Existing Patient preserves a missing Patient result from the repository
+ok 26 - Retrieve Existing Patient preserves a missing Patient result from the repository
+  ---
+  duration_ms: 0.321757
+  type: 'test'
+  ...
+# RETRIEVE_EXISTING_PATIENT_CONTROLLER_TEST = PASS
+# FAIL = 0
+# Subtest: Retrieve Existing Patient controller returns the retrieved Patient
+ok 27 - Retrieve Existing Patient controller returns the retrieved Patient
+  ---
+  duration_ms: 2.16586
+  type: 'test'
+  ...
+# Subtest: Retrieve Existing Patient controller returns 404 when Patient does not exist
+ok 28 - Retrieve Existing Patient controller returns 404 when Patient does not exist
+  ---
+  duration_ms: 1.177335
+  type: 'test'
+  ...
+# Subtest: expired session blocks valid-password login until bootstrap clears its HttpOnly cookie
+ok 29 - expired session blocks valid-password login until bootstrap clears its HttpOnly cookie
+  ---
+  duration_ms: 207.450371
+  type: 'test'
+  ...
+# Subtest: cookie recovery does not clear a valid session or failed-password login; expiry logout can clear invalid cookie
+ok 30 - cookie recovery does not clear a valid session or failed-password login; expiry logout can clear invalid cookie
+  ---
+  duration_ms: 14.64791
+  type: 'test'
+  ...
+# Subtest: original build accepts reviewed bytes and rejects modified JS, missing index and unexpected assets
+ok 31 - original build accepts reviewed bytes and rejects modified JS, missing index and unexpected assets
+  ---
+  duration_ms: 10.017266
+  type: 'test'
+  ...
+# Subtest: original build rejects symlinked assets
+ok 32 - original build rejects symlinked assets
+  ---
+  duration_ms: 1.433084
+  type: 'test'
+  ...
+# Subtest: wrong isolated database identity fails closed and rolls back read-only transaction
+ok 33 - wrong isolated database identity fails closed and rolls back read-only transaction
+  ---
+  duration_ms: 3.793603
+  type: 'test'
+  ...
+# Subtest: unreviewed TLS leaf is rejected before any listener
+ok 34 - unreviewed TLS leaf is rejected before any listener
+  ---
+  duration_ms: 221.901755
+  type: 'test'
+  ...
+# Subtest: runtime does not silently build without explicit TLS, and listen requires opt-in token
+ok 35 - runtime does not silently build without explicit TLS, and listen requires opt-in token
+  ---
+  duration_ms: 7.964494
+  type: 'test'
+  ...
+# Subtest: unified launcher has explicit closed modes, dedicated branch and full source commit guard
+ok 36 - unified launcher has explicit closed modes, dedicated branch and full source commit guard
+  ---
+  duration_ms: 2.920148
+  type: 'test'
+  ...
+# Subtest: unified build inventory includes lazy demo assets but rejects tampering and extra files
+ok 37 - unified build inventory includes lazy demo assets but rejects tampering and extra files
+  ---
+  duration_ms: 8.525886
+  type: 'test'
+  ...
+# Subtest: automatic existing-key selection fails closed on invalid certificate without changing private files
+ok 38 - automatic existing-key selection fails closed on invalid certificate without changing private files
+  ---
+  duration_ms: 1.207159
+  type: 'test'
+  ...
+# Subtest: intake validates complete history and rejects forged identities, oversized fields and impossible dates
+ok 39 - intake validates complete history and rejects forged identities, oversized fields and impossible dates
+  ---
+  duration_ms: 4.822297
+  type: 'test'
+  ...
+# Subtest: secured intake persists UUID-owned ordered history and GET round-trips it without Clinical History
+ok 40 - secured intake persists UUID-owned ordered history and GET round-trips it without Clinical History
+  ---
+  duration_ms: 149.268851
+  type: 'test'
+  ...
+# Subtest: empty submitted history differs from legacy uncaptured history; missing patient is 404
+ok 41 - empty submitted history differs from legacy uncaptured history; missing patient is 404
+  ---
+  duration_ms: 36.506387
+  type: 'test'
+  ...
+# Subtest: history insert, readback, missing schema and outer commit failures never return success or partial persistence
+ok 42 - history insert, readback, missing schema and outer commit failures never return success or partial persistence
+  ---
+  duration_ms: 42.650782
+  type: 'test'
+  ...
+# Subtest: intake rejects missing identity, Nurse, invalid CSRF, cross-origin, and deactivated Doctor before writes
+ok 43 - intake rejects missing identity, Nurse, invalid CSRF, cross-origin, and deactivated Doctor before writes
+  ---
+  duration_ms: 25.243253
+  type: 'test'
+  ...
+# Subtest: intake route collision fails composition
+ok 44 - intake route collision fails composition
+  ---
+  duration_ms: 3.438056
+  type: 'test'
+  ...
+# Subtest: import does not create a server, open a pool, or listen
+ok 45 - import does not create a server, open a pool, or listen
+  ---
+  duration_ms: 1.075183
+  type: 'test'
+  ...
+# Subtest: registers POST /patients only, injects dependencies, and does not connect at composition
+ok 46 - registers POST /patients only, injects dependencies, and does not connect at composition
+  ---
+  duration_ms: 152.579312
+  type: 'test'
+  ...
+# Subtest: POST /patients dispatches through existing controller and service using mocks
+ok 47 - POST /patients dispatches through existing controller and service using mocks
+  ---
+  duration_ms: 45.950429
+  type: 'test'
+  ...
+# Subtest: composition-owned pool is closed with Fastify
+ok 48 - composition-owned pool is closed with Fastify
+  ---
+  duration_ms: 18.901444
+  type: 'test'
+  ...
+# Subtest: owned pool is closed if route registration fails
+ok 49 - owned pool is closed if route registration fails
+  ---
+  duration_ms: 8.613005
+  type: 'test'
+  ...
+# Subtest: explicit false preserves POST-only composition
+ok 50 - explicit false preserves POST-only composition
+  ---
+  duration_ms: 3.467249
+  type: 'test'
+  ...
+# Subtest: opt-in GET dispatches through existing retrieval and preserves POST
+ok 51 - opt-in GET dispatches through existing retrieval and preserves POST
+  ---
+  duration_ms: 6.713519
+  type: 'test'
+  ...
+# Subtest: opt-in owned pool closes once on normal close
+ok 52 - opt-in owned pool closes once on normal close
+  ---
+  duration_ms: 3.119504
+  type: 'test'
+  ...
+# Subtest: opt-in duplicate GET closes owned pool on composition failure
+ok 53 - opt-in duplicate GET closes owned pool on composition failure
+  ---
+  duration_ms: 9.05458
+  type: 'test'
+  ...
+# Subtest: runtime module import does not listen or connect
+ok 54 - runtime module import does not listen or connect
+  ---
+  duration_ms: 1.058359
+  type: 'test'
+  ...
+# Subtest: runtime composes POST only before listening
+ok 55 - runtime composes POST only before listening
+  ---
+  duration_ms: 93.736576
+  type: 'test'
+  ...
+# Subtest: runtime listens on explicit loopback and closes
+ok 56 - runtime listens on explicit loopback and closes
+  ---
+  duration_ms: 37.094298
+  type: 'test'
+  ...
+# Subtest: runtime closes owned pool when listen fails
+ok 57 - runtime closes owned pool when listen fails
+  ---
+  duration_ms: 7.695916
+  type: 'test'
+  ...
+# Subtest: runtime forwards explicit GET opt-in without listening
+ok 58 - runtime forwards explicit GET opt-in without listening
+  ---
+  duration_ms: 7.62437
+  type: 'test'
+  ...
+# Subtest: CPN supports number or prefixed number; name is literal NFC substring with bounded input
+ok 59 - CPN supports number or prefixed number; name is literal NFC substring with bounded input
+  ---
+  duration_ms: 4.726385
+  type: 'test'
+  ...
+# Subtest: search SQL parameterizes literal text and bounds duplicate-name results without choosing a patient
+ok 60 - search SQL parameterizes literal text and bounds duplicate-name results without choosing a patient
+  ---
+  duration_ms: 0.523626
+  type: 'test'
+  ...
+# Subtest: CPN uses exact equality and empty search is an empty result, not UUID not-found routing
+ok 61 - CPN uses exact equality and empty search is an empty result, not UUID not-found routing
+  ---
+  duration_ms: 0.230813
+  type: 'test'
+  ...
+# Subtest: search enforces actual sessions and persisted Doctor authority before querying patient data
+ok 62 - search enforces actual sessions and persisted Doctor authority before querying patient data
+  ---
+  duration_ms: 153.609204
+  type: 'test'
+  ...
+# Subtest: malformed search and cross-site requests deny; database failures expose no diagnostic body
+ok 63 - malformed search and cross-site requests deny; database failures expose no diagnostic body
+  ---
+  duration_ms: 12.966177
+  type: 'test'
+  ...
+# Subtest: import exposes guards without loading a database or HTTP driver
+ok 64 - import exposes guards without loading a database or HTTP driver
+  ---
+  duration_ms: 1.334718
+  type: 'test'
+  ...
+# Subtest: explicit execution token and full expected HEAD are required
+ok 65 - explicit execution token and full expected HEAD are required
+  ---
+  duration_ms: 3.330366
+  type: 'test'
+  ...
+# Subtest: unexpected invocation arguments are rejected
+ok 66 - unexpected invocation arguments are rejected
+  ---
+  duration_ms: 0.457197
+  type: 'test'
+  ...
+# Subtest: existing retrieval SELECT permits only the two synthetic identities
+ok 67 - existing retrieval SELECT permits only the two synthetic identities
+  ---
+  duration_ms: 0.946963
+  type: 'test'
+  ...
+# Subtest: SQL mutation, sequence allocation, multi-statements and other SELECTs are rejected
+ok 68 - SQL mutation, sequence allocation, multi-statements and other SELECTs are rejected
+  ---
+  duration_ms: 1.168401
+  type: 'test'
+  ...
+# Subtest: matching ready isolated postmaster metadata is accepted
+ok 69 - matching ready isolated postmaster metadata is accepted
+  ---
+  duration_ms: 0.233586
+  type: 'test'
+  ...
+# Subtest: historical path, wrong port/socket and non-ready postmaster are rejected
+ok 70 - historical path, wrong port/socket and non-ready postmaster are rejected
+  ---
+  duration_ms: 0.872693
+  type: 'test'
+  ...
+# Subtest: matching isolated PostgreSQL 18 identity is accepted
+ok 71 - matching isolated PostgreSQL 18 identity is accepted
+  ---
+  duration_ms: 0.304481
+  type: 'test'
+  ...
+# Subtest: database, data directory, socket, port and cluster identity mismatch are rejected
+ok 72 - database, data directory, socket, port and cluster identity mismatch are rejected
+  ---
+  duration_ms: 0.873995
+  type: 'test'
+  ...
+# Subtest: TCP exposure, writable session, wrong search path or server version are rejected
+ok 73 - TCP exposure, writable session, wrong search path or server version are rejected
+  ---
+  duration_ms: 5.505029
+  type: 'test'
+  ...
+# Subtest: exact synthetic fixture and untouched sequence baseline are accepted
+ok 74 - exact synthetic fixture and untouched sequence baseline are accepted
+  ---
+  duration_ms: 0.436046
+  type: 'test'
+  ...
+# Subtest: extra patients, altered identity/CPN/DOB or consumed sequence reject the baseline
+ok 75 - extra patients, altered identity/CPN/DOB or consumed sequence reject the baseline
+  ---
+  duration_ms: 1.669004
+  type: 'test'
+  ...
+# Subtest: GET found returns 200
+ok 76 - GET found returns 200
+  ---
+  duration_ms: 171.429404
+  type: 'test'
+  ...
+# Subtest: GET missing returns controller 404
+ok 77 - GET missing returns controller 404
+  ---
+  duration_ms: 11.849523
+  type: 'test'
+  ...
+# Subtest: POST route absent
+ok 78 - POST route absent
+  ---
+  duration_ms: 13.230518
+  type: 'test'
+  ...
+# RETRIEVE_EXISTING_PATIENT_ROUTE_TEST = PASS
+# FAIL = 0
+# Subtest: Patient routes bind GET /patients/:patientId to Retrieve Existing Patient controller
+ok 79 - Patient routes bind GET /patients/:patientId to Retrieve Existing Patient controller
+  ---
+  duration_ms: 1.144216
+  type: 'test'
+  ...
+# Subtest: invalid configuration and collisions reject rather than expose partial routes
+ok 80 - invalid configuration and collisions reject rather than expose partial routes
+  ---
+  duration_ms: 83.371334
+  type: 'test'
+  ...
+# Subtest: missing identity, forged browser role, duplicate cookies and unknown sessions cannot dispatch
+ok 81 - missing identity, forged browser role, duplicate cookies and unknown sessions cannot dispatch
+  ---
+  duration_ms: 26.993758
+  type: 'test'
+  ...
+# Subtest: login rejects missing/untrusted origins, cross-site metadata and role/identity injection
+ok 82 - login rejects missing/untrusted origins, cross-site metadata and role/identity injection
+  ---
+  duration_ms: 37.682534
+  type: 'test'
+  ...
+# Subtest: success returns only protected cookie; identity is server-resolved and auth responses are no-store
+ok 83 - success returns only protected cookie; identity is server-resolved and auth responses are no-store
+  ---
+  duration_ms: 33.883228
+  type: 'test'
+  ...
+# Subtest: authenticated Doctor retrieval returns 200/404 and deactivation denies immediately
+ok 84 - authenticated Doctor retrieval returns 200/404 and deactivation denies immediately
+  ---
+  duration_ms: 8.650035
+  type: 'test'
+  ...
+# Subtest: CSRF, strict basic payload and Nurse denial precede patient writes
+ok 85 - CSRF, strict basic payload and Nurse denial precede patient writes
+  ---
+  duration_ms: 12.784338
+  type: 'test'
+  ...
+# Subtest: logout requires CSRF and clears the same secure cookie; old cookie then fails
+ok 86 - logout requires CSRF and clears the same secure cookie; old cookie then fails
+  ---
+  duration_ms: 7.004232
+  type: 'test'
+  ...
+# Subtest: infrastructure errors are generic and unauthenticated errors expose no diagnostics
+ok 87 - infrastructure errors are generic and unauthenticated errors expose no diagnostics
+  ---
+  duration_ms: 6.530629
+  type: 'test'
+  ...
+# Subtest: device adapter has reviewed original clinic manifest, not integration harness
+ok 88 - device adapter has reviewed original clinic manifest, not integration harness
+  ---
+  duration_ms: 2.617139
+  type: 'test'
+  ...
+# Subtest: device paths are isolated and do not point at historical cluster
+ok 89 - device paths are isolated and do not point at historical cluster
+  ---
+  duration_ms: 0.406042
+  type: 'test'
+  ...
+# Subtest: device adapter refuses missing owner token before any TLS, database or listener
+ok 90 - device adapter refuses missing owner token before any TLS, database or listener
+  ---
+  duration_ms: 3.395933
+  type: 'test'
+  ...
+# Subtest: device adapter rejects implicit listen mode before touching device inputs
+ok 91 - device adapter rejects implicit listen mode before touching device inputs
+  ---
+  duration_ms: 2.087735
+  type: 'test'
+  ...
+# Subtest: preflight refuses missing and noncanonical evidence paths without side effects
+ok 92 - preflight refuses missing and noncanonical evidence paths without side effects
+  ---
+  duration_ms: 11.459814
+  type: 'test'
+  ...
+# Subtest: outer doctor gate uses reviewed Vite build manifest
+ok 93 - outer doctor gate uses reviewed Vite build manifest
+  ---
+  duration_ms: 2.021887
+  type: 'test'
+  ...
+# Subtest: outer gate build path is independent from original build
+ok 94 - outer gate build path is independent from original build
+  ---
+  duration_ms: 0.420303
+  type: 'test'
+  ...
+# Subtest: wrong owner token fails before filesystem and database access
+ok 95 - wrong owner token fails before filesystem and database access
+  ---
+  duration_ms: 3.570411
+  type: 'test'
+  ...
+# Subtest: missing owner token fails closed
+ok 96 - missing owner token fails closed
+  ---
+  duration_ms: 0.596824
+  type: 'test'
+  ...
+# Subtest: implicit listen is forbidden and explicit boolean is required
+ok 97 - implicit listen is forbidden and explicit boolean is required
+  ---
+  duration_ms: 0.497758
+  type: 'test'
+  ...
+# Subtest: asset verifier rejects modified or unexpected build files
+ok 98 - asset verifier rejects modified or unexpected build files
+  ---
+  duration_ms: 5.470918
+  type: 'test'
+  ...
+# Subtest: actual secured POST response survives the actual Web adapter and UUID GET with one allocation/INSERT
+ok 99 - actual secured POST response survives the actual Web adapter and UUID GET with one allocation/INSERT
+  ---
+  duration_ms: 152.070253
+  type: 'test'
+  ...
+# Subtest: valid Nurse and wrong CSRF deny before allocation through the real adapter
+ok 100 - valid Nurse and wrong CSRF deny before allocation through the real adapter
+  ---
+  duration_ms: 38.181449
+  type: 'test'
+  ...
+# Subtest: business insertion failure returns generic failure and rolls back savepoint without a success DTO
+ok 101 - business insertion failure returns generic failure and rolls back savepoint without a success DTO
+  ---
+  duration_ms: 9.927233
+  type: 'test'
+  ...
+# Subtest: outer transaction failure after INSERT/savepoint success cannot return HTTP 201
+ok 102 - outer transaction failure after INSERT/savepoint success cannot return HTTP 201
+  ---
+  duration_ms: 11.876462
+  type: 'test'
+  ...
+# Subtest: import exposes builders without loading pg/Fastify or opening listener/pool
+ok 103 - import exposes builders without loading pg/Fastify or opening listener/pool
+  ---
+  duration_ms: 123.896105
+  type: 'test'
+  ...
+# Subtest: start rejects missing execution token/full HEAD before driver or resource creation
+ok 104 - start rejects missing execution token/full HEAD before driver or resource creation
+  ---
+  duration_ms: 6.844765
+  type: 'test'
+  ...
+# Subtest: certificate/key, IP SAN, validity and HTTPS origin reject rather than downgrade
+ok 105 - certificate/key, IP SAN, validity and HTTPS origin reject rather than downgrade
+  ---
+  duration_ms: 30.9289
+  type: 'test'
+  ...
+# Subtest: asset manifest rejects traversal, source/config exposure, symlinks and hash mismatch
+ok 106 - asset manifest rejects traversal, source/config exposure, symlinks and hash mismatch
+  ---
+  duration_ms: 3.411126
+  type: 'test'
+  ...
+# Subtest: build does not listen/connect; owned pool closes once, caller pool never closes
+ok 107 - build does not listen/connect; owned pool closes once, caller pool never closes
+  ---
+  duration_ms: 297.254846
+  type: 'test'
+  ...
+# Subtest: trusted TLS Node client receives no-store/CSP; incorrect Host and unknown assets fail without SPA fallback
+ok 108 - trusted TLS Node client receives no-store/CSP; incorrect Host and unknown assets fail without SPA fallback
+  ---
+  duration_ms: 94.588068
+  type: 'test'
+  ...
+# Subtest: cookie expiry recovery clears only invalid session/logout cookies, never a failed password login
+ok 109 - cookie expiry recovery clears only invalid session/logout cookies, never a failed password login
+  ---
+  duration_ms: 52.667994
+  type: 'test'
+  ...
+# Subtest: origin/CSRF/server authorization failures precede business work on the TLS boundary
+ok 110 - origin/CSRF/server authorization failures precede business work on the TLS boundary
+  ---
+  duration_ms: 15.155062
+  type: 'test'
+  ...
+# Subtest: fake-store contract: wrong password, unknown label and disabled Actor deny with the same generic failure
+ok 111 - fake-store contract: wrong password, unknown label and disabled Actor deny with the same generic failure
+  ---
+  duration_ms: 4.448603
+  type: 'test'
+  ...
+# Subtest: fake-store contract: missing, malformed and forged session identifiers fail before dispatch
+ok 112 - fake-store contract: missing, malformed and forged session identifiers fail before dispatch
+  ---
+  duration_ms: 1.205708
+  type: 'test'
+  ...
+# Subtest: fake-store contract: active identity comes from persisted Actor, not a login label or supplied role
+ok 113 - fake-store contract: active identity comes from persisted Actor, not a login label or supplied role
+  ---
+  duration_ms: 1.743565
+  type: 'test'
+  ...
+# Subtest: fake-store contract: deactivation blocks existing sessions and new login, preserving Actor identity
+ok 114 - fake-store contract: deactivation blocks existing sessions and new login, preserving Actor identity
+  ---
+  duration_ms: 2.525944
+  type: 'test'
+  ...
+# Subtest: fake-store contract: Nurse deactivation also removes current session authority
+ok 115 - fake-store contract: Nurse deactivation also removes current session authority
+  ---
+  duration_ms: 1.039671
+  type: 'test'
+  ...
+# Subtest: fake-store contract: idle and absolute expiry are enforced; activity cannot extend absolute time
+ok 116 - fake-store contract: idle and absolute expiry are enforced; activity cannot extend absolute time
+  ---
+  duration_ms: 13.227394
+  type: 'test'
+  ...
+# Subtest: fake-store contract: logout requires current CSRF and makes the old identifier unusable
+ok 117 - fake-store contract: logout requires current CSRF and makes the old identifier unusable
+  ---
+  duration_ms: 2.595587
+  type: 'test'
+  ...
+# Subtest: fake-store contract: successful reauthentication rotates; failed login leaves the valid session intact
+ok 118 - fake-store contract: successful reauthentication rotates; failed login leaves the valid session intact
+  ---
+  duration_ms: 3.784329
+  type: 'test'
+  ...
+# Subtest: fake-store contract: a prior session belonging to another Actor cannot be adopted
+ok 119 - fake-store contract: a prior session belonging to another Actor cannot be adopted
+  ---
+  duration_ms: 0.912162
+  type: 'test'
+  ...
+# Subtest: fake-store contract: credential version change and disabling credentials invalidate existing sessions
+ok 120 - fake-store contract: credential version change and disabling credentials invalidate existing sessions
+  ---
+  duration_ms: 1.767569
+  type: 'test'
+  ...
+# Subtest: fake-store contract: Nurse FULL cannot access patient routes or unknown clinical operations
+ok 121 - fake-store contract: Nurse FULL cannot access patient routes or unknown clinical operations
+  ---
+  duration_ms: 1.286006
+  type: 'test'
+  ...
+# Subtest: fake-store contract: FULL and LIMITED remain within the four contracted capabilities and current mode
+ok 122 - fake-store contract: FULL and LIMITED remain within the four contracted capabilities and current mode
+  ---
+  duration_ms: 1.634883
+  type: 'test'
+  ...
+# Subtest: fake-store contract: authorization uses current persisted role after a session has been issued
+ok 123 - fake-store contract: authorization uses current persisted role after a session has been issued
+  ---
+  duration_ms: 0.558017
+  type: 'test'
+  ...
+# Subtest: fake-store contract: concurrent successful logins never retain more than three live sessions
+ok 124 - fake-store contract: concurrent successful logins never retain more than three live sessions
+  ---
+  duration_ms: 10.577839
+  type: 'test'
+  ...
+# Subtest: fake-store contract: concurrent logout and protected work are serialized; revoked sessions cannot dispatch later
+ok 125 - fake-store contract: concurrent logout and protected work are serialized; revoked sessions cannot dispatch later
+  ---
+  duration_ms: 1.212667
+  type: 'test'
+  ...
+# Subtest: fake-store contract: conflicting deactivation and protected work commit in order, never after committed deactivation
+ok 126 - fake-store contract: conflicting deactivation and protected work commit in order, never after committed deactivation
+  ---
+  duration_ms: 0.711103
+  type: 'test'
+  ...
+# Subtest: fake-store contract: transactional dispatch failure rolls back and returns a generic unavailable boundary
+ok 127 - fake-store contract: transactional dispatch failure rolls back and returns a generic unavailable boundary
+  ---
+  duration_ms: 6.322961
+  type: 'test'
+  ...
+# Subtest: fake-store contract: attempt reservation bounds parallel wrong-password work and resets only after expiry
+ok 128 - fake-store contract: attempt reservation bounds parallel wrong-password work and resets only after expiry
+  ---
+  duration_ms: 1.103565
+  type: 'test'
+  ...
+# Subtest: fake-store contract: missing lifecycle, unknown roles and missing Actor fail closed
+ok 129 - fake-store contract: missing lifecycle, unknown roles and missing Actor fail closed
+  ---
+  duration_ms: 0.754779
+  type: 'test'
+  ...
+# Subtest: credential verification race rechecks lifecycle before issuing a session
+ok 130 - credential verification race rechecks lifecycle before issuing a session
+  ---
+  duration_ms: 2.42863
+  type: 'test'
+  ...
+# Subtest: outages fail closed without exposing store diagnostics
+ok 131 - outages fail closed without exposing store diagnostics
+  ---
+  duration_ms: 0.309289
+  type: 'test'
+  ...
+# Subtest: credential replacement during verification cannot issue a stale-version session
+ok 132 - credential replacement during verification cannot issue a stale-version session
+  ---
+  duration_ms: 0.563536
+  type: 'test'
+  ...
+# Subtest: missing policy and removed delegation cannot grant Nurse participation
+ok 133 - missing policy and removed delegation cannot grant Nurse participation
+  ---
+  duration_ms: 0.967354
+  type: 'test'
+  ...
+# Subtest: source budget limits distinct login labels and capacity remains bounded
+ok 134 - source budget limits distinct login labels and capacity remains bounded
+  ---
+  duration_ms: 49.755472
+  type: 'test'
+  ...
+# Subtest: password bounds and Unicode are checked before expensive work
+ok 135 - password bounds and Unicode are checked before expensive work
+  ---
+  duration_ms: 2.567986
+  type: 'test'
+  ...
+# Subtest: unknown formats, parameters and noncanonical encodings reject before derivation
+ok 136 - unknown formats, parameters and noncanonical encodings reject before derivation
+  ---
+  duration_ms: 0.441585
+  type: 'test'
+  ...
+# Subtest: queue serializes work and rejects overflow without running rejected jobs
+ok 137 - queue serializes work and rejects overflow without running rejected jobs
+  ---
+  duration_ms: 7.013565
+  type: 'test'
+  ...
+# Subtest: queue timeout removes a waiting job; failed derivation does not poison the queue
+ok 138 - queue timeout removes a waiting job; failed derivation does not poison the queue
+  ---
+  duration_ms: 12.567888
+  type: 'test'
+  ...
+# Subtest: real approved scrypt cost rejects a wrong password and preserves NFC and whitespace semantics
+ok 139 - real approved scrypt cost rejects a wrong password and preserves NFC and whitespace semantics
+  ---
+  duration_ms: 4047.698527
+  type: 'test'
+  ...
+# Subtest: explicit mode, matching token and full HEAD are required
+ok 140 - explicit mode, matching token and full HEAD are required
+  ---
+  duration_ms: 3.40775
+  type: 'test'
+  ...
+# Subtest: empty resume rejects existing auth, any user object, unexpected extension or missing owner/privilege
+ok 141 - empty resume rejects existing auth, any user object, unexpected extension or missing owner/privilege
+  ---
+  duration_ms: 1.100451
+  type: 'test'
+  ...
+# Subtest: synthetic initialization guards before DDL and targets public only for the unchanged base schema
+ok 142 - synthetic initialization guards before DDL and targets public only for the unchanged base schema
+  ---
+  duration_ms: 13.598875
+  type: 'test'
+  ...
+# Subtest: nonempty state rolls back before DDL; DDL or fixture failure rolls back without committing
+ok 143 - nonempty state rolls back before DDL; DDL or fixture failure rolls back without committing
+  ---
+  duration_ms: 1.959665
+  type: 'test'
+  ...
+# Subtest: cluster paths are fixed to the prior isolated cluster and a new database
+ok 144 - cluster paths are fixed to the prior isolated cluster and a new database
+  ---
+  duration_ms: 0.215429
+  type: 'test'
+  ...
+# Subtest: ready metadata is accepted; historical/wrong directory, TCP, socket and port reject
+ok 145 - ready metadata is accepted; historical/wrong directory, TCP, socket and port reject
+  ---
+  duration_ms: 1.109755
+  type: 'test'
+  ...
+# Subtest: server identity requires the exact isolated Unix connection and PostgreSQL 18
+ok 146 - server identity requires the exact isolated Unix connection and PostgreSQL 18
+  ---
+  duration_ms: 1.552231
+  type: 'test'
+  ...
+# Subtest: proof import loads no database or HTTP driver and performs no execution
+ok 147 - proof import loads no database or HTTP driver and performs no execution
+  ---
+  duration_ms: 149.443169
+  type: 'test'
+  ...
+# Subtest: the runner-configured search path passes the guard with or without separator spaces
+ok 148 - the runner-configured search path passes the guard with or without separator spaces
+  ---
+  duration_ms: 4.78435
+  type: 'test'
+  ...
+# Subtest: normalizing separator spaces does not permit extra schemas, reordered entries or malformed paths
+ok 149 - normalizing separator spaces does not permit extra schemas, reordered entries or malformed paths
+  ---
+  duration_ms: 1.354588
+  type: 'test'
+  ...
+# Subtest: Doctor VISIT_START requires an authorized clinic mode
+ok 150 - Doctor VISIT_START requires an authorized clinic mode
+  ---
+  duration_ms: 1.614373
+  type: 'test'
+  ...
+# Subtest: FULL: explicit VISIT_START required, CASE_CREATE still forbidden
+ok 151 - FULL: explicit VISIT_START required, CASE_CREATE still forbidden
+  ---
+  duration_ms: 0.397619
+  type: 'test'
+  ...
+# Subtest: LIMITED: explicit VISIT_START required, CASE_CREATE still forbidden
+ok 152 - LIMITED: explicit VISIT_START required, CASE_CREATE still forbidden
+  ---
+  duration_ms: 0.146357
+  type: 'test'
+  ...
+# Subtest: invalid, removed, mismatched or inactive delegation cannot authorize Visit recording
+ok 153 - invalid, removed, mismatched or inactive delegation cannot authorize Visit recording
+  ---
+  duration_ms: 0.33684
+  type: 'test'
+  ...
+# Subtest: legacy FULL retains its four original permissions
+ok 154 - legacy FULL retains its four original permissions
+  ---
+  duration_ms: 0.184102
+  type: 'test'
+  ...
+# Subtest: authenticated transaction rechecks explicit grant and session/CSRF on every call (memory store)
+not ok 155 - authenticated transaction rechecks explicit grant and session/CSRF on every call (memory store)
+  ---
+  duration_ms: 27.971821
+  type: 'test'
+  location: '/workspace/scratch/85bc0af0f9e1/cj01-visit-history/backend/auth/visit-start-authorization.test.cjs:35:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (/workspace/scratch/85bc0af0f9e1/cj01-visit-history/backend/auth/visit-start-authorization.test.cjs:47:2)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): atomic create, identical replay and receipt recovery preserve one result
+ok 156 - MEMORY MODEL (not PostgreSQL): atomic create, identical replay and receipt recovery preserve one result
+  ---
+  duration_ms: 12.966477
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): changed intent conflicts and receipt lookup is actor-bound
+ok 157 - MEMORY MODEL (not PostgreSQL): changed intent conflicts and receipt lookup is actor-bound
+  ---
+  duration_ms: 7.090739
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): missing patient denies without partial Case or receipt
+ok 158 - MEMORY MODEL (not PostgreSQL): missing patient denies without partial Case or receipt
+  ---
+  duration_ms: 1.117196
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): Nurse, missing session and wrong CSRF cannot create or recover
+ok 159 - MEMORY MODEL (not PostgreSQL): Nurse, missing session and wrong CSRF cannot create or recover
+  ---
+  duration_ms: 3.51553
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): revoked and expired sessions cannot replay committed receipts
+ok 160 - MEMORY MODEL (not PostgreSQL): revoked and expired sessions cannot replay committed receipts
+  ---
+  duration_ms: 4.3043
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): strict payload rejects authority injection and malformed intent
+ok 161 - MEMORY MODEL (not PostgreSQL): strict payload rejects authority injection and malformed intent
+  ---
+  duration_ms: 4.024415
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): concurrent identical and conflicting requests preserve exactly one effect
+ok 162 - MEMORY MODEL (not PostgreSQL): concurrent identical and conflicting requests preserve exactly one effect
+  ---
+  duration_ms: 3.659423
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): receipt insertion failure rolls back Case; same intent can then succeed
+ok 163 - MEMORY MODEL (not PostgreSQL): receipt insertion failure rolls back Case; same intent can then succeed
+  ---
+  duration_ms: 1.366506
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): lost acknowledgement after durable COMMIT recovers original result without retry duplication
+ok 164 - MEMORY MODEL (not PostgreSQL): lost acknowledgement after durable COMMIT recovers original result without retry duplication
+  ---
+  duration_ms: 1.497329
+  type: 'test'
+  ...
+# Subtest: MEMORY MODEL (not PostgreSQL): unknown receipt does not create a resource or certify rollback
+ok 165 - MEMORY MODEL (not PostgreSQL): unknown receipt does not create a resource or certify rollback
+  ---
+  duration_ms: 0.862077
+  type: 'test'
+  ...
+# Subtest: API opt-in, origin, media type, session, CSRF and bounded results
+ok 166 - API opt-in, origin, media type, session, CSRF and bounded results
+  ---
+  duration_ms: 172.187398
+  type: 'test'
+  ...
+# Subtest: shared API proof: denied create/recovery, replay, conflict and reauthentication
+ok 167 - shared API proof: denied create/recovery, replay, conflict and reauthentication
+  ---
+  duration_ms: 19.013801
+  type: 'test'
+  ...
+# Subtest: PostgreSQL proof runner refuses absent or invalid explicit authorization before database access
+ok 168 - PostgreSQL proof runner refuses absent or invalid explicit authorization before database access
+  ---
+  duration_ms: 4.171883
+  type: 'test'
+  ...
+# Subtest: HTTP injection with actual extension inputs (fake SQL client, not PostgreSQL proof): same-name patients retain distinct server identity and all supported history
+ok 169 - HTTP injection with actual extension inputs (fake SQL client, not PostgreSQL proof): same-name patients retain distinct server identity and all supported history
+  ---
+  duration_ms: 173.361328
+  type: 'test'
+  ...
+# Subtest: HTTP injection with extension inputs: missing identity, CSRF, Nurse, expiry and logout deny without fixture creation
+ok 170 - HTTP injection with extension inputs: missing identity, CSRF, Nurse, expiry and logout deny without fixture creation
+  ---
+  duration_ms: 39.364652
+  type: 'test'
+  ...
+# Subtest: actual extension registration payload with lost POST reply uses existing mutation latch and never repeats
+ok 171 - actual extension registration payload with lost POST reply uses existing mutation latch and never repeats
+  ---
+  duration_ms: 2.493335
+  type: 'test'
+  ...
+# Subtest: Golden baseline pinned SHA and both historical literal sources match exactly
+ok 172 - Golden baseline pinned SHA and both historical literal sources match exactly
+  ---
+  duration_ms: 27.919318
+  type: 'test'
+  ...
+# Subtest: baseline inventory and exact known historical day gap are preserved without normalization
+ok 173 - baseline inventory and exact known historical day gap are preserved without normalization
+  ---
+  duration_ms: 1.015064
+  type: 'test'
+  ...
+# Subtest: extension is disjoint, explicitly synthetic and fully specified with no future-stage passing claims
+ok 174 - extension is disjoint, explicitly synthetic and fully specified with no future-stage passing claims
+  ---
+  duration_ms: 1.116185
+  type: 'test'
+  ...
+# Subtest: fixture projection is deterministic, retains source identities and excludes unsupported clinical rows
+ok 175 - fixture projection is deterministic, retains source identities and excludes unsupported clinical rows
+  ---
+  duration_ms: 51.613777
+  type: 'test'
+  ...
+# Subtest: duplicates, cross-patient references, unknown day gaps and corrupted authorization chronology fail
+ok 176 - duplicates, cross-patient references, unknown day gaps and corrupted authorization chronology fail
+  ---
+  duration_ms: 6.707741
+  type: 'test'
+  ...
+# Subtest: generated/unknown source expressions are never silently captured as historical seed
+ok 177 - generated/unknown source expressions are never silently captured as historical seed
+  ---
+  duration_ms: 22.903926
+  type: 'test'
+  ...
+# Subtest: restore preparation manifest matches pinned datasets, supported row checksum and historical ordering without claiming execution
+ok 178 - restore preparation manifest matches pinned datasets, supported row checksum and historical ordering without claiming execution
+  ---
+  duration_ms: 5.345883
+  type: 'test'
+  ...
+# Subtest: missing authorization, owner DBs, production-like names, ambiguous config and ambient defaults are rejected before SQL
+ok 179 - missing authorization, owner DBs, production-like names, ambiguous config and ambient defaults are rejected before SQL
+  ---
+  duration_ms: 5.094691
+  type: 'test'
+  ...
+# Subtest: server identity, socket, owner, TCP, version and wrong system ID fail closed
+ok 180 - server identity, socket, owner, TCP, version and wrong system ID fail closed
+  ---
+  duration_ms: 0.9718
+  type: 'test'
+  ...
+# Subtest: core unit fake adapter: dry-run performs no fixture writes and requires fresh bound plan
+ok 181 - core unit fake adapter: dry-run performs no fixture writes and requires fresh bound plan
+  ---
+  duration_ms: 167.235959
+  type: 'test'
+  ...
+# Subtest: core unit fake adapter: second load is idempotent, supported fields round-trip and unrelated rows remain unchanged
+ok 182 - core unit fake adapter: second load is idempotent, supported fields round-trip and unrelated rows remain unchanged
+  ---
+  duration_ms: 124.553961
+  type: 'test'
+  ...
+# Subtest: core unit fake adapter: fixture drift and an unexpected unknown-history marker are not overwritten
+ok 183 - core unit fake adapter: fixture drift and an unexpected unknown-history marker are not overwritten
+  ---
+  duration_ms: 179.746581
+  type: 'test'
+  ...
+# Subtest: core unit fake adapter: partial insert, registry failure and preservation failure roll back rows and sequence
+ok 184 - core unit fake adapter: partial insert, registry failure and preservation failure roll back rows and sequence
+  ---
+  duration_ms: 76.436852
+  type: 'test'
+  ...
+# Subtest: core unit fake adapter: collision with unowned UUID, CPN or working date is rejected without adopting records
+ok 185 - core unit fake adapter: collision with unowned UUID, CPN or working date is rejected without adopting records
+  ---
+  duration_ms: 36.172461
+  type: 'test'
+  ...
+# Subtest: core unit fake adapter: secret-bearing driver exceptions never enter returned dry-run report
+ok 186 - core unit fake adapter: secret-bearing driver exceptions never enter returned dry-run report
+  ---
+  duration_ms: 9.701759
+  type: 'test'
+  ...
+# Subtest: schema contract accepts current structural model and rejects missing migrations, extra columns/checks/defaults/schemas
+ok 187 - schema contract accepts current structural model and rejects missing migrations, extra columns/checks/defaults/schemas
+  ---
+  duration_ms: 8.894753
+  type: 'test'
+  ...
+# Subtest: SQL adapter checks actual database identity before schema or row access
+ok 188 - SQL adapter checks actual database identity before schema or row access
+  ---
+  duration_ms: 1.069025
+  type: 'test'
+  ...
+# Subtest: SQL adapter catalog-model regression accepts PostgreSQL 18 quoted position CHECK and UNIQUE definitions
+ok 189 - SQL adapter catalog-model regression accepts PostgreSQL 18 quoted position CHECK and UNIQUE definitions
+  ---
+  duration_ms: 4.664193
+  type: 'test'
+  ...
+# Subtest: identity accepts PostgreSQL search_path whitespace without accepting different schemas or ordering
+ok 190 - identity accepts PostgreSQL search_path whitespace without accepting different schemas or ordering
+  ---
+  duration_ms: 1.25521
+  type: 'test'
+  ...
+# Subtest: SQL adapter uses parameterized values and bounded transactional sequence restart, not nontransactional setval
+ok 191 - SQL adapter uses parameterized values and bounded transactional sequence restart, not nontransactional setval
+  ---
+  duration_ms: 113.557693
+  type: 'test'
+  ...
+# Subtest: CLI wrong owner database or secret config refuses before pg driver loads and never prints input values
+ok 192 - CLI wrong owner database or secret config refuses before pg driver loads and never prints input values
+  ---
+  duration_ms: 197.788827
+  type: 'test'
+  ...
+# Subtest: SQL transaction installs bounded timeouts and cross-process lock before executing work
+ok 193 - SQL transaction installs bounded timeouts and cross-process lock before executing work
+  ---
+  duration_ms: 1.422999
+  type: 'test'
+  ...
+# Subtest: work, lock and commit failures roll back and release exactly once
+ok 194 - work, lock and commit failures roll back and release exactly once
+  ---
+  duration_ms: 1.229602
+  type: 'test'
+  ...
+# Subtest: explicit auth denial retains its generic boundary and rolls back
+ok 195 - explicit auth denial retains its generic boundary and rolls back
+  ---
+  duration_ms: 0.481854
+  type: 'test'
+  ...
+# Subtest: transaction capacity rejects before acquiring another pool client
+ok 196 - transaction capacity rejects before acquiring another pool client
+  ---
+  duration_ms: 0.409136
+  type: 'test'
+  ...
+# Subtest: zero-Visit administrative Case has OPEN lifecycle and no fabricated encounter
+ok 197 - zero-Visit administrative Case has OPEN lifecycle and no fabricated encounter
+  ---
+  duration_ms: 2.886428
+  type: 'test'
+  ...
+# Subtest: repeated cycles preserve all seals and choose latest unmatched completion
+ok 198 - repeated cycles preserve all seals and choose latest unmatched completion
+  ---
+  duration_ms: 0.833205
+  type: 'test'
+  ...
+# Subtest: persisted reopening episode Day 0: valid
+ok 199 - persisted reopening episode Day 0: valid
+  ---
+  duration_ms: 0.26299
+  type: 'test'
+  ...
+# Subtest: persisted reopening episode Day 89: valid
+ok 200 - persisted reopening episode Day 89: valid
+  ---
+  duration_ms: 0.254737
+  type: 'test'
+  ...
+# Subtest: persisted reopening episode Day 90: valid
+ok 201 - persisted reopening episode Day 90: valid
+  ---
+  duration_ms: 0.294717
+  type: 'test'
+  ...
+# Subtest: persisted reopening episode Day 91: denied
+ok 202 - persisted reopening episode Day 91: denied
+  ---
+  duration_ms: 0.59386
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: missing seal
+ok 203 - contradictory evidence fails closed: missing seal
+  ---
+  duration_ms: 0.303149
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: wrong Case
+ok 204 - contradictory evidence fails closed: wrong Case
+  ---
+  duration_ms: 0.203011
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: wrong episode
+ok 205 - contradictory evidence fails closed: wrong episode
+  ---
+  duration_ms: 0.281367
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: missing Doctor
+ok 206 - contradictory evidence fails closed: missing Doctor
+  ---
+  duration_ms: 0.360965
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: missing timestamp
+ok 207 - contradictory evidence fails closed: missing timestamp
+  ---
+  duration_ms: 0.231052
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: wrong Cairo date
+ok 208 - contradictory evidence fails closed: wrong Cairo date
+  ---
+  duration_ms: 0.1824
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: missing confirmation
+ok 209 - contradictory evidence fails closed: missing confirmation
+  ---
+  duration_ms: 0.172555
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: reused operation
+ok 210 - contradictory evidence fails closed: reused operation
+  ---
+  duration_ms: 0.673968
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: reversed chronology
+ok 211 - contradictory evidence fails closed: reversed chronology
+  ---
+  duration_ms: 0.239174
+  type: 'test'
+  ...
+# Subtest: contradictory evidence fails closed: broken version
+ok 212 - contradictory evidence fails closed: broken version
+  ---
+  duration_ms: 0.18259
+  type: 'test'
+  ...
+# Subtest: older convenient episode cannot be reused after second completion
+ok 213 - older convenient episode cannot be reused after second completion
+  ---
+  duration_ms: 0.255348
+  type: 'test'
+  ...
+# Subtest: current lifecycle must agree with intact seals
+ok 214 - current lifecycle must agree with intact seals
+  ---
+  duration_ms: 0.203511
+  type: 'test'
+  ...
+# Subtest: canonical intent ignores property order but never changed clinical meaning
+ok 215 - canonical intent ignores property order but never changed clinical meaning
+  ---
+  duration_ms: 0.79611
+  type: 'test'
+  ...
+# Subtest: reopen meaning binds ownership, lifecycle precondition and explicit confirmation
+ok 216 - reopen meaning binds ownership, lifecycle precondition and explicit confirmation
+  ---
+  duration_ms: 0.268308
+  type: 'test'
+  ...
+# Subtest: durable replay returns original outcome; receipt absence remains UNKNOWN
+ok 217 - durable replay returns original outcome; receipt absence remains UNKNOWN
+  ---
+  duration_ms: 0.399642
+  type: 'test'
+  ...
+# Subtest: read adapter binds ownership and stable chronology without opening or committing a transaction
+ok 218 - read adapter binds ownership and stable chronology without opening or committing a transaction
+  ---
+  duration_ms: 0.846164
+  type: 'test'
+  ...
+# PATIENT_REPOSITORY_UNIT_TEST = PASS
+# FAIL = 0
+# Subtest: PatientRepository creates a patient through PostgreSQL INSERT and returns the persisted row
+ok 219 - PatientRepository creates a patient through PostgreSQL INSERT and returns the persisted row
+  ---
+  duration_ms: 2.281662
+  type: 'test'
+  ...
+# Subtest: PatientRepository retrieves a patient by technical patient identity
+ok 220 - PatientRepository retrieves a patient by technical patient identity
+  ---
+  duration_ms: 1.391212
+  type: 'test'
+  ...
+# Subtest: import runs no drivers, connections or listener
+ok 221 - import runs no drivers, connections or listener
+  ---
+  duration_ms: 150.121991
+  type: 'test'
+  ...
+# Subtest: only explicit preflight/build/start tokens and full HEAD are accepted; no prepare/reset mode
+ok 222 - only explicit preflight/build/start tokens and full HEAD are accepted; no prepare/reset mode
+  ---
+  duration_ms: 3.376735
+  type: 'test'
+  ...
+# Subtest: existing auth activity is accepted only with unchanged original proof and business fixture
+ok 223 - existing auth activity is accepted only with unchanged original proof and business fixture
+  ---
+  duration_ms: 3.933459
+  type: 'test'
+  ...
+# Subtest: database adoption validates identity then read-only transaction and never writes prior proof
+ok 224 - database adoption validates identity then read-only transaction and never writes prior proof
+  ---
+  duration_ms: 1.50457
+  type: 'test'
+  ...
+# Subtest: wrong system identity blocks before SQL; changed schema/business or read error rolls back without reset
+ok 225 - wrong system identity blocks before SQL; changed schema/business or read error rolls back without reset
+  ---
+  duration_ms: 4.772703
+  type: 'test'
+  ...
+# Subtest: build binds current source/theme and fixed original DB proof; changed metadata/assets reject
+ok 226 - build binds current source/theme and fixed original DB proof; changed metadata/assets reject
+  ---
+  duration_ms: 2.037991
+  type: 'test'
+  ...
+# Subtest: review/search runner import has no drivers/network and closed modes cannot create/reset a database
+ok 227 - review/search runner import has no drivers/network and closed modes cannot create/reset a database
+  ---
+  duration_ms: 156.455352
+  type: 'test'
+  ...
+# Subtest: current business review preserves exact seed/authority while allowing valid newly persisted patients and sequence gaps
+ok 228 - current business review preserves exact seed/authority while allowing valid newly persisted patients and sequence gaps
+  ---
+  duration_ms: 10.104476
+  type: 'test'
+  ...
+# Subtest: read-only review returns a bound business snapshot; later changes roll back and cannot start
+ok 229 - read-only review returns a bound business snapshot; later changes roll back and cannot start
+  ---
+  duration_ms: 4.198763
+  type: 'test'
+  ...
+# Subtest: identity/read/schema failures stop before listener with no database mutation or proof rewrite
+ok 230 - identity/read/schema failures stop before listener with no database mutation or proof rewrite
+  ---
+  duration_ms: 6.850553
+  type: 'test'
+  ...
+# Subtest: import creates no connection/listener and cannot load pg or Fastify
+ok 231 - import creates no connection/listener and cannot load pg or Fastify
+  ---
+  duration_ms: 82.3097
+  type: 'test'
+  ...
+# Subtest: mode tokens/full HEAD are closed and extra input rejects
+ok 232 - mode tokens/full HEAD are closed and extra input rejects
+  ---
+  duration_ms: 246.4513
+  type: 'test'
+  ...
+# Subtest: public certificate fingerprint pinning blocks unrelated/invalid material without key access
+ok 233 - public certificate fingerprint pinning blocks unrelated/invalid material without key access
+  ---
+  duration_ms: 0.690674
+  type: 'test'
+  ...
+# Subtest: source/path readers reject symlinks and oversized/private-mode mismatches
+ok 234 - source/path readers reject symlinks and oversized/private-mode mismatches
+  ---
+  duration_ms: 6.904213
+  type: 'test'
+  ...
+# Subtest: asset/manifest guards reject traversal, maps, secret paths, extra configuration and stale source HEAD
+ok 235 - asset/manifest guards reject traversal, maps, secret paths, extra configuration and stale source HEAD
+  ---
+  duration_ms: 5.28981
+  type: 'test'
+  ...
+# Subtest: exact fresh target fixture rejects consumed sequences, prior sessions and altered authority
+ok 236 - exact fresh target fixture rejects consumed sequences, prior sessions and altered authority
+  ---
+  duration_ms: 5.311353
+  type: 'test'
+  ...
+# Subtest: nonempty/unauthorized target rolls back before DDL; DDL failure never commits
+ok 237 - nonempty/unauthorized target rolls back before DDL; DDL failure never commits
+  ---
+  duration_ms: 1.946855
+  type: 'test'
+  ...
+# Subtest: initialization uses public for base DDL and fixed fixture/manifest without consuming CPN
+ok 238 - initialization uses public for base DDL and fixed fixture/manifest without consuming CPN
+  ---
+  duration_ms: 0.970618
+  type: 'test'
+  ...
+# Subtest: database identity/existence checks precede CREATE and existing target is never opened/reset
+ok 239 - database identity/existence checks precede CREATE and existing target is never opened/reset
+  ---
+  duration_ms: 4.727817
+  type: 'test'
+  ...
+# Subtest: prepare keeps maintenance lock through target initialization and closes target on failure
+ok 240 - prepare keeps maintenance lock through target initialization and closes target on failure
+  ---
+  duration_ms: 0.632657
+  type: 'test'
+  ...
+# Subtest: simultaneous preparers serialize existence check; only one creates the target
+ok 241 - simultaneous preparers serialize existence check; only one creates the target
+  ---
+  duration_ms: 0.615282
+  type: 'test'
+  ...
+# Subtest: owned close is idempotent across competing signals, failures stay failures
+ok 242 - owned close is idempotent across competing signals, failures stay failures
+  ---
+  duration_ms: 0.452741
+  type: 'test'
+  ...
+# Subtest: Doctor preserves explicit ACTIVE, identity and authority context
+ok 243 - Doctor preserves explicit ACTIVE, identity and authority context
+  ---
+  duration_ms: 2.15188
+  type: 'test'
+  ...
+# Subtest: Doctor preserves explicit DEACTIVATED, identity and authority context
+ok 244 - Doctor preserves explicit DEACTIVATED, identity and authority context
+  ---
+  duration_ms: 0.167889
+  type: 'test'
+  ...
+# Subtest: Doctor rejects lifecycle values outside the closed vocabulary
+ok 245 - Doctor rejects lifecycle values outside the closed vocabulary
+  ---
+  duration_ms: 0.702201
+  type: 'test'
+  ...
+# Subtest: Nurse preserves explicit ACTIVE, identity and authority context
+ok 246 - Nurse preserves explicit ACTIVE, identity and authority context
+  ---
+  duration_ms: 0.139316
+  type: 'test'
+  ...
+# Subtest: Nurse preserves explicit DEACTIVATED, identity and authority context
+ok 247 - Nurse preserves explicit DEACTIVATED, identity and authority context
+  ---
+  duration_ms: 0.157764
+  type: 'test'
+  ...
+# Subtest: Nurse rejects lifecycle values outside the closed vocabulary
+ok 248 - Nurse rejects lifecycle values outside the closed vocabulary
+  ---
+  duration_ms: 0.263481
+  type: 'test'
+  ...
+# Subtest: Nurse still requires lifecycle, whether omitted or explicitly undefined
+ok 249 - Nurse still requires lifecycle, whether omitted or explicitly undefined
+  ---
+  duration_ms: 0.233366
+  type: 'test'
+  ...
+# Subtest: legacy Doctor omission does not create or default lifecycle
+ok 250 - legacy Doctor omission does not create or default lifecycle
+  ---
+  duration_ms: 0.200517
+  type: 'test'
+  ...
+# Subtest: explicit undefined Doctor lifecycle retains the omission representation
+ok 251 - explicit undefined Doctor lifecycle retains the omission representation
+  ---
+  duration_ms: 0.261958
+  type: 'test'
+  ...
+# Subtest: construction preserves frozen inputs for both roles and lifecycle values
+ok 252 - construction preserves frozen inputs for both roles and lifecycle values
+  ---
+  duration_ms: 0.298863
+  type: 'test'
+  ...
+# Subtest: missing identity remains rejected independently of role and lifecycle
+ok 253 - missing identity remains rejected independently of role and lifecycle
+  ---
+  duration_ms: 0.259405
+  type: 'test'
+  ...
+# Subtest: the existing Doctor and Nurse role boundary remains closed
+ok 254 - the existing Doctor and Nurse role boundary remains closed
+  ---
+  duration_ms: 0.224573
+  type: 'test'
+  ...
+# Subtest: role and lifecycle vocabularies are frozen; Nurse export remains compatible
+ok 255 - role and lifecycle vocabularies are frozen; Nurse export remains compatible
+  ---
+  duration_ms: 0.308727
+  type: 'test'
+  ...
+# Subtest: import and construction remain independent of database, HTTP and storage drivers
+ok 256 - import and construction remain independent of database, HTTP and storage drivers
+  ---
+  duration_ms: 109.316502
+  type: 'test'
+  ...
+# Subtest: Policy B calendar Day 0 eligibility (calculation only)
+ok 257 - Policy B calendar Day 0 eligibility (calculation only)
+  ---
+  duration_ms: 1.995357
+  type: 'test'
+  ...
+# Subtest: Policy B calendar Day 89 eligibility (calculation only)
+ok 258 - Policy B calendar Day 89 eligibility (calculation only)
+  ---
+  duration_ms: 0.288408
+  type: 'test'
+  ...
+# Subtest: Policy B calendar Day 90 eligibility (calculation only)
+ok 259 - Policy B calendar Day 90 eligibility (calculation only)
+  ---
+  duration_ms: 0.197573
+  type: 'test'
+  ...
+# Subtest: Policy B calendar Day 91 eligibility (calculation only)
+ok 260 - Policy B calendar Day 91 eligibility (calculation only)
+  ---
+  duration_ms: 0.172055
+  type: 'test'
+  ...
+# Subtest: Day90 remains eligible after 2160 elapsed hours until Cairo calendar Day91
+ok 261 - Day90 remains eligible after 2160 elapsed hours until Cairo calendar Day91
+  ---
+  duration_ms: 0.2361
+  type: 'test'
+  ...
+# Subtest: completion date comes from Cairo event instant, not UTC or a working date
+ok 262 - completion date comes from Cairo event instant, not UTC or a working date
+  ---
+  duration_ms: 0.225233
+  type: 'test'
+  ...
+# Subtest: month/year/leap boundary dates retain calendar meaning
+ok 263 - month/year/leap boundary dates retain calendar meaning
+  ---
+  duration_ms: 0.321727
+  type: 'test'
+  ...
+# Subtest: Cairo spring and autumn offset transitions use local dates, not fixed offsets
+ok 264 - Cairo spring and autumn offset transitions use local dates, not fixed offsets
+  ---
+  duration_ms: 0.24915
+  type: 'test'
+  ...
+# Subtest: untrusted/missing or impossible instants are never fabricated; future closure denies
+ok 265 - untrusted/missing or impossible instants are never fabricated; future closure denies
+  ---
+  duration_ms: 0.584105
+  type: 'test'
+  ...
+# Subtest: calendar results are independent of the host process timezone
+ok 266 - calendar results are independent of the host process timezone
+  ---
+  duration_ms: 433.242697
+  type: 'test'
+  ...
+# Subtest: date-only age reference preserves the selected calendar date across process timezones
+ok 267 - date-only age reference preserves the selected calendar date across process timezones
+  ---
+  duration_ms: 379.193687
+  type: 'test'
+  ...
+# Subtest: invalid calendar reference dates reject instead of silently normalizing
+ok 268 - invalid calendar reference dates reject instead of silently normalizing
+  ---
+  duration_ms: 1.461837
+  type: 'test'
+  ...
+# Subtest: synthetic PostgreSQL proof rejects missing arguments and wrong token before resource access
+ok 269 - synthetic PostgreSQL proof rejects missing arguments and wrong token before resource access
+  ---
+  duration_ms: 3.251709
+  type: 'test'
+  ...
+# Subtest: DOM only: repeated click makes one create; remount recovers durable result through API without another create
+ok 270 - DOM only: repeated click makes one create; remount recovers durable result through API without another create
+  ---
+  duration_ms: 73.62128
+  type: 'test'
+  ...
+# Subtest: DOM only: lost response retains original request identity; Nurse cannot create or recover
+ok 271 - DOM only: lost response retains original request identity; Nurse cannot create or recover
+  ---
+  duration_ms: 15.764168
+  type: 'test'
+  ...
+# Subtest: one original registration surface, all original navigation, no internal login or demo records
+ok 272 - one original registration surface, all original navigation, no internal login or demo records
+  ---
+  duration_ms: 27.814893
+  type: 'test'
+  ...
+# Subtest: server lookup preserves identity and history, returns no wrong patient or invented registration date
+ok 273 - server lookup preserves identity and history, returns no wrong patient or invented registration date
+  ---
+  duration_ms: 1.344122
+  type: 'test'
+  ...
+# Subtest: missing, denied and unavailable retrieval clears authoritative data without local fallback
+ok 274 - missing, denied and unavailable retrieval clears authoritative data without local fallback
+  ---
+  duration_ms: 1.662364
+  type: 'test'
+  ...
+# Subtest: Nurse cannot register or retrieve; unsupported clinical mutations cannot claim local success
+ok 275 - Nurse cannot register or retrieve; unsupported clinical mutations cannot claim local success
+  ---
+  duration_ms: 0.972271
+  type: 'test'
+  ...
+# Subtest: unknown registration outcome blocks retry after refresh and clears exposed patient state
+ok 276 - unknown registration outcome blocks retry after refresh and clears exposed patient state
+  ---
+  duration_ms: 1.342119
+  type: 'test'
+  ...
+# Subtest: dossier distinguishes uncaptured history from known empty fields and unavailable clinical counts
+ok 277 - dossier distinguishes uncaptured history from known empty fields and unavailable clinical counts
+  ---
+  duration_ms: 8.853596
+  type: 'test'
+  ...
+# Subtest: original form waits for full response, blocks duplicate submit and round-trips every history field
+ok 278 - original form waits for full response, blocks duplicate submit and round-trips every history field
+  ---
+  duration_ms: 126.82308
+  type: 'test'
+  ...
+# Subtest: original form retains draft on validation error; lookup mode retrieves server patient before dossier
+ok 279 - original form retains draft on validation error; lookup mode retrieves server patient before dossier
+  ---
+  duration_ms: 102.889151
+  type: 'test'
+  ...
+# Subtest: protected App never loads browser store and shared logout removes authoritative data
+ok 280 - protected App never loads browser store and shared logout removes authoritative data
+  ---
+  duration_ms: 38.517727
+  type: 'test'
+  ...
+# Subtest: real external gate renders entrance first, then original clinic, and locks on logout
+ok 281 - real external gate renders entrance first, then original clinic, and locks on logout
+  ---
+  duration_ms: 46.578453
+  type: 'test'
+  ...
+# Subtest: demo origin keeps original seeded workflows and local persistence without duplicate registration navigation
+ok 282 - demo origin keeps original seeded workflows and local persistence without duplicate registration navigation
+  ---
+  duration_ms: 47.868061
+  type: 'test'
+  ...
+# Subtest: outer gate stays closed until server-confirmed Doctor session
+ok 283 - outer gate stays closed until server-confirmed Doctor session
+  ---
+  duration_ms: 5.762951
+  type: 'test'
+  ...
+# Subtest: outer gate refuses Nurse, uncertain logout and uncertain registration
+ok 284 - outer gate refuses Nurse, uncertain logout and uncertain registration
+  ---
+  duration_ms: 0.145435
+  type: 'test'
+  ...
+# Subtest: shared doctor model locks the gate immediately while server logout is pending
+ok 285 - shared doctor model locks the gate immediately while server logout is pending
+  ---
+  duration_ms: 0.979762
+  type: 'test'
+  ...
+# Subtest: failed server logout leaves shared doctor gate locked and revocation unconfirmed
+ok 286 - failed server logout leaves shared doctor gate locked and revocation unconfirmed
+  ---
+  duration_ms: 4.723581
+  type: 'test'
+  ...
+# Subtest: original protected clinic + secured HTTP injection: lost 201 reply locks actual gate across remount (DOM/fake SQL, not browser/PostgreSQL)
+ok 287 - original protected clinic + secured HTTP injection: lost 201 reply locks actual gate across remount (DOM/fake SQL, not browser/PostgreSQL)
+  ---
+  duration_ms: 379.13174
+  type: 'test'
+  ...
+# Subtest: Case transport uses exact accepted payload, same-origin cookies and CSRF; recovery sends only operation ID
+ok 288 - Case transport uses exact accepted payload, same-origin cookies and CSRF; recovery sends only operation ID
+  ---
+  duration_ms: 5.185646
+  type: 'test'
+  ...
+# Subtest: denial and conflict are distinct; server diagnostics never appear in errors
+ok 289 - denial and conflict are distinct; server diagnostics never appear in errors
+  ---
+  duration_ms: 1.11287
+  type: 'test'
+  ...
+# Subtest: transport loss, malformed success and mismatched patient stay uncertain
+ok 290 - transport loss, malformed success and mismatched patient stay uncertain
+  ---
+  duration_ms: 1.647742
+  type: 'test'
+  ...
+# Subtest: invalid intent or wrong origin never sends a request
+ok 291 - invalid intent or wrong origin never sends a request
+  ---
+  duration_ms: 0.414193
+  type: 'test'
+  ...
+# Subtest: journal serializes tabs, preserves operation across reload and stores no clinical or actor data
+ok 292 - journal serializes tabs, preserves operation across reload and stores no clinical or actor data
+  ---
+  duration_ms: 0.574271
+  type: 'test'
+  ...
+# Subtest: unavailable locks, corrupt marker or storage failure prevents reservation
+ok 293 - unavailable locks, corrupt marker or storage failure prevents reservation
+  ---
+  duration_ms: 0.257622
+  type: 'test'
+  ...
+# Subtest: missing-patient notice remains beside retrieval across automatic session reconciliation
+ok 294 - missing-patient notice remains beside retrieval across automatic session reconciliation
+  ---
+  duration_ms: 9.775518
+  type: 'test'
+  ...
+# Subtest: notice is cleared when current persisted identity changes or session expires
+ok 295 - notice is cleared when current persisted identity changes or session expires
+  ---
+  duration_ms: 4.916016
+  type: 'test'
+  ...
+# Subtest: Nurse session cannot enable either patient operation; no invented clinical fields or mock fallback
+ok 296 - Nurse session cannot enable either patient operation; no invented clinical fields or mock fallback
+  ---
+  duration_ms: 0.507583
+  type: 'test'
+  ...
+# Subtest: pending registration stays owned by the mounted session and suppresses submit/logout/reconcile
+ok 297 - pending registration stays owned by the mounted session and suppresses submit/logout/reconcile
+  ---
+  duration_ms: 0.572008
+  type: 'test'
+  ...
+# Subtest: unknown registration outcome blocks retries even after session reconciliation
+ok 298 - unknown registration outcome blocks retries even after session reconciliation
+  ---
+  duration_ms: 0.320235
+  type: 'test'
+  ...
+# Subtest: intake parsers preserve original form fields and distinguish uncaptured history
+ok 299 - intake parsers preserve original form fields and distinguish uncaptured history
+  ---
+  duration_ms: 3.166973
+  type: 'test'
+  ...
+# Subtest: complete form uses only intake endpoint, sends CSRF, and never retries through legacy registration
+ok 300 - complete form uses only intake endpoint, sends CSRF, and never retries through legacy registration
+  ---
+  duration_ms: 5.603465
+  type: 'test'
+  ...
+# Subtest: missing history in a 201 response is unconfirmed, never downgraded to basic success
+ok 301 - missing history in a 201 response is unconfirmed, never downgraded to basic success
+  ---
+  duration_ms: 1.292646
+  type: 'test'
+  ...
+# Subtest: selected server patient retrieval uses the complete intake GET and retains unknown history
+ok 302 - selected server patient retrieval uses the complete intake GET and retains unknown history
+  ---
+  duration_ms: 0.503386
+  type: 'test'
+  ...
+# Subtest: pending full registration cannot report success or dispatch twice; validated failure allows corrected submission
+ok 303 - pending full registration cannot report success or dispatch twice; validated failure allows corrected submission
+  ---
+  duration_ms: 1.96317
+  type: 'test'
+  ...
+# Subtest: uncertain registration stays blocked after refresh and never silently repeats or falls back
+ok 304 - uncertain registration stays blocked after refresh and never silently repeats or falls back
+  ---
+  duration_ms: 1.655864
+  type: 'test'
+  ...
+# Subtest: full retrieval does not fall back to the basic patient API when capability is unavailable
+ok 305 - full retrieval does not fall back to the basic patient API when capability is unavailable
+  ---
+  duration_ms: 1.462418
+  type: 'test'
+  ...
+# Subtest: search adapter uses fixed same-origin GET and escaped query; rejects invalid input before fetch
+ok 306 - search adapter uses fixed same-origin GET and escaped query; rejects invalid input before fetch
+  ---
+  duration_ms: 4.159815
+  type: 'test'
+  ...
+# Subtest: malformed or duplicate/oversized search responses cannot become selected Patient data
+ok 307 - malformed or duplicate/oversized search responses cannot become selected Patient data
+  ---
+  duration_ms: 1.961567
+  type: 'test'
+  ...
+# Subtest: duplicate names produce choices; selection retrieves internal UUID; empty search clears old data and retains notice
+ok 308 - duplicate names produce choices; selection retrieves internal UUID; empty search clears old data and retains notice
+  ---
+  duration_ms: 3.554528
+  type: 'test'
+  ...
+# Subtest: Nurse cannot search; late search after logout cannot restore records even if abort is ignored
+ok 309 - Nurse cannot search; late search after logout cannot restore records even if abort is ignored
+  ---
+  duration_ms: 0.512991
+  type: 'test'
+  ...
+# Subtest: reservation precedes API dispatch, contains no clinical or credential data, acknowledgement clears it
+ok 310 - reservation precedes API dispatch, contains no clinical or credential data, acknowledgement clears it
+  ---
+  duration_ms: 3.551554
+  type: 'test'
+  ...
+# Subtest: lost reply survives disposal/full model recreation, refresh and relogin; gate and repeat writes remain blocked
+ok 311 - lost reply survives disposal/full model recreation, refresh and relogin; gate and repeat writes remain blocked
+  ---
+  duration_ms: 1.147881
+  type: 'test'
+  ...
+# Subtest: two cooperating clients sharing a lock/storage cannot dispatch concurrent registrations
+ok 312 - two cooperating clients sharing a lock/storage cannot dispatch concurrent registrations
+  ---
+  duration_ms: 11.588816
+  type: 'test'
+  ...
+# Subtest: definite pre-effect rejection clears owned marker and preserves corrected-submit behavior
+ok 313 - definite pre-effect rejection clears owned marker and preserves corrected-submit behavior
+  ---
+  duration_ms: 4.005126
+  type: 'test'
+  ...
+# Subtest: storage unavailable, reservation failure and missing Web Locks deny before API dispatch
+ok 314 - storage unavailable, reservation failure and missing Web Locks deny before API dispatch
+  ---
+  duration_ms: 0.707419
+  type: 'test'
+  ...
+# Subtest: malformed stored marker blocks without deletion or invented recovery
+ok 315 - malformed stored marker blocks without deletion or invented recovery
+  ---
+  duration_ms: 0.343549
+  type: 'test'
+  ...
+# Subtest: wrong-owner acknowledgement cannot remove another unresolved intent
+ok 316 - wrong-owner acknowledgement cannot remove another unresolved intent
+  ---
+  duration_ms: 0.234878
+  type: 'test'
+  ...
+# Subtest: marker removal failure suppresses UI success and retains denial
+ok 317 - marker removal failure suppresses UI success and retains denial
+  ---
+  duration_ms: 0.28286
+  type: 'test'
+  ...
+# Subtest: dispose during a dispatched mutation retains marker despite late response
+ok 318 - dispose during a dispatched mutation retains marker despite late response
+  ---
+  duration_ms: 3.646504
+  type: 'test'
+  ...
+# Subtest: dispose while awaiting a lock does not dispatch a late mutation
+ok 319 - dispose while awaiting a lock does not dispatch a late mutation
+  ---
+  duration_ms: 0.511558
+  type: 'test'
+  ...
+# Subtest: boot/reopen starts checking and cannot use any remembered browser identity
+ok 320 - boot/reopen starts checking and cannot use any remembered browser identity
+  ---
+  duration_ms: 1.641593
+  type: 'test'
+  ...
+# Subtest: login success alone cannot establish identity; bootstrap failure denies
+ok 321 - login success alone cannot establish identity; bootstrap failure denies
+  ---
+  duration_ms: 0.47922
+  type: 'test'
+  ...
+# Subtest: 401 clears prior identity, CSRF and Patient; 403 retains identity but blocks mutation
+ok 322 - 401 clears prior identity, CSRF and Patient; 403 retains identity but blocks mutation
+  ---
+  duration_ms: 0.595312
+  type: 'test'
+  ...
+# Subtest: 404 clears old result without logout or mock fallback
+ok 323 - 404 clears old result without logout or mock fallback
+  ---
+  duration_ms: 0.460092
+  type: 'test'
+  ...
+# Subtest: late GET across logout/relogin cannot repopulate identity or Patient even if abort is ignored
+ok 324 - late GET across logout/relogin cannot repopulate identity or Patient even if abort is ignored
+  ---
+  duration_ms: 0.471729
+  type: 'test'
+  ...
+# Subtest: logout failure remains unconfirmed and blocks new login; explicit server reconciliation is required
+ok 325 - logout failure remains unconfirmed and blocks new login; explicit server reconciliation is required
+  ---
+  duration_ms: 0.439712
+  type: 'test'
+  ...
+# Subtest: concurrent submit is suppressed; pending mutation cannot be canceled by logout/reconcile
+ok 326 - concurrent submit is suppressed; pending mutation cannot be canceled by logout/reconcile
+  ---
+  duration_ms: 0.474593
+  type: 'test'
+  ...
+# Subtest: lost POST result is outcome unknown with no retry; read outage is unavailable
+ok 327 - lost POST result is outcome unknown with no retry; read outage is unavailable
+  ---
+  duration_ms: 0.60738
+  type: 'test'
+  ...
+# Subtest: dispose prevents late success; bootstrap and login requests have no parallel session issuance
+ok 328 - dispose prevents late success; bootstrap and login requests have no parallel session issuance
+  ---
+  duration_ms: 0.397018
+  type: 'test'
+  ...
+# Subtest: HTTP, unexpected host/port and injected-origin configuration block before credential transmission
+ok 329 - HTTP, unexpected host/port and injected-origin configuration block before credential transmission
+  ---
+  duration_ms: 2.441979
+  type: 'test'
+  ...
+# Subtest: status errors precede JSON parsing and expose no diagnostic body
+ok 330 - status errors precede JSON parsing and expose no diagnostic body
+  ---
+  duration_ms: 5.676653
+  type: 'test'
+  ...
+# Subtest: network and malformed successful response fail generically without retry
+ok 331 - network and malformed successful response fail generically without retry
+  ---
+  duration_ms: 2.665651
+  type: 'test'
+  ...
+# Subtest: session resolves safe server identity; no token/role from browser is submitted
+ok 332 - session resolves safe server identity; no token/role from browser is submitted
+  ---
+  duration_ms: 1.658609
+  type: 'test'
+  ...
+# Subtest: registration rejects role/identity/CPN/age/history and invalid dates before fetch
+ok 333 - registration rejects role/identity/CPN/age/history and invalid dates before fetch
+  ---
+  duration_ms: 1.707591
+  type: 'test'
+  ...
+# Subtest: basic mapping preserves technical identity/null DOB and does not invent clinical data
+ok 334 - basic mapping preserves technical identity/null DOB and does not invent clinical data
+  ---
+  duration_ms: 0.516616
+  type: 'test'
+  ...
+# Subtest: positive POST sends exact basic fields/current CSRF and consumes server UUID/CPN
+ok 335 - positive POST sends exact basic fields/current CSRF and consumes server UUID/CPN
+  ---
+  duration_ms: 0.55374
+  type: 'test'
+  ...
+# Subtest: logout accepts 204 without JSON and sends CSRF; a redirect is not followed
+ok 336 - logout accepts 204 without JSON and sends CSRF; a redirect is not followed
+  ---
+  duration_ms: 0.322147
+  type: 'test'
+  ...
+# Subtest: P37B-01 Nurse prescription update rejected atomically
+ok 337 - P37B-01 Nurse prescription update rejected atomically
+  ---
+  duration_ms: 1.964712
+  type: 'test'
+  ...
+# Subtest: P37B-02 Nurse follow-up update rejected atomically
+ok 338 - P37B-02 Nurse follow-up update rejected atomically
+  ---
+  duration_ms: 0.384329
+  type: 'test'
+  ...
+# Subtest: P37B-03 Doctor cannot forge prescription authorization
+ok 339 - P37B-03 Doctor cannot forge prescription authorization
+  ---
+  duration_ms: 0.375526
+  type: 'test'
+  ...
+# Subtest: P37B-04 Doctor can edit unsigned prescription and follow-up
+ok 340 - P37B-04 Doctor can edit unsigned prescription and follow-up
+  ---
+  duration_ms: 0.278012
+  type: 'test'
+  ...
+# Subtest: P37B-05 Doctor prescription authorization still works
+ok 341 - P37B-05 Doctor prescription authorization still works
+  ---
+  duration_ms: 0.824813
+  type: 'test'
+  ...
+# Subtest: P37B-06 Save acknowledgement and role-specific payload
+ok 342 - P37B-06 Save acknowledgement and role-specific payload
+  ---
+  duration_ms: 0.633559
+  type: 'test'
+  ...
+# Subtest: P37B-07 Authorized prescription cannot be edited
+ok 343 - P37B-07 Authorized prescription cannot be edited
+  ---
+  duration_ms: 1.152438
+  type: 'test'
+  ...
+1..343
+# tests 343
+# suites 0
+# pass 342
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8395.599322
