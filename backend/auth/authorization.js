@@ -12,7 +12,7 @@ function resolveActor(row) {
 }
 
 function authorize(actor, operation, context) {
-  if (![...CAPABILITIES, ...PATIENT_OPERATIONS].includes(operation)) throw new AuthError(403);
+  if (![...CAPABILITIES, ...PATIENT_OPERATIONS, 'CASE_CREATE', 'CASE_RECEIPT_READ'].includes(operation)) throw new AuthError(403);
   if (actor.lifecycle !== 'ACTIVE') throw new AuthError(401);
   if (!['DOCTOR_ONLY', 'DOCTOR_NURSE'].includes(context?.mode)) throw new AuthError(403);
   if (actor.role === 'Doctor') return;
