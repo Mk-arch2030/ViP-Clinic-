@@ -1,0 +1,53 @@
+✔ fake-store contract: wrong password, unknown label and disabled Actor deny with the same generic failure (5.869859ms)
+✔ fake-store contract: missing, malformed and forged session identifiers fail before dispatch (1.748531ms)
+✔ fake-store contract: active identity comes from persisted Actor, not a login label or supplied role (2.595557ms)
+✔ fake-store contract: deactivation blocks existing sessions and new login, preserving Actor identity (1.246728ms)
+✔ fake-store contract: Nurse deactivation also removes current session authority (1.093701ms)
+✔ fake-store contract: idle and absolute expiry are enforced; activity cannot extend absolute time (11.856763ms)
+✔ fake-store contract: logout requires current CSRF and makes the old identifier unusable (1.191135ms)
+✔ fake-store contract: successful reauthentication rotates; failed login leaves the valid session intact (1.021244ms)
+✔ fake-store contract: a prior session belonging to another Actor cannot be adopted (0.833625ms)
+✔ fake-store contract: credential version change and disabling credentials invalidate existing sessions (1.226448ms)
+✔ fake-store contract: Nurse FULL cannot access patient routes or unknown clinical operations (1.13338ms)
+✔ fake-store contract: FULL and LIMITED remain within the four contracted capabilities and current mode (1.395539ms)
+✔ fake-store contract: authorization uses current persisted role after a session has been issued (2.431629ms)
+✔ fake-store contract: concurrent successful logins never retain more than three live sessions (10.729993ms)
+✔ fake-store contract: concurrent logout and protected work are serialized; revoked sessions cannot dispatch later (0.718085ms)
+✔ fake-store contract: conflicting deactivation and protected work commit in order, never after committed deactivation (0.489696ms)
+✔ fake-store contract: transactional dispatch failure rolls back and returns a generic unavailable boundary (1.580318ms)
+✔ fake-store contract: attempt reservation bounds parallel wrong-password work and resets only after expiry (0.662462ms)
+✔ fake-store contract: missing lifecycle, unknown roles and missing Actor fail closed (0.34395ms)
+✔ credential verification race rechecks lifecycle before issuing a session (0.586008ms)
+✔ outages fail closed without exposing store diagnostics (0.198915ms)
+✔ credential replacement during verification cannot issue a stale-version session (0.345652ms)
+✔ missing policy and removed delegation cannot grant Nurse participation (0.622002ms)
+✔ source budget limits distinct login labels and capacity remains bounded (25.703645ms)
+✔ Doctor VISIT_START requires an authorized clinic mode (1.614133ms)
+✔ FULL: explicit VISIT_START required, CASE_CREATE still forbidden (0.426983ms)
+✔ LIMITED: explicit VISIT_START required, CASE_CREATE still forbidden (0.319924ms)
+✔ invalid, removed, mismatched or inactive delegation cannot authorize Visit recording (0.415326ms)
+✔ legacy FULL retains its four original permissions (0.276269ms)
+✖ authenticated transaction rechecks explicit grant and session/CSRF on every call (memory store) (8.318649ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 213.175848
+
+✖ failing tests:
+
+test at backend/auth/visit-start-authorization.test.cjs:35:1
+✖ authenticated transaction rechecks explicit grant and session/CSRF on every call (memory store) (8.318649ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (/workspace/scratch/85bc0af0f9e1/cj01-visit-history/backend/auth/visit-start-authorization.test.cjs:47:2)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

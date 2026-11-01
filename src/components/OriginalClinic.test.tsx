@@ -57,7 +57,7 @@ test('dossier distinguishes uncaptured history from known empty fields and unava
  const known=renderToStaticMarkup(<PatientDossier {...props} clinicalUnavailable patient={{...patient,registeredAt:null}}/>);
  for(const value of Object.values(history).flat())assert.ok(known.includes(value));
 });
-const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:TEST_ORIGIN});
+const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:TEST_ORIGIN,pretendToBeVisual:true});
 Object.assign(globalThis,{window:dom.window,document:dom.window.document,HTMLElement:dom.window.HTMLElement,IS_REACT_ACT_ENVIRONMENT:true});
 const {createRoot}=await import('react-dom/client');
 async function mount(m:ConnectedPatientSession){
@@ -145,4 +145,525 @@ test('demo origin keeps original seeded workflows and local persistence without 
   assert.equal(document.querySelectorAll('input[type="date"]').length,1);
   assert.equal(document.querySelector('fieldset')!.disabled,false);
  }finally{await act(async()=>root.unmount());if(old)Object.defineProperty(globalThis,'localStorage',old);else Reflect.deleteProperty(globalThis,'localStorage');}
+});
+
+test('SRR-01: verified browser resume preserves an unsaved clinic draft', async () => {
+  const { OuterDoctorGate } = await import('./OuterDoctorGate');
+  const { default: App } = await import('../App');
+  const oldFetch = globalThis.fetch;
+  let reads = 0;
+  let release!: () => void;
+  let pending = false;
+  const held = new Promise<void>(resolve => { release = resolve; });
+
+  globalThis.fetch = (async (url: unknown) => {
+    const path = String(url);
+    if (path === '/auth/session') {
+      reads++;
+      if (pending) await held;
+      return new Response(JSON.stringify(session), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    throw new Error('Unexpected request: ' + path);
+  }) as typeof fetch;
+
+  const root = createRoot(document.getElementById('root')!);
+  try {
+    await act(async () => {
+      root.render(<OuterDoctorGate><App /></OuterDoctorGate>);
+    });
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    const draft = document.querySelector<HTMLInputElement>('form input')!;
+    assert.ok(draft);
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!
+        .set!.call(draft, 'Unsaved Resume Patient');
+      draft.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+    });
+    assert.equal(draft.value, 'Unsaved Resume Patient');
+
+    pending = true;
+    const before = reads;
+    await act(async () => {
+      dom.window.dispatchEvent(new dom.window.Event('focus'));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+    assert.ok(reads > before, 'focus must trigger server reconciliation');
+    assert.ok(
+      document.querySelector('[data-roby-gate="outside"]'),
+      'gate must remain outside while session verification is pending'
+    );
+    assert.equal(
+      document.querySelector('[data-roby-gate="inside"]'),
+      null,
+      'protected clinic must be unmounted while verification is pending'
+    );
+
+    await act(async () => { release(); await held; });
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+    assert.equal(
+      document.querySelector<HTMLInputElement>('form input')?.value,
+      'Unsaved Resume Patient',
+      'verified resume must preserve the unsaved draft'
+    );
+  } finally {
+    release();
+    await act(async () => root.unmount());
+    globalThis.fetch = oldFetch;
+  }
+});
+
+test('SRR-01: changed verified doctor cannot recover previous doctor draft', async () => {
+  const { OuterDoctorGate } = await import('./OuterDoctorGate');
+  const { default: App } = await import('../App');
+  const oldFetch = globalThis.fetch;
+  let currentActor = session.actorIdentityReference;
+
+  globalThis.fetch = (async (url: unknown) => {
+    if (String(url) === '/auth/session') {
+      return new Response(
+        JSON.stringify({ ...session, actorIdentityReference: currentActor }),
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    throw new Error('Unexpected request: ' + String(url));
+  }) as typeof fetch;
+
+  const root = createRoot(document.getElementById('root')!);
+  try {
+    await act(async () => {
+      root.render(<OuterDoctorGate><App /></OuterDoctorGate>);
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    const draft = document.querySelector<HTMLInputElement>('form input')!;
+    assert.ok(draft);
+
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(
+        dom.window.HTMLInputElement.prototype, 'value'
+      )!.set!.call(draft, 'Private Doctor A Draft');
+
+      draft.dispatchEvent(
+        new dom.window.Event('input', { bubbles: true })
+      );
+    });
+
+    assert.equal(draft.value, 'Private Doctor A Draft');
+
+    currentActor = '77777777-7777-4777-8777-777777777777';
+
+    await act(async () => {
+      dom.window.dispatchEvent(new dom.window.Event('focus'));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+
+    assert.ok(
+      document.querySelector('[data-roby-gate="inside"]'),
+      'new doctor must be independently verified'
+    );
+
+    assert.equal(
+      document.querySelector<HTMLInputElement>('form input')?.value,
+      '',
+      'previous doctor draft must not appear for a different doctor'
+    );
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = oldFetch;
+  }
+});
+
+test('SRR-01: 401 destroys draft before same doctor returns', async () => {
+  const { OuterDoctorGate } = await import('./OuterDoctorGate');
+  const { default: App } = await import('../App');
+  const oldFetch = globalThis.fetch;
+  let authorized = true;
+
+  globalThis.fetch = (async (url: unknown) => {
+    if (String(url) === '/auth/session') {
+      return authorized
+        ? new Response(JSON.stringify(session), {
+            headers: { 'Content-Type': 'application/json' }
+          })
+        : new Response('{}', { status: 401 });
+    }
+    throw new Error('Unexpected request: ' + String(url));
+  }) as typeof fetch;
+
+  const root = createRoot(document.getElementById('root')!);
+
+  try {
+    await act(async () => {
+      root.render(<OuterDoctorGate><App /></OuterDoctorGate>);
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    const draft = document.querySelector<HTMLInputElement>('form input')!;
+    assert.ok(draft);
+
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(
+        dom.window.HTMLInputElement.prototype, 'value'
+      )!.set!.call(draft, 'Draft Before 401');
+
+      draft.dispatchEvent(
+        new dom.window.Event('input', { bubbles: true })
+      );
+    });
+
+    assert.equal(draft.value, 'Draft Before 401');
+
+    authorized = false;
+
+    await act(async () => {
+      dom.window.dispatchEvent(new dom.window.Event('focus'));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+
+    assert.ok(
+      document.querySelector('[data-roby-gate="outside"]'),
+      '401 must lock the clinic'
+    );
+
+    assert.equal(
+      document.querySelector('[data-roby-gate="inside"]'),
+      null,
+      'clinic must be absent after 401'
+    );
+
+    authorized = true;
+
+    await act(async () => {
+      dom.window.dispatchEvent(new dom.window.Event('focus'));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+
+    assert.ok(
+      document.querySelector('[data-roby-gate="inside"]'),
+      'same doctor must be verified again'
+    );
+
+    assert.equal(
+      document.querySelector<HTMLInputElement>('form input')?.value,
+      '',
+      '401 must permanently invalidate the previous draft'
+    );
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = oldFetch;
+  }
+});
+
+test('SRR-01: explicit logout destroys draft before same doctor logs in again', async () => {
+  const { OuterDoctorGate } = await import('./OuterDoctorGate');
+  const { default: App } = await import('../App');
+  const oldFetch = globalThis.fetch;
+  let authenticated = false;
+  let logoutCalls = 0;
+
+  globalThis.fetch = (async (url: unknown) => {
+    const path = String(url);
+
+    if (path === '/auth/login') {
+      authenticated = true;
+      return new Response('{"authenticated":true}', {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path === '/auth/logout') {
+      logoutCalls++;
+      authenticated = false;
+      return new Response(null, { status: 204 });
+    }
+
+    if (path === '/auth/session') {
+      return authenticated
+        ? new Response(JSON.stringify(session), {
+            headers: { 'Content-Type': 'application/json' }
+          })
+        : new Response('{}', { status: 401 });
+    }
+
+    throw new Error('Unexpected request: ' + path);
+  }) as typeof fetch;
+
+  const root = createRoot(document.getElementById('root')!);
+
+  const login = async () => {
+    const inputs = [...document.querySelectorAll<HTMLInputElement>('form input')];
+
+    assert.ok(inputs.length >= 2, 'login inputs must exist');
+
+    await act(async () => {
+      inputs.forEach((input, i) => {
+        Object.getOwnPropertyDescriptor(
+          dom.window.HTMLInputElement.prototype, 'value'
+        )!.set!.call(
+          input,
+          i === 0 ? 'DR/MK_ROBY' : 'Synthetic-only-test-key'
+        );
+        input.dispatchEvent(
+          new dom.window.Event('input', { bubbles: true })
+        );
+      });
+    });
+
+    await submit();
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+  };
+
+  try {
+    await act(async () => {
+      root.render(<OuterDoctorGate><App /></OuterDoctorGate>);
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="outside"]'));
+
+    await login();
+
+    const draft = document.querySelector<HTMLInputElement>('form input')!;
+    assert.ok(draft);
+
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(
+        dom.window.HTMLInputElement.prototype, 'value'
+      )!.set!.call(draft, 'Draft Before Explicit Logout');
+
+      draft.dispatchEvent(
+        new dom.window.Event('input', { bubbles: true })
+      );
+    });
+
+    assert.equal(draft.value, 'Draft Before Explicit Logout');
+
+    const lock = [...document.querySelectorAll('button')].find(
+      button => button.textContent!.includes('إغلاق العيادة')
+    );
+
+    assert.ok(lock);
+
+    await act(async () => {
+      lock!.dispatchEvent(
+        new dom.window.MouseEvent('click', { bubbles: true })
+      );
+    });
+
+    assert.equal(logoutCalls, 1);
+    assert.ok(document.querySelector('[data-roby-gate="outside"]'));
+
+    await login();
+
+    assert.equal(
+      document.querySelector<HTMLInputElement>('form input')?.value,
+      '',
+      'explicit logout must invalidate the previous draft'
+    );
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = oldFetch;
+  }
+});
+
+test('SRR-01: batched input changes preserve every draft field on resume', async () => {
+  const { OuterDoctorGate } = await import('./OuterDoctorGate');
+  const { default: App } = await import('../App');
+  const oldFetch = globalThis.fetch;
+
+  globalThis.fetch = (async (url: unknown) => {
+    if (String(url) === '/auth/session') {
+      return new Response(JSON.stringify(session), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    throw new Error('Unexpected request: ' + String(url));
+  }) as typeof fetch;
+
+  const root = createRoot(document.getElementById('root')!);
+
+  try {
+    await act(async () => {
+      root.render(<OuterDoctorGate><App /></OuterDoctorGate>);
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    const inputs = [...document.querySelectorAll<HTMLInputElement>('form input')];
+    const name = inputs[0];
+    const phone = inputs[1];
+
+    assert.ok(name, 'name input must exist');
+    assert.ok(phone, 'phone input must exist');
+
+    await act(async () => {
+      for (const [input, value] of [
+        [name, 'Batched Draft Patient'],
+        [phone, '01012345678']
+      ] as const) {
+        Object.getOwnPropertyDescriptor(
+          dom.window.HTMLInputElement.prototype, 'value'
+        )!.set!.call(input, value);
+
+        input.dispatchEvent(
+          new dom.window.Event('input', { bubbles: true })
+        );
+      }
+    });
+
+    assert.equal(name.value, 'Batched Draft Patient');
+    assert.equal(phone.value, '01012345678');
+
+    await act(async () => {
+      dom.window.dispatchEvent(new dom.window.Event('focus'));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    const restored = [...document.querySelectorAll<HTMLInputElement>('form input')];
+
+    assert.equal(
+      restored[0]?.value,
+      'Batched Draft Patient',
+      'batched name must survive session verification'
+    );
+
+    assert.equal(
+      restored[1]?.value,
+      '01012345678',
+      'batched phone must survive session verification'
+    );
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = oldFetch;
+  }
+});
+
+
+test('SRR-01: successful registration isolates the next patient draft', async () => {
+  const { OuterDoctorGate } = await import('./OuterDoctorGate');
+  const { default: App } = await import('../App');
+  const oldFetch = globalThis.fetch;
+  let registrationCalls = 0;
+
+  globalThis.fetch = (async (url: unknown, init?: RequestInit) => {
+    const path = String(url);
+
+    if (path === '/auth/session') {
+      return new Response(JSON.stringify(session), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (path === '/patients/intake' && init?.method === 'POST') {
+      registrationCalls++;
+      const request = JSON.parse(String(init.body));
+      assert.equal(request.name, 'First Synthetic Patient');
+      assert.equal(request.phone, '01011111111');
+
+      return new Response(JSON.stringify({
+        patient_id: id,
+        clinic_patient_number: 'CPN-7',
+        name: request.name,
+        date_of_birth: request.dateOfBirth,
+        profession: request.profession,
+        phone: request.phone,
+        gender: request.gender,
+        age: 36,
+        pastHistory: request.pastHistory
+      }), {
+        status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    throw new Error('Unexpected request: ' + path);
+  }) as typeof fetch;
+
+  const root = createRoot(document.getElementById('root')!);
+
+  const change = (input: HTMLInputElement, value: string) => {
+    Object.getOwnPropertyDescriptor(
+      dom.window.HTMLInputElement.prototype, 'value'
+    )!.set!.call(input, value);
+    input.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  };
+
+  try {
+    await act(async () => {
+      root.render(<OuterDoctorGate><App /></OuterDoctorGate>);
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    let inputs = [...document.querySelectorAll<HTMLInputElement>('form input')];
+    assert.ok(inputs.length >= 9);
+
+    await act(async () => {
+      change(inputs[0], 'First Synthetic Patient');
+      change(inputs[1], '01011111111');
+      change(inputs[2], '1990-02-01');
+      change(inputs[4], 'First synthetic chronic history');
+    });
+
+    await submit();
+
+    assert.equal(registrationCalls, 1, 'registration must complete once');
+
+    assert.ok(
+      document.body.textContent!.includes('CPN-7'),
+      'successful registration must show the patient receipt'
+    );
+    assert.equal(
+      document.querySelectorAll('form input').length,
+      0,
+      'registration success replaces the input form'
+    );
+
+    const newPatientButton = document.querySelector<HTMLButtonElement>(
+      '.max-w-4xl > div:first-child button'
+    );
+    assert.ok(newPatientButton, 'new-patient mode button must exist');
+
+    await act(async () => {
+      newPatientButton.dispatchEvent(
+        new dom.window.MouseEvent('click', { bubbles: true })
+      );
+    });
+
+    inputs = [...document.querySelectorAll<HTMLInputElement>('form input')];
+    assert.ok(inputs.length >= 9, 'new-patient form must reopen');
+    assert.equal(inputs[0].value, '', 'successful registration clears name');
+    assert.equal(inputs[1].value, '', 'successful registration clears phone');
+    assert.equal(inputs[4].value, '', 'successful registration clears history');
+
+    await act(async () => {
+      change(inputs[0], 'Second Synthetic Patient');
+    });
+
+    await act(async () => {
+      dom.window.dispatchEvent(new dom.window.Event('focus'));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    });
+
+    assert.ok(document.querySelector('[data-roby-gate="inside"]'));
+
+    const restored = [
+      ...document.querySelectorAll<HTMLInputElement>('form input')
+    ];
+
+    assert.equal(restored[0]?.value, 'Second Synthetic Patient');
+    assert.equal(restored[1]?.value, '', 'previous phone must not return');
+    assert.equal(restored[2]?.value, '', 'previous birth date must not return');
+    assert.equal(restored[4]?.value, '', 'previous history must not return');
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = oldFetch;
+  }
 });

@@ -1,0 +1,16 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> react-example@0.0.0 test:all
+> node scripts/run-all-tests.cjs
+
+ℹ tests 343
+ℹ pass 343
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7324.174399
+RUN_ALL=PASS
+REGRESSION_EXIT=0
+EXCLUDED_HISTORICAL=src/services/clinic-authority-p37a.test.ts
+FULL_LOG=/tmp/roby-run-all-ytCtzG/tests.log

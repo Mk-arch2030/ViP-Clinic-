@@ -2,7 +2,7 @@
 
 const { Actor } = require('../../domain/actor');
 const { AuthError } = require('./errors');
-const CAPABILITIES = Object.freeze(['ARRIVAL', 'PATIENT_DATA_RECORDING', 'EXIT', 'DOCTOR_NOTIFICATION']);
+const CAPABILITIES = Object.freeze(['ARRIVAL', 'PATIENT_DATA_RECORDING', 'EXIT', 'DOCTOR_NOTIFICATION', 'VISIT_START']);
 const PATIENT_OPERATIONS = Object.freeze(['PATIENT_REGISTER', 'PATIENT_RETRIEVE']);
 
 function resolveActor(row) {
@@ -22,7 +22,7 @@ function authorize(actor, operation, context) {
       context.grantor?.actor_id !== d.doctor_id || context.grantor?.lifecycle_state !== 'ACTIVE' ||
       !['FULL', 'LIMITED'].includes(d.mode) || !Array.isArray(d.capabilities) ||
       new Set(d.capabilities).size !== d.capabilities.length || d.capabilities.some(c => !CAPABILITIES.includes(c)) ||
-      (d.mode === 'LIMITED' && !d.capabilities.includes(operation))) throw new AuthError(403);
+      ((d.mode === 'LIMITED' || operation === 'VISIT_START') && !d.capabilities.includes(operation))) throw new AuthError(403);
 }
 
 module.exports = { CAPABILITIES, resolveActor, authorize };

@@ -73,3 +73,132 @@ test('dispose prevents late success; bootstrap and login requests have no parall
   const refresh=c.refresh(); await c.login('SYN/DOCTOR','synthetic password');assert.equal(logins,0);
   c.dispose();pending.resolve(session);await refresh;assert.equal(c.getSnapshot().session,null);
 });
+
+test('SRR-01: transient session outage recovers automatically without login or mutation', async () => {
+  let reads = 0;
+  let logins = 0;
+  let writes = 0;
+
+  const c = new SessionCoordinator(api({
+    session: async () => {
+      reads++;
+      if (reads === 1) throw new ApiFailure(0, 'unavailable');
+      return session;
+    },
+    login: async () => { logins++; },
+    register: async () => { writes++; return patient; }
+  }));
+
+  await c.refresh();
+
+  assert.equal(c.getSnapshot().state, 'authenticated');
+  assert.equal(c.getSnapshot().session?.role, 'Doctor');
+  assert.equal(reads, 2);
+  assert.equal(logins, 0);
+  assert.equal(writes, 0);
+
+  c.dispose();
+});
+
+test('SRR-01: unauthorized session stops recovery without retry', async () => {
+  let reads = 0;
+  let logins = 0;
+
+  const c = new SessionCoordinator(api({
+    session: async () => {
+      reads++;
+      throw new ApiFailure(401, 'unauthorized');
+    },
+    login: async () => { logins++; }
+  }));
+
+  await c.refresh();
+
+  assert.equal(reads, 1);
+  assert.equal(logins, 0);
+  assert.equal(c.getSnapshot().state, 'unauthenticated');
+  assert.equal(c.getSnapshot().session, null);
+  assert.equal(c.getSnapshot().patient, null);
+  assert.equal(c.getSnapshot().mutationsBlocked, true);
+
+  c.dispose();
+});
+
+test('SRR-01: disposal during recovery prevents another session request', async () => {
+  let reads = 0;
+  let coordinator: SessionCoordinator;
+
+  coordinator = new SessionCoordinator(api({
+    session: async () => {
+      reads++;
+      if (reads === 1) {
+        coordinator.dispose();
+        throw new ApiFailure(0, 'unavailable');
+      }
+      return session;
+    }
+  }));
+
+  await coordinator.refresh();
+
+  assert.equal(reads, 1);
+  assert.equal(coordinator.getSnapshot().session, null);
+  assert.equal(coordinator.getSnapshot().mutationsBlocked, true);
+});
+
+test('SRR-01: transient recovery waits before retrying session', async () => {
+  let reads = 0;
+  let secondReadAt = 0;
+  const started = Date.now();
+
+  const c = new SessionCoordinator(api({
+    session: async () => {
+      reads++;
+      if (reads === 1) throw new ApiFailure(0, 'unavailable');
+      secondReadAt = Date.now();
+      return session;
+    }
+  }));
+
+  await c.refresh();
+
+  assert.equal(reads, 2);
+  assert.ok(
+    secondReadAt - started >= 100,
+    `retry started after ${secondReadAt - started}ms; expected >= 100ms`
+  );
+  assert.equal(c.getSnapshot().state, 'authenticated');
+  c.dispose();
+});
+
+test('SRR-01: dispose during retry delay cancels recovery', async () => {
+  let reads = 0;
+  let notifyFirstFailure!: () => void;
+
+  const firstFailure = new Promise<void>((resolve) => {
+    notifyFirstFailure = resolve;
+  });
+
+  const c = new SessionCoordinator(api({
+    session: async () => {
+      reads++;
+      if (reads === 1) {
+        notifyFirstFailure();
+        throw new ApiFailure(0, 'unavailable');
+      }
+      return session;
+    }
+  }));
+
+  const recovery = c.refresh();
+
+  await firstFailure;
+  await new Promise<void>((resolve) => setTimeout(resolve, 25));
+
+  c.dispose();
+  await recovery;
+
+  assert.equal(reads, 1);
+  assert.equal(c.getSnapshot().session, null);
+  assert.equal(c.getSnapshot().mutationsBlocked, true);
+});

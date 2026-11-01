@@ -274,3 +274,22 @@ ADDITIONAL_NURSE_PERMISSION = NO
 CROSS_CONTRACT_INVARIANTS_PRESERVED = YES
 CONTRACT_MUTATION = PERFORMED
 IMPLEMENTATION = NOT AUTHORIZED
+
+## CJ-01 controlled amendment — explicit VISIT_START grant (2026-10-28)
+
+Authority: MOHAMED.K_ROBY, CJ-01 Founder Review of Contract Blockers.
+This bounded amendment supersedes sections 4, 5.1 and 7 only insofar as
+VISIT_START is concerned. Their historical four-capability semantics remain.
+An active Doctor in an authorized clinic mode may perform VISIT_START.
+An active Nurse requires DOCTOR_NURSE, a valid delegation from an active
+Doctor, and VISIT_START explicitly present in capabilities, for BOTH FULL
+and LIMITED. FULL alone, ARRIVAL and PATIENT_DATA_RECORDING confer no grant.
+Existing grants must not be backfilled. CASE_CREATE remains Doctor Only.
+Session, actor and delegation validity and revocation remain mandatory;
+no time-based delegation expiry policy is introduced.
+Visit-type confirmation remains Doctor Only. Nurse recording additionally
+requires previously durable, validated Doctor confirmation. Authorization
+of the operation alone does not establish that clinical prerequisite.
+The missing confirmation-evidence mechanism requires separate founder review.
+This amendment does not enable an endpoint, amend Policy B, establish E2E
+acceptance, or authorize deployment.

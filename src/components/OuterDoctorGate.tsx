@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { LockKeyhole, ShieldCheck, Stethoscope, Users, AlertTriangle, LogOut } from 'lucide-react';
 import { ConnectedPatientSession } from '../integration/connected-patient-session';
 import { DoctorSessionProvider } from '../integration/doctor-session-context';
 import { createWebApi, TEST_ORIGIN } from '../integration/web-api-client';
 import type { SessionView } from '../integration/session-coordinator';
 import { browserRegistrationJournal } from '../integration/registration-uncertainty';
+import { createProtectedIntakeDraft } from '../integration/protected-intake-draft';
+import type { ProtectedIntakeDraft } from '../integration/protected-intake-draft-types';
+import { ProtectedIntakeDraftContext } from '../integration/protected-intake-draft-context';
 
 /** No browser-stored identity or role is accepted as a clinic entrance credential. */
 export function mayEnterDoctorClinic(view: SessionView): boolean {
@@ -25,6 +28,45 @@ function ProtectedDoctorEntrance({ children }: { children: React.ReactNode }) {
   const model = useMemo(() => new ConnectedPatientSession(createWebApi({ origin: window.location.origin }), browserRegistrationJournal()), []);
   const snapshot = useSyncExternalStore(model.subscribe, model.getSnapshot, model.getSnapshot);
   const view = snapshot.session;
+  const draftStore = useMemo(
+    () => createProtectedIntakeDraft<ProtectedIntakeDraft>(), []
+  );
+  const verifiedActor = useRef<string | null>(null);
+
+  if (
+    view.state === 'unauthenticated' ||
+    view.logoutUnconfirmed ||
+    view.registrationUnconfirmed ||
+    (view.state === 'authenticated' &&
+      (view.session?.role !== 'Doctor' ||
+       view.session.lifecycle !== 'ACTIVE'))
+  ) {
+    draftStore.clear();
+    verifiedActor.current = null;
+  }
+
+  if (mayEnterDoctorClinic(view)) {
+    const actor = view.session!.actorIdentityReference;
+    if (verifiedActor.current !== null &&
+        verifiedActor.current !== actor) {
+      draftStore.clear();
+    }
+    verifiedActor.current = actor;
+  }
+
+  const draftAccess = mayEnterDoctorClinic(view)
+    ? {
+        initialDraft: draftStore.resume(view.session!.actorIdentityReference),
+        onDraftChange: (draft: ProtectedIntakeDraft) => {
+          const current = model.getSnapshot().session;
+          if (!mayEnterDoctorClinic(current)) return;
+          if (current.session!.actorIdentityReference !==
+              view.session!.actorIdentityReference) return;
+          draftStore.capture(current.session!.actorIdentityReference, draft);
+        },
+        onRegistrationStarted: () => draftStore.registrationStarted(),
+      }
+    : null;
   const [loginLabel, setLoginLabel] = useState('');
   const [password, setPassword] = useState('');
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
@@ -37,6 +79,7 @@ function ProtectedDoctorEntrance({ children }: { children: React.ReactNode }) {
     window.addEventListener('pageshow', reconcile);
     document.addEventListener('visibilitychange', reconcile);
     return () => {
+      draftStore.clear();
       window.removeEventListener('focus', reconcile);
       window.removeEventListener('pageshow', reconcile);
       document.removeEventListener('visibilitychange', reconcile);
@@ -47,20 +90,20 @@ function ProtectedDoctorEntrance({ children }: { children: React.ReactNode }) {
     if (view.state !== 'authenticated') setPassword('');
   }, [view.state]);
   if (mayEnterDoctorClinic(view)) {
-    return <DoctorSessionProvider model={model}><div data-roby-gate="inside">
+    return <DoctorSessionProvider model={model}><ProtectedIntakeDraftContext.Provider value={draftAccess}><div data-roby-gate="inside">
       <div className="no-print theme-surface border-b theme-border px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div className="flex items-center gap-2 theme-text-primary text-sm font-semibold">
           <ShieldCheck className="w-5 h-5" />
           {tr('العيادة تحت ولاية الدكتور روبي — جلسة موثقة', 'Dr. Roby Clinic — verified doctor session')}
         </div>
         <button type="button" disabled={view.busy || view.registrationUnconfirmed}
-          onClick={() => void model.logout()}
+          onClick={() => { draftStore.clear(); verifiedActor.current = null; void model.logout(); }}
           className="theme-action-primary rounded-lg px-4 py-2 text-sm flex items-center gap-2 disabled:opacity-50">
           <LogOut className="w-4 h-4" />{tr('إغلاق العيادة والخروج', 'Lock clinic and sign out')}
         </button>
       </div>
       {children}
-    </div></DoctorSessionProvider>;
+    </div></ProtectedIntakeDraftContext.Provider></DoctorSessionProvider>;
   }
   const waiting = view.state === 'checking';
   const unavailable = view.state === 'unavailable';
