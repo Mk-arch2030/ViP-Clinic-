@@ -10,6 +10,7 @@ import { translations, Language } from './i18n/translations';
 import { Header } from './components/Header';
 import { DailyCensus } from './components/DailyCensus';
 import { PatientIntake } from './components/PatientIntake';
+import { useProtectedIntakeDraft } from './integration/protected-intake-draft-context';
 import { PatientDossier } from './components/PatientDossier';
 import { DoctorConsultation } from './components/DoctorConsultation';
 import { PatientDirectory } from './components/PatientDirectory';
@@ -30,6 +31,7 @@ type MainTab = 'CENSUS' | 'INTAKE' | 'DOSSIER' | 'CONSULTATION' | 'DIRECTORY';
 
 export function ClinicApplication({ boundary, casePanel }: { boundary: ClinicBoundary; casePanel?: (patient: ClinicPatient | null, language: Language) => React.ReactNode }) {
   const protectedMode = boundary.protectedMode;
+  const protectedDraft = useProtectedIntakeDraft();
   const [storeState, setStoreState] = useState<ClinicData>(() =>
     boundary.getState()
   );
@@ -479,6 +481,9 @@ export function ClinicApplication({ boundary, casePanel }: { boundary: ClinicBou
             actorRole={storeState.actorRole}
             language={language}
             serverRegistration={protectedMode}
+            initialDraft={protectedMode ? protectedDraft?.initialDraft : undefined}
+            onDraftChange={protectedMode ? protectedDraft?.onDraftChange : undefined}
+            onRegistrationStarted={protectedMode ? protectedDraft?.onRegistrationStarted : undefined}
             registrationDisabled={blocked}
             clinicalDisabled={clinicalUnavailable}
             onSearchPatients={boundary.search}

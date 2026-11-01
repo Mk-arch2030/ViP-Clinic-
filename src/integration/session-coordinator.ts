@@ -43,16 +43,47 @@ export class SessionCoordinator {
     }
   }
   async refresh() {
-    // Explicit reconciliation can supersede a read, but never cancel a pending mutation to imply rollback.
+    // Reconcile server identity; never retry mutations or trust cached identity.
     if (this.view.busy) return;
     const { id,signal } = this.begin({ state:'checking',session:null,patient:null,mutationsBlocked:true });
-    try {
-      const session = await this.api.session(signal);
-      if (id === this.generation) this.set({ state:'authenticated',session,busy:false,mutationsBlocked:false,logoutUnconfirmed:false });
-    } catch (error) {
-      this.failed(error,id);
-      if (id === this.generation && this.view.state === 'checking') this.set({ state:'unavailable' });
-      if (id === this.generation && this.view.state === 'unauthenticated') this.set({ logoutUnconfirmed:false });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (id !== this.generation || signal.aborted) return;
+      try {
+        const session = await this.api.session(signal);
+        if (id === this.generation && !signal.aborted) {
+          this.set({ state:'authenticated',session,busy:false,mutationsBlocked:false,logoutUnconfirmed:false });
+        }
+        return;
+      } catch (error) {
+        if (id !== this.generation || signal.aborted) return;
+        const transient = error instanceof ApiFailure && error.kind === 'unavailable';
+        if (transient && attempt === 0) {
+          await new Promise<void>((resolve) => {
+            if (signal.aborted) {
+              resolve();
+              return;
+            }
+
+            let timer: ReturnType<typeof setTimeout>;
+
+            const finish = () => {
+              clearTimeout(timer);
+              signal.removeEventListener('abort', finish);
+              resolve();
+            };
+
+            timer = setTimeout(finish, 250);
+            signal.addEventListener('abort', finish, { once: true });
+
+            if (signal.aborted) finish();
+          });
+          continue;
+        }
+        this.failed(error,id);
+        if (id === this.generation && this.view.state === 'checking') this.set({ state:'unavailable' });
+        if (id === this.generation && this.view.state === 'unauthenticated') this.set({ logoutUnconfirmed:false });
+        return;
+      }
     }
   }
   async login(loginLabel: string, password: string) {

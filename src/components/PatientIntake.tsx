@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { PatientRecord, CaseRecord, ArrivalCondition, ActorRole } from '../domain/types';
 import type { Registration } from '../integration/basic-patient';
+import type { ProtectedIntakeDraft } from '../integration/protected-intake-draft-types';
+import { EMPTY_PROTECTED_INTAKE_DRAFT } from '../integration/protected-intake-draft-types';
 import type { ClinicPatient } from '../integration/clinic-boundary';
 import { translations, Language } from '../i18n/translations';
 import { calculateDetailedAge, DetailedAge } from '../domain/patientAge';
@@ -21,6 +23,9 @@ import {
 type RegistrationResult = Pick<ClinicPatient, 'patientId' | 'clinicPatientNumber' | 'name' | 'dateOfBirth' | 'phone'>;
 interface PatientIntakeProps {
   serverRegistration?: boolean;
+  initialDraft?: ProtectedIntakeDraft | null;
+  onDraftChange?: (draft: ProtectedIntakeDraft) => void;
+  onRegistrationStarted?: () => void;
   clinicalDisabled?: boolean;
   searchPending?: boolean;
   searchHasMore?: boolean;
@@ -45,6 +50,9 @@ interface PatientIntakeProps {
 
 export const PatientIntake: React.FC<PatientIntakeProps> = ({
   serverRegistration = false,
+  initialDraft,
+  onDraftChange,
+  onRegistrationStarted,
   clinicalDisabled = serverRegistration,
   searchPending = false,
   searchHasMore = false,
@@ -65,16 +73,16 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
   const [mode, setMode] = useState<'NEW' | 'LOOKUP'>('NEW');
 
   // New Patient Form state
-  const [name, setName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [profession, setProfession] = useState('');
-  const [phone, setPhone] = useState('');
-  const [gender, setGender] = useState<'Male' | 'Female'>('Male');
-  const [chronic, setChronic] = useState('');
-  const [allergies, setAllergies] = useState('');
-  const [surgeries, setSurgeries] = useState('');
-  const [family, setFamily] = useState('');
-  const [lifestyle, setLifestyle] = useState('');
+  const [name, setName] = useState(() => initialDraft?.name ?? '');
+  const [dateOfBirth, setDateOfBirth] = useState(() => initialDraft?.dateOfBirth ?? '');
+  const [profession, setProfession] = useState(() => initialDraft?.profession ?? '');
+  const [phone, setPhone] = useState(() => initialDraft?.phone ?? '');
+  const [gender, setGender] = useState<'Male' | 'Female'>(() => initialDraft?.gender ?? 'Male');
+  const [chronic, setChronic] = useState(() => initialDraft?.chronic ?? '');
+  const [allergies, setAllergies] = useState(() => initialDraft?.allergies ?? '');
+  const [surgeries, setSurgeries] = useState(() => initialDraft?.surgeries ?? '');
+  const [family, setFamily] = useState(() => initialDraft?.family ?? '');
+  const [lifestyle, setLifestyle] = useState(() => initialDraft?.lifestyle ?? '');
   const [intakeSuccessPatient, setIntakeSuccessPatient] = useState<RegistrationResult | null>(null);
 
   const submitting = useRef(false);
@@ -121,6 +129,24 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
     return cases.filter((c) => c.patientId === selectedPatientId);
   }, [cases, selectedPatientId]);
 
+  const draftSnapshot = useRef<ProtectedIntakeDraft>({
+    name, dateOfBirth, profession, phone, gender,
+    chronic, allergies, surgeries, family, lifestyle,
+  });
+
+  const reportDraftChange = (
+    field: keyof ProtectedIntakeDraft,
+    value: string
+  ) => {
+    if (!onDraftChange) return;
+    const next = {
+      ...draftSnapshot.current,
+      [field]: value,
+    } as ProtectedIntakeDraft;
+    draftSnapshot.current = next;
+    onDraftChange(next);
+  };
+
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting.current || registrationDisabled) return;
@@ -148,6 +174,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
 
     submitting.current = true; setPending(true); setRegistrationError(false);
     try {
+      if (serverRegistration) onRegistrationStarted?.();
       const created = await onRegisterPatient({
         name,
         dateOfBirth,
@@ -167,7 +194,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
       setIntakeSuccessPatient(created);
       setSelectedPatientId(created.patientId);
       if (serverRegistration) {
-        setName(''); setDateOfBirth(''); setProfession(''); setPhone(''); setGender('Male');
+        draftSnapshot.current = { ...EMPTY_PROTECTED_INTAKE_DRAFT };
+          setName(''); setDateOfBirth(''); setProfession(''); setPhone(''); setGender('Male');
         setChronic(''); setAllergies(''); setSurgeries(''); setFamily(''); setLifestyle('');
       }
     } catch { setRegistrationError(true); }
@@ -323,7 +351,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       type="text"
                       required
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => { setName(e.target.value); reportDraftChange('name', e.target.value); }}
                       placeholder={language === 'ar' ? 'الاسم الثلاثي أو الرباعي' : 'Full Name'}
                       className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
@@ -340,7 +368,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       type="text"
                       required
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => { setPhone(e.target.value); reportDraftChange('phone', e.target.value); }}
                       placeholder="+20 100 000 0000"
                       className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary font-mono placeholder:text-[color:var(--theme-text-muted)] focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
@@ -357,7 +385,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       type="date"
                       required
                       value={dateOfBirth}
-                      onChange={(e) => setDateOfBirth(e.target.value)}
+                      onChange={(e) => { setDateOfBirth(e.target.value); reportDraftChange('dateOfBirth', e.target.value); }}
                       className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary font-mono focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
                   </div>
@@ -380,7 +408,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     </label>
                     <select
                       value={gender}
-                      onChange={(e) => setGender(e.target.value as 'Male' | 'Female')}
+                      onChange={(e) => { const value = e.target.value as 'Male' | 'Female'; setGender(value); reportDraftChange('gender', value); }}
                       className="w-full theme-input border theme-border rounded-lg py-2.5 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     >
                       <option value="Male">{t.genderMale}</option>
@@ -397,7 +425,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                       <input
                         type="text"
                         value={profession}
-                        onChange={(e) => setProfession(e.target.value)}
+                        onChange={(e) => { setProfession(e.target.value); reportDraftChange('profession', e.target.value); }}
                         placeholder="Engineer, Teacher..."
                         className="w-full theme-input border theme-border rounded-lg py-2.5 px-9 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                       />
@@ -425,7 +453,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     <input
                       type="text"
                       value={chronic}
-                      onChange={(e) => setChronic(e.target.value)}
+                      onChange={(e) => { setChronic(e.target.value); reportDraftChange('chronic', e.target.value); }}
                       placeholder="e.g. Hypertension, Diabetes Type 2"
                       className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
@@ -438,7 +466,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     <input
                       type="text"
                       value={allergies}
-                      onChange={(e) => setAllergies(e.target.value)}
+                      onChange={(e) => { setAllergies(e.target.value); reportDraftChange('allergies', e.target.value); }}
                       placeholder="e.g. Penicillin, Sulfa, NSAIDs"
                       className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
@@ -451,7 +479,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     <input
                       type="text"
                       value={surgeries}
-                      onChange={(e) => setSurgeries(e.target.value)}
+                      onChange={(e) => { setSurgeries(e.target.value); reportDraftChange('surgeries', e.target.value); }}
                       placeholder="e.g. Cholecystectomy (2018)"
                       className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
@@ -464,7 +492,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                     <input
                       type="text"
                       value={family}
-                      onChange={(e) => setFamily(e.target.value)}
+                      onChange={(e) => { setFamily(e.target.value); reportDraftChange('family', e.target.value); }}
                       placeholder="e.g. Family history of coronary artery disease"
                       className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                     />
@@ -478,7 +506,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({
                   <input
                     type="text"
                     value={lifestyle}
-                    onChange={(e) => setLifestyle(e.target.value)}
+                    onChange={(e) => { setLifestyle(e.target.value); reportDraftChange('lifestyle', e.target.value); }}
                     placeholder="e.g. Smoker 10 pack-years, sedentary office lifestyle"
                     className="w-full theme-input border theme-border rounded-lg py-2 px-3 text-xs theme-text-primary focus:outline-hidden focus:border-[color:var(--theme-border-focus)]"
                   />
