@@ -48,6 +48,25 @@ This manuscript records the founder's **preliminary selections**, not an approve
 - If `DUPLICATE_INTENT` has been removed concurrently, the replacement must not commit against stale reason state; check current reason eligibility and relevant revisions.
 - Cross-Doctor authority remains M4; event schemas and exact database proof remain open.
 
+
+## M3 additional preliminary founder selections — batch checkpoint (21–33)
+21. A reference target may be REVOKED or CONSUMED when linked/replaced if the historical relationship and authority are valid. Linking does not revive, transfer authority, or establish present eligibility.
+22. Reject direct and indirect cycles in the **active** reference graph, including self-links; retain all historical audit events even where historical links would form a cycle.
+23. Allow many-to-one inbound active references from multiple revoked source Intents to the same target, each independently verified; each source retains at most one active outbound reference.
+24. Later ordinary target-status or data changes do not silently deactivate a historically valid active reference. If a factual relationship error is discovered, require explicit audited correction; never assume changed data remains valid without investigation.
+25. Permit an append-only event to disable an incorrect active reference without replacement. The effective DUPLICATE_INTENT reason may remain with zero active references; source remains REVOKED.
+26. Permit explicit reconfirmation of the latest disabled reference after fresh checks, with an append-only event and full LINKED -> DISABLED -> RECONFIRMED history.
+27. If older A was disabled, newer C linked, and A later found correct, return to A through a **new reference-correction event**, not direct reconfirmation of superseded A. If C is active, replacement must be atomic per #20.
+28. If A was disabled and no reference is active, permit directly linking newly verified C without temporarily reactivating A; append-only event and validation required.
+29. Reject a new request to disable an already inactive reference as NO_OP with no new event. Identical-operation retry receipt recovery remains M6.
+30. Explanation text for disabling a reference is **optional**; actor identity and timestamp are mandatory audit metadata.
+31. Explanation text for reconfirming a reference is **optional**; actor identity, timestamp, relationship/authority/revision checks and audit event remain mandatory.
+32. Explanation text for replacing/correcting A -> C is **optional**; old/new references, actor identity, timestamp, validations and immutable history remain mandatory.
+33. Only the owning clinic Doctor acting as Main Admin & Owner may link, correct, disable, or reconfirm DUPLICATE_INTENT references in that clinic; no nursing/secretarial delegation for these operations. Cross-Doctor authority rules remain M4.
+
+## Founder-directed checkpoint closure
+The founder explicitly authorized closing the **M3 discussion round as a PRELIMINARY CHECKPOINT** and proceeding to M4. This is a documentation checkpoint only: **M3 is not finally approved**, and no implementation, clinical data write, merge, deployment, or release is authorized by it. M4 cross-Doctor authority, M5 nursing access, and M6 idempotency/concurrency/receipts remain OPEN. Doctor's operational ownership of a clinic does not erase patient privacy rights or other mandatory legal safeguards.
+
 ## Explicit non-claims
 - NOT M3 FINAL APPROVAL.
 - NOT clinical implementation or PostgreSQL proof.
