@@ -38,6 +38,16 @@ This manuscript records the founder's **preliminary selections**, not an approve
 - Authorization across Doctors and secure denial behavior deferred to M4; audit event names, schema, time policy, registry completeness, exact revision and transaction mechanics remain UNDECIDED.
 - The label `REFERENCE_LINKED`, `REFERENCE_CORRECTED`, `REFERENCE_RECONFIRMED` are illustrative, not approved schema constants.
 
+
+20. **Latest founder preliminary selection (2026-11-05):** When a `DUPLICATE_INTENT` reference is currently active, allow its replacement (e.g., A -> C) in **one atomic audited reference-correction event**. On success, C is the sole active reference and A remains in immutable audit history; on any failure, A remains active and no partial transition or audit success occurs. This is a contractual atomicity requirement, NOT verified implementation.
+
+### Atomic replacement edge cases (preliminary)
+- Invalid, inaccessible, self-referential, or otherwise unrelated candidate C: reject the entire change, leaving A active.
+- Replacing A with A is a new no-op and should be rejected without a new event; successful identical-operation retry remains governed by M6 receipt recovery.
+- Competing reference replacements must not both succeed against one expected reference revision; exact transaction/locking implementation remains M6.
+- If `DUPLICATE_INTENT` has been removed concurrently, the replacement must not commit against stale reason state; check current reason eligibility and relevant revisions.
+- Cross-Doctor authority remains M4; event schemas and exact database proof remain open.
+
 ## Explicit non-claims
 - NOT M3 FINAL APPROVAL.
 - NOT clinical implementation or PostgreSQL proof.
